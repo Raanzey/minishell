@@ -1,5 +1,7 @@
 # Derleme dosyaları
 *.o
+*.a
+minishell
 
 # Geçici dosyalar
 *~
