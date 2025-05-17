@@ -7,8 +7,9 @@
 
 # include "Libft/libft.h"
 
-# define ERR_ARG "Please no argument"
+# define ERR_ARG "Please no argument\n" // .minishell dasda hata durumu
+# define ERR_EXIT "numeric argument required\n" // exit dsda hata durumu
 
-void error(char *err);
+int error(char *err);
 
 # endif

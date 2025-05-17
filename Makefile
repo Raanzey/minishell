@@ -1,6 +1,8 @@
 NAME 		= minishell
-CC			= cc
-CFLAGS 		= -Wall -Wextra -Werror -lreadline
+CC		= cc
+CFLAGS 		= -Wall -Wextra -Werror
+# wsl üzerinden  derleme problemleri oldu o yüzden bu değişkeni ekledim readline kütüphanesi yoktu indirdim
+LIBFLAGS	= -lreadline
 SRCS		= main.c execution/exec.c parser/pars.c\
 
 LIBFT		= Libft/libft.a
@@ -10,7 +12,7 @@ all: $(NAME)
 
 $(NAME): $(SRCS)
 	make -s -C $(DIR_LIBFT)
-	$(CC) $(CFLAGS) $(SRCS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(SRCS) $(LIBFT) $(LIBFLAGS) -o $(NAME)
 
 clean:
 	make -s -C $(DIR_LIBFT) clean

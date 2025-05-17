@@ -1,4 +1,5 @@
-void error(char *err)
+int error(char *err)
 {
 	printf("%s", err);
+	return (1);
 }
