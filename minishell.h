@@ -4,6 +4,8 @@
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <parser/pars.h>
+
 
 # include "Libft/libft.h"
 
