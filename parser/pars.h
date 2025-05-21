@@ -8,12 +8,13 @@ typedef struct s_redirect {
 } t_redirect;
 
 typedef struct s_command {
-	char **argv;         // ["ls", "-la", NULL]
+	char **av;         // ["ls", "-la", NULL]
 	t_redirect *redir;   // I/O yönlendirmeleri
 	int pipe;            // sonra pipe var mı? 0 veya 1
 	struct s_command *next; // pipe varsa sonraki komut
 } t_command;
 
-void parser(char *input);
+t_command *parser(char *input);
+char	**tokenizer(char const *s);
 
 # endif
