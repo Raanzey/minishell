@@ -6,59 +6,80 @@ static size_t	world_count(char const *s, size_t wc, size_t i)
 
 	while (s[i])
 	{
-                while (s[i] == ' ')
-                        i++;
-                if (!s[i])
-                        break;
-                if (s[i] == '\'' || s[i] == '"')
+		if (s[i] == '\'' || s[i] ==  '"')
                 {
                         quote = s[i++];
                         while (s[i] && s[i] != quote)
                                 i++;
-                        if (s[i])
-                                i++;
+                        if (!s[i])
+                                error(); // tırnak kapanmıyor
+                        wc++;
                 }
                 else
                 {
-                        while (s[i] && s[i] != ' ' && s[i] != '\'' && s[i] != '"')
+                        while (s[i] == 32 || (s[i] >= 9 && s[i] <= 13))
                                 i++;
+                        while (s[i] != 32 || !(s[i] >= 9 && s[i] <= 13) || s[i] != '<' || s[i] != '>' || s[i] != '|')
+                                i++;
+                        wc++;
+                        if (s[i] == '<' || (s[i] == '<' && s[i + 1] == '<') || s[i] == '>' || (s[i] == '>' && s[i + 1] == '>') || s[i++] == '|')
+                                wc++;
                 }
-                wc++;
 	}
 	return (wc);
 }
 
-static char	**last_sp(char **sp, char const *s, size_t wc, size_t i)
+static int	free_tab(char **sp)
 {
-	size_t	start;
+	size_t	i;
+
+	i = 0;
+	if (sp)
+	{
+		while (sp[i])
+		{
+			free(sp[i]);
+			i++;
+		}
+		free(sp);
+	}
+        return (NULL);
+}
+
+static char	**last_sp(char **sp, char const *s, size_t wc, size_t	j)
+{
+	size_t	i;
         char quote;
 
-	start = 0;
-        while (s[i])
-        {
-                while (s[i] == ' ')
-                        i++;
-                if (!s[i])
-                        break;
-                start = i;
-                if (s[i] == '\'' || s[i] == '"')
+	i = 0;
+	while (s[i])
+	{
+		j = 0;
+		if (s[i] == '\'' || s[i] ==  '"')
                 {
                         quote = s[i++];
-                        start = i;
-                        while (s[i] && s[i] != quote)
-                                i++;
-                        sp[wc++] = ft_substr(s, start, i - start);
-                        if (s[i])
-                                i++;
+                        while (s[i + j] && s[i + j] != quote)
+                                j++;
+                        sp[wc] = ft_substr(s, i, j);
+                        if  (!sp[wc++])
+                                return (free_tab(sp));
+                        if (!s[i + j])
+                                error(); // tırnak kapanmıyor
                 }
                 else
                 {
-                        while (s[i] && s[i] != ' ' && s[i] != '\'' && s[i] != '"')
+                        while (s[i] == 32 || (s[i] >= 9 && s[i] <= 13))
                                 i++;
-                        sp[wc++] = ft_substr(s, start, i -start);
+                        while (s[i + j] != 32 || !(s[i + j] >= 9 && s[i + j] <= 13) || s[i + j] != '<' || s[i + j] != '>' || s[i + j] != '|')
+                                j++;
+                        sp[wc] = ft_substr(s, i, j); //TODO şart lazım
+                        if  (!sp[wc++])
+                                return (free_tab(sp));
+                        i = j; //TODO şart lazıım
+                        if (s[i] == '<' || (s[i] == '<' && s[i + 1] == '<') || s[i] == '>' || (s[i] == '>' && s[i + 1] == '>') || s[i++] == '|')
+                                wc++;
                 }
-        }
-        sp[wc] = NULL;
+	}
 	return (sp);
 }
 
@@ -67,18 +88,14 @@ char	**tokenizer(char const *s)
 	char	**tokens;
 	size_t	wc;
 
-	wc = world_count(s, 32, 0);
+	wc = world_count(s, 0, 0);
 	tokens = ft_calloc(wc + 1, sizeof(char *));
 	if (!tokens)
 		return (NULL);
-	if (!last_sp(tokens, s, 32, 0))
+	if (!last_sp(tokens, s, 0, 0))
 		return (NULL);
 	return (tokens);
 }
-
-
-
-
 
 
 
