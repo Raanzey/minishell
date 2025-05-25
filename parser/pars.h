@@ -22,4 +22,6 @@ size_t	quotes(char **tokens, const char *s, size_t *i, size_t k);
 size_t	redirect(char **tokens, const char *s, size_t *i, size_t k);
 char	**tokenizer(char const *s);
 
+void	print_cmd(t_command *cmd); //! sil
+
 # endif

@@ -53,21 +53,37 @@ int exit_time(char *input)
 	return (returnnumber);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	char *input;
-	
+	char		*input;
+	t_command	*cmd;
+
 	(void)av;
 	if (ac >= 2)
 		return (error(ERR_ARG));
 	while (1)
 	{
 		input = readline("minishell~ ");
-		add_history(input);
-		if (!ft_strncmp(input, "exit", 4) && (input[4] == 32 || !input[4]))
-			return (exit_time(input)); // TODO exit built in burası silinecek
-		parser(input);
+		if (!input)
+			break ;
+		if (*input)
+			add_history(input);
+		if (!ft_strncmp(input, "exit", 4) && (input[4] == ' ' || input[4] == '\0'))
+		{
+			free(input);
+			return (exit_time(NULL)); // varsayılan olarak sadece çık
+		}
+		cmd = parser(input);
+		if (!cmd)
+		{
+			printf("Parsing failed.\n");
+			free(input);
+			continue;
+		}
+		print_cmd(cmd);
+		// TODO: cmd freelemeyi unutma
+		free(input);
 	}
-	free(input);
 	return (0);
 }
+
