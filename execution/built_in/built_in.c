@@ -23,7 +23,7 @@ int echo_cmd(char **str)
 {
 	int i;
 	i = 1;
-	if (!ft_strncmp(str[2], "-n", ft_strlen(str[2])))
+	if (!ft_strncmp(str[2], "-n", ft_strlen(str[2])) && !(i++))
 	{
 		while (str[++i])
 		{
