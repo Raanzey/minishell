@@ -10,8 +10,6 @@ typedef struct s_redirect {
 typedef struct s_command {
 	char **av;         // ["ls", "-la", NULL]
 	t_redirect *redir;   // I/O yönlendirmeleri
-				// int [i] == 0 0 0 1 0 1
-	int pipe;            // sonra pipe var mı? 0 veya 1
 	struct s_command *next; // pipe varsa sonraki komut
 } t_command;
 
