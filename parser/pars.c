@@ -1,16 +1,19 @@
 #include "../minishell.h"
 
-char **tokenizer(char *input)
-{
-        char **tokens;
+// char **tokenizer(char *input)
+// {
+//         char **tokens;
 
         
-        return (tokens);    
-}
+//         return (tokens);    
+// }
 
-void parser(char *input)
+t_command *parser(char *input)
 {
-        char **tokens;
-
-        tokens = tokenizer(input);
+        t_command *cmd = NULL;
+        // char **tokens;
+        (void)input;
+        // tokens = tokenizer(input);
+        printf("parser\n");
+        return cmd;
 }

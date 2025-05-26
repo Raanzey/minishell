@@ -66,7 +66,8 @@ int main(int ac, char **av)
 		add_history(input);
 		if (!ft_strncmp(input, "exit", 4) && (input[4] == 32 || !input[4]))
 			return (exit_time(input));
-		// exec(parser());
+		printf("buraa\n");
+		exec(parser(input));
 	}
 	free(input);
 	return (0);
