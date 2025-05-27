@@ -12,10 +12,12 @@ static size_t	token_count(const char *s, size_t count, size_t i)
 		if (s[i] == '\"' || s[i] == '\'')
 		{
 			quote = s[i++];
-			while (s[i] && s[i] != quote)
+			while (s[i + 1] && s[i] != quote)
 				i++;
-			if (s[i])
+			if (s[i] == quote)
 				i++;
+			else
+				return (0);
 		}
 		else if ((s[i] == '<' && s[i + 1] == '<')
 			|| (s[i] == '>' && s[i + 1] == '>'))

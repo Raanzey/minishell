@@ -39,7 +39,7 @@ int	main(int ac, char **av)
 		if (!ft_strncmp(input, "exit", 4) && (input[4] == ' ' || !input[4]))
 		{
 			free(input);
-			return (exit_time(input)); // varsayılan olarak sadece çık
+			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
 		cmd = parser(tokens);
@@ -50,7 +50,7 @@ int	main(int ac, char **av)
 			continue;
 		}
 		print_cmd(cmd);
-		// TODO: cmd freelemeyi unutma
+		//TODO cmd freelemeyi unutma
 		free(input);
 	}
 	return (0);
