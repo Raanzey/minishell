@@ -42,6 +42,13 @@ int	main(int ac, char **av)
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
+		if (!tokens)
+		{
+			printf("Token failed.\n");
+			free(input);
+			continue;
+		}
+
 		cmd = parser(tokens);
 		if (!cmd)
 		{

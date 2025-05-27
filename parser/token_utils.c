@@ -23,21 +23,6 @@ size_t	skip_word(const char *s, size_t i)
 	return (i);
 }
 
-size_t	quotes(char **tokens, const char *s, size_t *i, size_t k)
-{
-	size_t	start;
-	char	quote;
-
-	quote = s[(*i)++];
-	start = *i;
-	while (s[*i] && s[*i] != quote)
-		(*i)++;
-	tokens[k] = ft_substr(s, start, *i - start);
-	if (s[*i])
-		(*i)++;
-	return (k + 1);
-}
-
 size_t	redirect(char **tokens, const char *s, size_t *i, size_t k)
 {
 	if ((s[*i] == '<' && s[*i + 1] == '<')

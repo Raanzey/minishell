@@ -9,23 +9,31 @@ static size_t	token_count(const char *s, size_t count, size_t i)
 		i = skip_space(s, i);
 		if (!s[i])
 			break ;
-		if (s[i] == '\"' || s[i] == '\'')
-		{
-			quote = s[i++];
-			while (s[i + 1] && s[i] != quote)
-				i++;
-			if (s[i] == quote)
-				i++;
-			else
-				return (0);
-		}
-		else if ((s[i] == '<' && s[i + 1] == '<')
-			|| (s[i] == '>' && s[i + 1] == '>'))
+		if (s[i] == '<' && s[i + 1] == '<')
+			i += 2;
+		else if (s[i] == '>' && s[i + 1] == '>')
 			i += 2;
 		else if (s[i] == '<' || s[i] == '>' || s[i] == '|')
 			i++;
 		else
-			i = skip_word_count(s, i);
+		{
+			while (s[i] && !(s[i] == ' ' || (s[i] >= 9 && s[i] <= 13)
+				|| s[i] == '<' || s[i] == '>' || s[i] == '|'))
+			{
+				if (s[i] == '"' || s[i] == '\'')
+				{
+					quote = s[i++];
+					while (s[i] && s[i] != quote)
+						i++;
+					if (s[i] == quote)
+						i++;
+					else
+						return (0);
+				}
+				else
+					i++;
+			}
+		}
 		count++;
 	}
 	return (count);
@@ -33,13 +41,27 @@ static size_t	token_count(const char *s, size_t count, size_t i)
 
 static size_t	handle_word(char **tokens, const char *s, size_t *i, size_t k)
 {
-	size_t	start;
+	size_t	start = *i;
+	char	quote;
 
-	start = *i;
-	*i = skip_word(s, *i);
+	while (s[*i] && !(s[*i] == ' ' || (s[*i] >= 9 && s[*i] <= 13)
+		|| s[*i] == '<' || s[*i] == '>' || s[*i] == '|'))
+	{
+		if (s[*i] == '"' || s[*i] == '\'')
+		{
+			quote = s[(*i)++];
+			while (s[*i] && s[*i] != quote)
+				(*i)++;
+			if (s[*i] == quote)
+				(*i)++;
+		}
+		else
+			(*i)++;
+	}
 	tokens[k] = ft_substr(s, start, *i - start);
 	return (k + 1);
 }
+
 
 char	**tokenizer(const char *s)
 {
@@ -51,6 +73,8 @@ char	**tokenizer(const char *s)
 	i = 0;
 	k = 0;
 	total = token_count(s, 0, 0);
+	if (total == 0)
+		return (NULL);  //TODO error durumu
 	tokens = ft_calloc(total + 1, sizeof(char *));
 	if (!tokens)
 		return (NULL);
@@ -59,9 +83,7 @@ char	**tokenizer(const char *s)
 		i = skip_space(s, i);
 		if (!s[i])
 			break ;
-		if (s[i] == '\"' || s[i] == '\'')
-			k = quotes(tokens, s, &i, k);
-		else if (s[i] == '<' || s[i] == '>' || s[i] == '|')
+		if (s[i] == '<' || s[i] == '>' || s[i] == '|')
 			k = redirect(tokens, s, &i, k);
 		else
 			k = handle_word(tokens, s, &i, k);
