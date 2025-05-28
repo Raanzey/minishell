@@ -25,6 +25,7 @@ int	main(int ac, char **av)
 	char		*input;
 	t_command	*cmd;
 	char **tokens;
+	int q;
 
 	(void)av;
 	if (ac >= 2)
@@ -48,7 +49,18 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
+		q = -1;
+		// printf("\n"); //* token yazdırma
+		// while (tokens[++q])
+		// 	printf("token[%d]: %s*\n", q, tokens[q]);
+		// printf("\n");
 
+		// if (!check_syntax(tokens)) //* token kontrol
+		// {
+		// 	// tokens free’le (opsiyonel)
+		// 	return (0);
+		// }
+		
 		cmd = parser(tokens);
 		if (!cmd)
 		{
@@ -56,7 +68,8 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
-		print_cmd(cmd);
+		// print_cmd(cmd); //* parser yazdırma
+		exec(cmd);
 		//TODO cmd freelemeyi unutma
 		free(input);
 	}

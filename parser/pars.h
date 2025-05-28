@@ -19,6 +19,7 @@ size_t	skip_word_count(const char *s, size_t i);
 size_t	skip_word(const char *s, size_t i);
 size_t	quotes(char **tokens, const char *s, size_t *i, size_t k);
 size_t	redirect(char **tokens, const char *s, size_t *i, size_t k);
+int	check_syntax(char **tokens);
 char	**tokenizer(char const *s);
 
 void	print_cmd(t_command *cmd); //! sil
