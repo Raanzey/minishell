@@ -22,10 +22,8 @@ static int	quotes_control(const char *s, size_t *i)
 }
 
 
-static size_t	token_count(const char *s, size_t count, size_t i)
+static size_t	token_count(const char *s, size_t count, size_t i, char redirect)
 {
-	char redirect;
-
 	while (s[i])
 	{
 		i = skip_space(s, i);
@@ -77,7 +75,7 @@ char	**tokenizer(const char *s)
 
 	i = 0;
 	k = 0;
-	total = token_count(s, 0, 0);
+	total = token_count(s, 0, 0, 0);
 	if (total == 0)
 		return (NULL);  //TODO error durumu
 	tokens = ft_calloc(total + 1, sizeof(char *));
@@ -135,11 +133,11 @@ int	check_syntax(char **tokens)
 {
 	size_t i = 0;
 
-	if (!tokens || !tokens[0])
-		return (error("syntax error: empty command\n"));
+	// if (!tokens || !tokens[0])
+	// 	return (error("syntax error: empty command\n"));
 
-	if (!ft_strncmp(tokens[0], "|", 2))
-		return (error("syntax error near unexpected token `|'\n"));
+	// if (!ft_strncmp(tokens[0], "|", 2))
+	// 	return (error("syntax error near unexpected token `|'\n"));
 
 	while (tokens[i])
 	{

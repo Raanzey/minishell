@@ -50,10 +50,10 @@ int	main(int ac, char **av)
 			continue;
 		}
 		q = -1;
-		// printf("\n"); //* token yazdırma
-		// while (tokens[++q])
-		// 	printf("token[%d]: %s*\n", q, tokens[q]);
-		// printf("\n");
+		printf("\n"); //* token yazdırma
+		while (tokens[++q])
+			printf("token[%d]: %s*\n", q, tokens[q]);
+		printf("\n");
 
 		// if (!check_syntax(tokens)) //* token kontrol
 		// {
@@ -68,8 +68,8 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
-		// print_cmd(cmd); //* parser yazdırma
-		exec(cmd);
+		print_cmd(cmd); //* parser yazdırma
+		// exec(cmd);
 		//TODO cmd freelemeyi unutma
 		free(input);
 	}
