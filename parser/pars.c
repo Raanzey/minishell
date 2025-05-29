@@ -1,110 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pars.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/29 17:21:11 by musisman          #+#    #+#             */
+/*   Updated: 2025/05/29 17:21:11 by musisman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-t_command	*new_command(void)
+t_command	*add_command(char **tokens, size_t *i)
 {
-	t_command *cmd;
-	
-	cmd = malloc(sizeof(t_command));
-	if (!cmd)
-		return (NULL);
-	cmd->av = NULL;
-	cmd->redir = NULL;
-	cmd->next = NULL;
+	t_command	*cmd;
+	t_redirect	*r;
+
+	cmd = new_command();
+	while (tokens[*i] && ft_strncmp(tokens[*i], "|", 2))
+	{
+		if (is_redir(tokens[*i]))
+		{
+			if (!tokens[*i + 1])
+				return (NULL);
+			r = create_redirect(tokens[*i], tokens[*i + 1]);
+			add_redirect(cmd, r);
+			*i += 2;
+		}
+		else
+			add_arg(cmd, tokens[(*i)++]);
+	}
 	return (cmd);
 }
 
-int	is_redir(char *s)
+t_command	*parser(char **tokens)
 {
-	return (!ft_strncmp(s, "<", 2) || !ft_strncmp(s, ">", 2)
-		|| !ft_strncmp(s, "<<", 3) || !ft_strncmp(s, ">>", 3));
-}
+	t_command	*first;
+	t_command	*cur;
+	t_command	*cmd;
+	size_t		i;
 
-t_redirect	*create_redirect(char *op, char *file)
-{
-	t_redirect *r;
-	
-	r = malloc(sizeof(t_redirect));
-	if (!r || !file)
-		return (NULL);
-	r->filename = ft_strdup(file);
-	r->next = NULL;
-	if (!ft_strncmp(op, "<<", 3))
-		r->type = 4;
-	else if (!ft_strncmp(op, ">>", 3))
-		r->type = 2;
-	else if (!ft_strncmp(op, "<", 2))
-		r->type = 3;
-	else
-		r->type = 1;
-	return (r);
-}
-
-void	add_redirect(t_command *cmd, t_redirect *r)
-{
-	t_redirect *cur;
-
-	cur = cmd->redir;
-	if (!cur)
-		cmd->redir = r;
-	else
-	{
-		while (cur->next)
-			cur = cur->next;
-		cur->next = r;
-	}
-}
-
-void	add_arg(t_command *cmd, char *word)
-{
-	int i;
-	int j;
-	char **new;
-
-	i = 0;
-	j = -1;
-	while (cmd->av && cmd->av[i])
-		i++;
-	new = ft_calloc(i + 2, sizeof(char *));
-	while (++j < i)
-		new[j] = cmd->av[j];	
-	new[i] = ft_strdup(word);
-	new[i + 1] = NULL;
-	free(cmd->av);
-	cmd->av = new;
-}
-
-t_command *parser(char **tokens)
-{
-	t_command *first;
-	t_command *cur;
-	t_command *cmd;
-	t_redirect *r;
-	size_t i;
-
-	i = 0;
 	first = NULL;
 	cur = NULL;
+	i = 0;
 	while (tokens[i])
 	{
-		cmd = new_command();
+		cmd = add_command(tokens, &i);
+		if (!cmd)
+			return (NULL);
 		if (!first)
 			first = cmd;
 		else
 			cur->next = cmd;
 		cur = cmd;
-		while (tokens[i] && ft_strncmp(tokens[i], "|", 2))
-		{
-			if (is_redir(tokens[i]))
-			{
-				if (!tokens[i + 1])
-					return (NULL);
-				r = create_redirect(tokens[i], tokens[i + 1]);
-				add_redirect(cmd, r);
-				i += 2;
-			}
-			else
-				add_arg(cmd, tokens[i++]);
-		}
 		if (tokens[i] && !ft_strncmp(tokens[i], "|", 2))
 			i++;
 	}
@@ -114,9 +63,10 @@ t_command *parser(char **tokens)
 void	print_cmd(t_command *cmd)
 {
 	int			i;
-	int			num = 1;
+	int			num;
 	t_redirect	*r;
 
+	num = 1;
 	while (cmd)
 	{
 		printf("=== COMMAND %d ===\n", num++);
@@ -124,7 +74,6 @@ void	print_cmd(t_command *cmd)
 		i = -1;
 		while (cmd->av && cmd->av[++i])
 			printf("av[%d]: %s\n", i, cmd->av[i]);
-
 		printf("REDIRS:\n");
 		r = cmd->redir;
 		while (r)

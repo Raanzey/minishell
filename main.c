@@ -52,7 +52,7 @@ int	main(int ac, char **av)
 		q = -1;
 		printf("\n"); //* token yazdırma
 		while (tokens[++q])
-			printf("token[%d]: %s*\n", q, tokens[q]);
+			printf("token[%d]: %s\n", q, tokens[q]);
 		printf("\n");
 
 		// if (!check_syntax(tokens)) //* token kontrol
