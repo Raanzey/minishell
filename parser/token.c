@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/05/29 17:20:40 by musisman         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:00:43 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,3 +170,63 @@ int	check_syntax(char **tokens)
 	}
 	return (1);
 }
+
+size_t redirect_error(char **tokens, int i)
+{
+	if (!(ft_srtrncmp("<", tokens[i], 2) && ft_srtrncmp("<<", tokens[i], 3) 
+			&& ft_srtrncmp(">", tokens[i], 2) && ft_srtrncmp(">>", tokens[i], 3)))
+			{
+				if (!(ft_srtrncmp("<", tokens[i + 1], 2) && ft_srtrncmp("<<", tokens[i + 1], 3) 
+					&& ft_srtrncmp(">", tokens[i + 1], 2) && ft_srtrncmp(">>", tokens[i + 1], 3)))
+					{
+						error(ERR_ARG); // token bekleniyor
+						return (0);
+					}
+			}
+	else
+		return (1);
+}
+
+size_t pipe_error(char **tokens, int i)
+{
+	return (1);
+}
+
+int	handle_error(char **tokens)
+{
+	int	i;
+
+	i = -1;
+	while (tokens[++i])
+	{
+		if (!redirect_error(tokens, i))
+			return (0);
+		if (!pipe_error(tokens, i))
+			return (0);
+	}
+	return (1);
+}
+
+// waow
+
+// musisman@k1m32s04:~/Desktop/minishell$ cat <in.txt | grep a < out.txt 
+// main.c
+// Makefile
+// parser
+// main.c
+// Makefile
+// parser
+// main.c
+// Makefile
+// parser
+// main.c
+// Makefile
+// parser
+// main.c
+// Makefile
+// parser
+// main.c
+// Makefile
+// parser
+// musisman@k1m32s04:~/Desktop/minishell$ cat <in.txt | grep a
+// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
