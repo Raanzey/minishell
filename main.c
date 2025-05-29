@@ -20,12 +20,12 @@ int exit_time(char *input)
 	return (returnnumber);
 }
 
-int	main(int ac, char **av)
+int	main(int ac, char **av, char **env)
 {
 	char		*input;
 	t_command	*cmd;
 	char **tokens;
-	int q;
+	//int q;
 
 	(void)av;
 	if (ac >= 2)
@@ -39,7 +39,6 @@ int	main(int ac, char **av)
 			add_history(input);
 		if (!ft_strncmp(input, "exit", 4) && (input[4] == ' ' || !input[4]))
 		{
-			free(input);
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
@@ -49,7 +48,7 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
-		q = -1;
+		//q = -1;
 		// printf("\n"); //* token yazdırma
 		// while (tokens[++q])
 		// 	printf("token[%d]: %s*\n", q, tokens[q]);
@@ -69,7 +68,7 @@ int	main(int ac, char **av)
 			continue;
 		}
 		// print_cmd(cmd); //* parser yazdırma
-		exec(cmd);
+		exec(cmd, env);
 		//TODO cmd freelemeyi unutma
 		free(input);
 	}

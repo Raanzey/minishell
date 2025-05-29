@@ -1,36 +1,118 @@
 #include "../minishell.h"
 
-static int	creat_process(char **av, char **env, int *fds)
+static char *ft_path(void)
 {
-	pid_t	pid;
+    char *path_env = getenv("PATH");
+    if (!path_env)
+        exit(1);//ERORR GELCEK
+    return strdup(path_env);
+}
+static char *find_path(char *cmd)
+{
+    int i;
+    char **paths;
+    char *candidate;
+    char *full_path;
+    char *tmp = ft_path();
 
-	pid = fork();
-	if (pid == -1)
-		error();
-	if (pid == 0)
-		if (built_in(cmd))
+    paths = ft_split(tmp, ':');
+    free(tmp);
+
+    for (i = 0; paths[i]; i++)
+    {
+        candidate = ft_strjoin(paths[i], "/");
+        full_path = ft_strjoin(candidate, cmd);
+        free(candidate);
+
+        if (access(full_path, X_OK) == 0)
+        {
+            //ft_free(paths);freeeeGELCEK	
+            return full_path;
+        }
+        free(full_path);
+    }
+    //ft_free(paths);freeeeGELCEK
+    return NULL;
+}
+static void handle_redirections(t_redirect *redir)
+{
+	while (redir)
+	{
+		int fd = -1;
+		if (redir->type == 1)
+			fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (redir->type == 2)
+			fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else if (redir->type == 3)
+			fd = open(redir->filename, O_RDONLY);
+		if (fd == -1)
 		{
-			/* code */
+			perror("redir");//ERORR GELCEK
+			exit(1);//ERORR GELCEK
 		}
-		
-	return (pid);
+		if (redir->type == 3)
+			dup2(fd, STDIN_FILENO);
+		else
+			dup2(fd, STDOUT_FILENO);
+		close(fd);
+		redir = redir->next;
+	}
 }
 
-int exec(t_command *cmd)
+static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], char **env)
 {
-	t_command *tmp;
-	int pid = 0;
-	tmp = cmd;
-    while(tmp->next)
-    {
-        pid = creat_process(cmd->av);
-        waitpid(pid);
-        tmp = tmp->next;
-    }
-	if (built_in(cmd))
+	if (cmd->redir)
+		handle_redirections(cmd->redir);
+	if (prev_fd != -1)
 	{
-		return 0;
-		printf("HATA\n");//error kullanılacak
+		dup2(prev_fd, STDIN_FILENO);
+		close(prev_fd);
 	}
+	if (cmd->next)
+	{
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+	}
+	if (!built_in(cmd))
+		exit(1);//ERORR GELCEK
+	execve(find_path(cmd->av[0]), cmd->av, env);
+	perror("execve");//ERORR GELCEK
+	exit(1);//ERORR GELCEK
+}
+
+int exec(t_command *cmd, char **env)
+{
+	int prev_fd = -1;
+	int pipe_fd[2];
+	pid_t pid;
+
+	while (cmd)
+	{
+		if (cmd->next && pipe(pipe_fd) == -1)
+		{
+			perror("pipe");//ERORR GELCEK
+			exit(1);//ERORR GELCEK
+		}
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");//ERORR GELCEK
+			exit(1);//ERORR GELCEK
+		}
+		if (pid == 0)
+			exec_child(cmd, prev_fd, pipe_fd, env);
+		if (prev_fd != -1)
+			close(prev_fd);
+		if (cmd->next)
+		{
+			close(pipe_fd[1]);
+			prev_fd = pipe_fd[0];
+		}
+		else
+			prev_fd = -1;
+		cmd = cmd->next;
+	}
+	while (wait(NULL) > 0);
 	return 0;
 }
