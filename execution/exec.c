@@ -16,7 +16,7 @@ static char *find_path(char *cmd)
     char *tmp = ft_path();
 
     paths = ft_split(tmp, ':');
-    free(tmp);
+    free(tmp);//freeee kalkcak
 
     for (i = 0; paths[i]; i++)
     {
@@ -26,12 +26,12 @@ static char *find_path(char *cmd)
 
         if (access(full_path, X_OK) == 0)
         {
-            //ft_free(paths);freeeeGELCEK	
+            //ft_free(paths);freeee kalkcak	
             return full_path;
         }
-        free(full_path);
+        free(full_path);//freeee kalkcak
     }
-    //ft_free(paths);freeeeGELCEK
+    //ft_free(paths);freeee kalkcak
     return NULL;
 }
 static void handle_redirections(t_redirect *redir)

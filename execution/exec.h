@@ -4,8 +4,9 @@
 
 
 int built_in(t_command *cmd);
-int cd_cmd(char *str);
 int exec(t_command *cmd, char **env);
-int echo_cmd(char **str); //Şimdilik char **str
+int echo_cmd(char **str);
+int cd_cmd(char *str);
+int pwd_cmd(char *str);
 
 # endif
