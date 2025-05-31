@@ -3,7 +3,7 @@ CC		= cc
 CFLAGS 		= -Wall -Wextra -Werror
 # wsl üzerinden  derleme problemleri oldu o yüzden bu değişkeni ekledim readline kütüphanesi yoktu indirdim
 LIBFLAGS	= -lreadline
-SRCS		= main.c execution/exec.c execution/built_in/built_in.c parser/pars.c parser/token.c parser/token_utils.c\
+SRCS		= main.c execution/exec.c execution/built_in/built_in.c execution/built_in/built_in_utils.c parser/pars.c parser/token.c parser/token_utils.c\
 
 LIBFT		= Libft/libft.a
 DIR_LIBFT	= Libft

@@ -7,7 +7,7 @@ int built_in(t_command *cmd)
 	else if(!ft_strncmp(cmd->av[0], "cd",ft_strlen(cmd->av[0]))) 
 		return (cd_cmd(cmd->av[1]));
 	else if(!ft_strncmp(cmd->av[0], "pwd",ft_strlen(cmd->av[0])))
-		return (pwd_cmd(cmd->av[0]));
+		return (pwd_cmd());
 	else if(!ft_strncmp(cmd->av[0], "export",ft_strlen(cmd->av[0])))
 		return 0;
 	else if(!ft_strncmp(cmd->av[0], "unset",ft_strlen(cmd->av[0])))
@@ -51,17 +51,21 @@ int echo_cmd(char **str)
 
 int cd_cmd(char *str)
 {
-	char cwd[1024];
-
-    getcwd(cwd, sizeof(cwd));
-	if(chdir(str))
+	char *path;
+	if (!str)
+	{
+		path = getenv("HOME");
+		if (!path)
+			return 1;//PATH YOKSA HATA DURUMU
+	}
+	else
+		path = str;
+	if(chdir(path))
 		printf("HATA\n");//error kullanılacak
-	getcwd(cwd, sizeof(cwd));
-	printf("Sonra: %s\n", cwd);
 	return 0;
 }
 
-int pwd_cmd(char *str)
+int pwd_cmd()
 {
 	char cwd[1024];
     if(!getcwd(cwd, sizeof(cwd)))

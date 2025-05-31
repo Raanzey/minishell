@@ -87,6 +87,9 @@ int exec(t_command *cmd, char **env)
 	int pipe_fd[2];
 	pid_t pid;
 
+	if (!cmd->next && is_parent_builtin(cmd))
+		return built_in(cmd);
+	
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipe_fd) == -1)
