@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/05/29 18:00:43 by musisman         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:45:03 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,41 +171,74 @@ int	check_syntax(char **tokens)
 	return (1);
 }
 
-size_t redirect_error(char **tokens, int i)
+
+
+
+
+
+
+
+
+
+
+int	redirect_error(char **tokens, int i)
 {
-	if (!(ft_srtrncmp("<", tokens[i], 2) && ft_srtrncmp("<<", tokens[i], 3) 
-			&& ft_srtrncmp(">", tokens[i], 2) && ft_srtrncmp(">>", tokens[i], 3)))
-			{
-				if (!(ft_srtrncmp("<", tokens[i + 1], 2) && ft_srtrncmp("<<", tokens[i + 1], 3) 
-					&& ft_srtrncmp(">", tokens[i + 1], 2) && ft_srtrncmp(">>", tokens[i + 1], 3)))
-					{
-						error(ERR_ARG); // token bekleniyor
-						return (0);
-					}
-			}
-	else
-		return (1);
+	if (!ft_strncmp(tokens[i], "<", 2)
+		|| !ft_strncmp(tokens[i], "<<", 3)
+		|| !ft_strncmp(tokens[i], ">", 2)
+		|| !ft_strncmp(tokens[i], ">>", 3))
+	{
+		if (!tokens[i + 1])
+			return (error("syntax error: unexpected newline\n"));
+
+		if (!ft_strncmp(tokens[i + 1], "<", 2)
+			|| !ft_strncmp(tokens[i + 1], "<<", 3)
+			|| !ft_strncmp(tokens[i + 1], ">", 2)
+			|| !ft_strncmp(tokens[i + 1], ">>", 3)
+			|| !ft_strncmp(tokens[i + 1], "|", 2))
+			return (error("syntax error near unexpected token\n"));
+	}
+	return (0);
 }
 
-size_t pipe_error(char **tokens, int i)
+
+
+int	pipe_error(char **tokens, int i)
 {
-	return (1);
+	if (!ft_strncmp(tokens[i], "|", 2))
+	{
+		// İlk token | olamaz
+		if (i == 0)
+			return (error("syntax error: pipe at start\n"));
+
+		// Son token | olamaz
+		if (!tokens[i + 1])
+			return (error("syntax error: pipe at end\n"));
+
+		// Pipe'tan sonra başka bir pipe gelirse
+		if (!ft_strncmp(tokens[i + 1], "|", 2))
+			return (error("syntax error: double pipe\n"));
+	}
+	return (0);
 }
 
 int	handle_error(char **tokens)
 {
 	int	i;
 
-	i = -1;
-	while (tokens[++i])
+	i = 0;
+	while (tokens[i])
 	{
-		if (!redirect_error(tokens, i))
-			return (0);
-		if (!pipe_error(tokens, i))
-			return (0);
+		if (redirect_error(tokens, i))
+			return (1);
+		printf("%d BURA\n", i);
+		if (pipe_error(tokens, i))
+			return (1);
+		i++;
 	}
-	return (1);
+	return (0);
 }
+
 
 // waow
 
