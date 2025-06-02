@@ -9,30 +9,46 @@ static char *ft_path(void)
 }
 static char *find_path(char *cmd)
 {
-    int i;
-    char **paths;
-    char *candidate;
-    char *full_path;
-    char *tmp = ft_path();
+	char **paths;
+	char *tmp;
+	char *candidate;
+	char *full_path;
+	int i = 0;
 
-    paths = ft_split(tmp, ':');
-    free(tmp);//freeee kalkcak
+	// Eğer komut bir path içeriyorsa → doğrudan kontrol et
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, X_OK) == 0)
+			return ft_strdup(cmd);
+		else
+			return NULL;
+	}
 
-    for (i = 0; paths[i]; i++)
-    {
-        candidate = ft_strjoin(paths[i], "/");
-        full_path = ft_strjoin(candidate, cmd);
-        free(candidate);
+	// PATH ortam değişkenini al
+	tmp = ft_path();
+	if (!tmp)
+		return NULL;
 
-        if (access(full_path, X_OK) == 0)
-        {
-            //ft_free(paths);freeee kalkcak	
-            return full_path;
-        }
-        free(full_path);//freeee kalkcak
-    }
-    //ft_free(paths);freeee kalkcak
-    return NULL;
+	paths = ft_split(tmp, ':');
+	free(tmp);
+
+	while (paths[i])
+	{
+		candidate = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(candidate, cmd);
+		free(candidate);
+
+		if (access(full_path, X_OK) == 0)
+		{
+			// paths dizisini free etmeyi unutma (ileride)
+			return full_path;
+		}
+		free(full_path);
+		i++;
+	}
+
+	// paths dizisini burada da free etmeyi unutma (ileride)
+	return NULL;
 }
 static void handle_redirections(t_redirect *redir)
 {
