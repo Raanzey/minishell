@@ -2,7 +2,7 @@ NAME 		= minishell
 CC		= cc
 CFLAGS 		= -Wall -Wextra -Werror
 LIBFLAGS	= -lreadline
-SRCS		= main.c execution/exec.c parser/pars.c parser/pars_utils.c parser/token.c parser/token_utils.c\
+SRCS		= main.c execution/exec.c parser/pars.c parser/pars_utils.c parser/token.c parser/token_utils.c parser/error_handle.c\
 
 LIBFT		= Libft/libft.a
 DIR_LIBFT	= Libft
