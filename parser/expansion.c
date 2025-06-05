@@ -107,7 +107,8 @@ char	*expand_dollar(const char *s, int last_exit)
 		}
 		else if (s[i] == '$' && (ft_isalpha(s[i + 1]) || s[i + 1] == '_'))
 		{
-			tmp = extract_var_name(s, &(++i));
+			i++;
+			tmp = extract_var_name(s, &i);
 			tmp = ft_strjoin_free(res, getenv(tmp) ?: "");
 			res = tmp;
 		}

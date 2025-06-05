@@ -67,6 +67,8 @@ int exit_time(char *input)
 	return (returnnumber);
 }
 
+int  g_exit_code = 999;
+
 int	main(int ac, char **av)
 {
 	char		*input;
@@ -118,6 +120,8 @@ int	main(int ac, char **av)
 		expand_redirections(cmd, g_exit_code);//? bu exit_code ne olacak global değişken mi olacak
 
 		// exec(cmd);
+		printf("\n expansion");
+		print_cmd(cmd);
 
 		free_command(cmd);
 		free_tokens(tokens);
