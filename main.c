@@ -113,8 +113,12 @@ int	main(int ac, char **av)
 			continue;
 		}
 		print_cmd(cmd); //* parser yazdırma
+		
+		expand_args(cmd, g_exit_code); // veya last_exit
+		expand_redirections(cmd, g_exit_code);//? bu exit_code ne olacak global değişken mi olacak
+
 		// exec(cmd);
-		//TODO cmd freelemeyi unutma
+
 		free_command(cmd);
 		free_tokens(tokens);
 		free(input);
