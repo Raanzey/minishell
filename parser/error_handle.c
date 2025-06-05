@@ -53,10 +53,10 @@ int	redir_error(char **tokens)
 			if (!tokens[i + 1])
 				return (print_unexpected_token("newline"));
 			if (!ft_strncmp(tokens[i + 1], "|", 2)
-				|| (!ft_strncmp(tokens[i + 1], "<", 2)
-				|| !ft_strncmp(tokens[i + 1], ">", 2)
-				|| !ft_strncmp(tokens[i + 1], "<<", 3)
-				|| !ft_strncmp(tokens[i + 1], ">>", 3)))
+					|| (!ft_strncmp(tokens[i + 1], "<", 2)
+					|| !ft_strncmp(tokens[i + 1], ">", 2)
+					|| !ft_strncmp(tokens[i + 1], "<<", 3)
+					|| !ft_strncmp(tokens[i + 1], ">>", 3)))
 				return (print_unexpected_token(tokens[i + 1]));
 		}
 		i++;

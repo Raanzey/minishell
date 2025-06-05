@@ -38,6 +38,8 @@ size_t		skip_word(const char *s, size_t i);
 size_t		redirect(char **tokens, const char *s, size_t *i, size_t k);
 int			handle_error(char **tokens);
 char		**tokenizer(char const *s);
+char	*remove_quotes(const char *str);
+char	*expand_dollar(const char *s, int last_exit);
 void	expand_args(t_command *cmd, int last_exit);
 void	expand_redirections(t_command *cmd, int last_exit);
 

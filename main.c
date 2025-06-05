@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
+/*   Updated: 2025/06/05 20:26:58 by musisman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 //TODO exit dsadas ahta durumunu işlemeye çalıştım ama yapamadım 
@@ -101,11 +113,11 @@ int	main(int ac, char **av)
 		}
 
 		q = -1;
-		printf("\n"); //* token yazdırma
+		printf("\nTOKENIZER\n\n"); //* token yazdırma
 		while (tokens[++q])
 			printf("token[%d]: %s\n", q, tokens[q]);
-		printf("\n");
 		
+		printf("\nPARSER\n\n");
 		cmd = parser(tokens);
 		if (!cmd)
 		{
@@ -120,7 +132,7 @@ int	main(int ac, char **av)
 		expand_redirections(cmd, g_exit_code);//? bu exit_code ne olacak global değişken mi olacak
 
 		// exec(cmd);
-		printf("\n expansion");
+		printf("\nEXPANSION\n\n");
 		print_cmd(cmd);
 
 		free_command(cmd);
