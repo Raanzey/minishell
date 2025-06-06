@@ -6,7 +6,7 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/05 20:26:58 by musisman         ###   ########.fr       */
+/*   Updated: 2025/06/06 21:33:29 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	main(int ac, char **av)
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
-		if (!tokens || handle_error(tokens))
+		if (!tokens || handle_error(tokens)) //TODO expansion yap ondan sonra kontrol et < $blabla.txt yaparsan hata vermen  gerekiyor
 		{
 			printf("Token failed.\n");
 			free_tokens(tokens); // burada tüm tokenları temizle
@@ -118,7 +118,11 @@ int	main(int ac, char **av)
 			printf("token[%d]: %s\n", q, tokens[q]);
 		
 		printf("\nPARSER\n\n");
-		cmd = parser(tokens);
+		cmd = parser(tokens);  // TODO lexer ne araştır 
+				// TODO ve burayı lexer yapıp yeni bir parser fonksiyonunda hepsini çalışır 
+				// TODO sırası tokenizer (içinde tırnak kontrolü var) 
+				// TODO expansion yap sonra handle_error yap ki bu hata durumunu kontrol et 
+				// TODO sonra lexer(eski parser) yapıp en son return edip exec içine gönder
 		if (!cmd)
 		{
 			printf("Parsing failed.\n");
@@ -128,7 +132,7 @@ int	main(int ac, char **av)
 		}
 		print_cmd(cmd); //* parser yazdırma
 		
-		expand_args(cmd, g_exit_code); // veya last_exit
+		expand_args(cmd, g_exit_code); // veya last_exit // TODO bunlar gidecek sırası değişti
 		expand_redirections(cmd, g_exit_code);//? bu exit_code ne olacak global değişken mi olacak
 
 		// exec(cmd);
