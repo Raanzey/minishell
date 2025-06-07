@@ -31,23 +31,41 @@ char	*expand_token(char *token, int last_exit)
 	return (expand_dollar(token, last_exit));
 }
 
-void	expand_args(t_command *cmd, int last_exit)
-{
-	int		i;
-	char	*tmp;
+// void	expand_args(t_command *cmd, int last_exit)
+// {
+// 	int		i;
+// 	char	*tmp;
 
-	while (cmd)
+// 	while (cmd)
+// 	{
+// 		i = 0;
+// 		while (cmd->av && cmd->av[i])
+// 		{
+// 			tmp = expand_token(cmd->av[i], last_exit);
+// 			free(cmd->av[i]);
+// 			cmd->av[i] = tmp;
+// 			i++;
+// 		}
+// 		cmd = cmd->next;
+// 	}
+// }
+
+char **expand_args(char  **tokens, int last_exit)
+{
+	int i;
+	char **tmp;
+
+	i = 0;
+	while (tokens[i])
+		i++;
+	tmp = ft_calloc(i + 1, sizeof(char *));
+	i = 0;
+	while (tmp[i])
 	{
-		i = 0;
-		while (cmd->av && cmd->av[i])
-		{
-			tmp = expand_token(cmd->av[i], last_exit);
-			free(cmd->av[i]);
-			cmd->av[i] = tmp;
-			i++;
-		}
-		cmd = cmd->next;
+		tmp[i] = ft_strdup(expand_token(tmp[i], last_exit));
+		i++;
 	}
+	return (tmp);
 }
 
 void	expand_redirections(t_command *cmd, int last_exit)

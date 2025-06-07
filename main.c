@@ -6,7 +6,7 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/06 21:33:29 by musisman         ###   ########.fr       */
+/*   Updated: 2025/06/07 08:38:03 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int	main(int ac, char **av)
 	char		*input;
 	t_command	*cmd;
 	char **tokens;
+	char  **expand;
 	int q;
 
 	(void)av;
@@ -104,21 +105,26 @@ int	main(int ac, char **av)
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
-		if (!tokens || handle_error(tokens)) //TODO expansion yap ondan sonra kontrol et < $blabla.txt yaparsan hata vermen  gerekiyor
-		{
-			printf("Token failed.\n");
-			free_tokens(tokens); // burada tüm tokenları temizle
-			free(input);
-			continue;
-		}
-
 		q = -1;
 		printf("\nTOKENIZER\n\n"); //* token yazdırma
 		while (tokens[++q])
 			printf("token[%d]: %s\n", q, tokens[q]);
+		expand = expand_args(tokens,g_exit_code);
+		q = -1;
+		printf("\nEXPANSION\n\n"); //* token yazdırma
+		while (expand[++q])
+			printf("token[%d]: %s\n", q, expand[q]);
+		if (!tokens || handle_error(expand)) //TODO expansion yap ondan sonra kontrol et < $blabla.txt yaparsan hata vermen  gerekiyor
+		{
+			printf("Token failed.\n");
+			free_tokens(tokens);
+			free_tokens(expand); // burada tüm tokenları temizle
+			free(input);
+			continue;
+		}
 		
 		printf("\nPARSER\n\n");
-		cmd = parser(tokens);  // TODO lexer ne araştır 
+		cmd = parser(expand);  // TODO lexer ne araştır 
 				// TODO ve burayı lexer yapıp yeni bir parser fonksiyonunda hepsini çalışır 
 				// TODO sırası tokenizer (içinde tırnak kontrolü var) 
 				// TODO expansion yap sonra handle_error yap ki bu hata durumunu kontrol et 
@@ -127,13 +133,14 @@ int	main(int ac, char **av)
 		{
 			printf("Parsing failed.\n");
 			free_tokens(tokens);
+			free_tokens(expand);
 			free(input);
 			continue;
 		}
 		print_cmd(cmd); //* parser yazdırma
 		
-		expand_args(cmd, g_exit_code); // veya last_exit // TODO bunlar gidecek sırası değişti
-		expand_redirections(cmd, g_exit_code);//? bu exit_code ne olacak global değişken mi olacak
+		// expand_args(cmd, g_exit_code); // veya last_exit // TODO bunlar gidecek sırası değişti
+		// expand_redirections(cmd, g_exit_code);//? bu exit_code ne olacak global değişken mi olacak
 
 		// exec(cmd);
 		printf("\nEXPANSION\n\n");
@@ -141,6 +148,7 @@ int	main(int ac, char **av)
 
 		free_command(cmd);
 		free_tokens(tokens);
+		free_tokens(expand);
 		free(input);
 	}
 	return (0);
