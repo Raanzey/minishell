@@ -31,71 +31,28 @@ char	*expand_token(char *token, int last_exit)
 	return (expand_dollar(token, last_exit));
 }
 
-// void	expand_args(t_command *cmd, int last_exit)
-// {
-// 	int		i;
-// 	char	*tmp;
-
-// 	while (cmd)
-// 	{
-// 		i = 0;
-// 		while (cmd->av && cmd->av[i])
-// 		{
-// 			tmp = expand_token(cmd->av[i], last_exit);
-// 			free(cmd->av[i]);
-// 			cmd->av[i] = tmp;
-// 			i++;
-// 		}
-// 		cmd = cmd->next;
-// 	}
-// }
-
-char **expand_args(char  **tokens, int last_exit)
+char	**expand_args(char **tokens, int last_exit)
 {
-	int i;
-	char **tmp;
+	char	**expanded;
+	int		i;
 
 	i = 0;
 	while (tokens[i])
 		i++;
-	printf("indis: %d\n", i);
-	tmp = ft_calloc(i + 1, sizeof(char *));
-	if (!tmp)
-	{
-		printf("bura\n");
+	expanded = ft_calloc(i + 1, sizeof(char *));
+	if (!expanded)
 		return (NULL);
-	}
 	i = 0;
-	tmp[i] = ft_strdup(expand_token(tmp[i], last_exit));
-	printf("bura: %s\n", tmp[i]);
-	while (tmp[i])
+	while (tokens[i])
 	{
-		printf("bura\n");
-		printf("before: %s\n", expand_token(tmp[i], last_exit));
-		tmp[i] = ft_strdup(expand_token(tmp[i], last_exit));
-		printf("after: %s\n", tmp[i]);
-
+		expanded[i] = ft_strdup(expand_token(tokens[i], last_exit));
+		if (!expanded[i])
+		{
+			free_tokens(expanded);
+			return (NULL);
+		}
 		i++;
 	}
-	tmp[i] = '\0';
-	return (tmp);
-}
-
-void	expand_redirections(t_command *cmd, int last_exit)
-{
-	t_redirect	*r;
-	char		*tmp;
-
-	while (cmd)
-	{
-		r = cmd->redir;
-		while (r)
-		{
-			tmp = expand_token(r->filename, last_exit);
-			free(r->filename);
-			r->filename = tmp;
-			r = r->next;
-		}
-		cmd = cmd->next;
-	}
+	expanded[i] = NULL;
+	return (expanded);
 }

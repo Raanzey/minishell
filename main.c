@@ -6,7 +6,7 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/07 10:06:05 by musisman         ###   ########.fr       */
+/*   Updated: 2025/06/07 16:46:19 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ int	main(int ac, char **av)
 	t_command	*cmd;
 	char **tokens;
 	char  **expand;
-	int q;
 
 	(void)av;
 	if (ac >= 2)
@@ -105,30 +104,34 @@ int	main(int ac, char **av)
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
-		q = -1;
-		printf("\nTOKENIZER\n\n"); //* token yazdırma
-		while (tokens[++q])
-			printf("token[%d]: %s\n", q, tokens[q]);
+		
+		// printf("\nTOKENIZER\n\n"); //* token yazdırma
+		// while (tokens[++q])
+		// 	printf("token[%d]: %s\n", q, tokens[q]);
+		if (!tokens)
+		{	
+			printf("Token failed.\n");
+			free_tokens(tokens);
+			free(input);
+			continue;
+		}
 		expand = expand_args(tokens,g_exit_code);
-		q = -1;
+		int q = -1;
 		printf("\nEXPANSION\n\n"); //* token yazdırma
 		while (expand[++q])
 			printf("token[%d]: %s\n", q, expand[q]);
-		if (!expand || handle_error(expand)) //TODO expansion yap ondan sonra kontrol et < $blabla.txt yaparsan hata vermen  gerekiyor
+		if (!expand || handle_error(expand))
 		{
-			printf("Token failed.\n");
-			free_tokens(tokens);
-			free_tokens(expand); // burada tüm tokenları temizle
+			printf("Expand failed.\n");
+			// free_tokens(tokens); //? ||| durumunda abort alıyor neden
+			// if (expand)
+				// free_tokens(expand); // burada tüm tokenları temizle
 			free(input);
 			continue;
 		}
 		
 		printf("\nPARSER\n\n");
-		cmd = parser(expand);  // TODO lexer ne araştır 
-				// TODO ve burayı lexer yapıp yeni bir parser fonksiyonunda hepsini çalışır 
-				// TODO sırası tokenizer (içinde tırnak kontrolü var) 
-				// TODO expansion yap sonra handle_error yap ki bu hata durumunu kontrol et 
-				// TODO sonra lexer(eski parser) yapıp en son return edip exec içine gönder
+		cmd = parser(expand);
 		if (!cmd)
 		{
 			printf("Parsing failed.\n");
@@ -138,13 +141,8 @@ int	main(int ac, char **av)
 			continue;
 		}
 		print_cmd(cmd); //* parser yazdırma
-		
-		// expand_args(cmd, g_exit_code); // veya last_exit // TODO bunlar gidecek sırası değişti
-		// expand_redirections(cmd, g_exit_code);//? bu exit_code ne olacak global değişken mi olacak
 
 		// exec(cmd);
-		printf("\nEXPANSION\n\n");
-		print_cmd(cmd);
 
 		free_command(cmd);
 		free_tokens(tokens);

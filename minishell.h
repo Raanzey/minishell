@@ -6,7 +6,7 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/05 20:27:29 by musisman         ###   ########.fr       */
+/*   Updated: 2025/06/07 16:00:09 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,7 @@
 # define ERR_EXIT "numeric argument required\n" // exit dsda hata durumu
 
 int error(char *err);
+
+void	free_tokens(char **tokens); //!  sil
 
 # endif

@@ -40,10 +40,8 @@ int			handle_error(char **tokens);
 char		**tokenizer(char const *s);
 char	*remove_quotes(const char *str);
 char	*expand_dollar(const char *s, int last_exit);
-// void	expand_args(t_command *cmd, int last_exit);
 char **expand_args(char  **tokens, int last_exit);
-// void	expand_redirections(t_command *cmd, int last_exit);
 
-void		print_cmd(t_command *cmd);
+void		print_cmd(t_command *cmd); //!sil
 
 #	endif

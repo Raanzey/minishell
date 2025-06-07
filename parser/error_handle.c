@@ -14,9 +14,30 @@
 
 int	print_unexpected_token(char *token)
 {
-	if (!token)
+	if (!token || *token == '\0')
 		return (printf("syntax error near unexpected token `newline'\n"), 1);
 	return (printf("syntax error near unexpected token `%s'\n", token), 1);
+}
+
+int	ambiguous_redirect_error(char **tokens)
+{
+	int	i;
+
+	i = 0;
+	while (tokens[i])
+	{
+		if ((!ft_strncmp(tokens[i], "<", 2)
+			|| !ft_strncmp(tokens[i], ">", 2)
+			|| !ft_strncmp(tokens[i], "<<", 3)
+			|| !ft_strncmp(tokens[i], ">>", 3))
+			&& (!tokens[i + 1] || tokens[i + 1][0] == '\0'))
+		{
+			printf("%s: ambiguous redirect\n", tokens[i + 1]);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
 }
 
 int	pipe_error(char **tokens)
@@ -28,9 +49,7 @@ int	pipe_error(char **tokens)
 	{
 		if (!ft_strncmp(tokens[i], "|", 2))
 		{
-			if (i == 0 || !tokens[i + 1])
-				return (print_unexpected_token("|"));
-			if (!ft_strncmp(tokens[i + 1], "|", 2))
+			if (i == 0 || !tokens[i + 1] || !ft_strncmp(tokens[i + 1], "|", 2))
 				return (print_unexpected_token("|"));
 		}
 		i++;
@@ -50,13 +69,12 @@ int	redir_error(char **tokens)
 			|| !ft_strncmp(tokens[i], "<<", 3)
 			|| !ft_strncmp(tokens[i], ">>", 3))
 		{
-			if (!tokens[i + 1])
-				return (print_unexpected_token("newline"));
-			if (!ft_strncmp(tokens[i + 1], "|", 2)
-					|| (!ft_strncmp(tokens[i + 1], "<", 2)
+			if (!tokens[i + 1] || !ft_strncmp(tokens[i + 1], "<", 2)
 					|| !ft_strncmp(tokens[i + 1], ">", 2)
 					|| !ft_strncmp(tokens[i + 1], "<<", 3)
-					|| !ft_strncmp(tokens[i + 1], ">>", 3)))
+					|| !ft_strncmp(tokens[i + 1], ">>", 3)
+					|| !ft_strncmp(tokens[i + 1], "|", 2)
+					|| tokens[i + 1][0] == '\0')
 				return (print_unexpected_token(tokens[i + 1]));
 		}
 		i++;
@@ -70,5 +88,8 @@ int	handle_error(char **tokens)
 		return (1);
 	if (redir_error(tokens))
 		return (1);
+	if (ambiguous_redirect_error(tokens))
+		return (1);
 	return (0);
 }
+
