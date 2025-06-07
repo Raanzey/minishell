@@ -58,13 +58,26 @@ char **expand_args(char  **tokens, int last_exit)
 	i = 0;
 	while (tokens[i])
 		i++;
+	printf("indis: %d\n", i);
 	tmp = ft_calloc(i + 1, sizeof(char *));
+	if (!tmp)
+	{
+		printf("bura\n");
+		return (NULL);
+	}
 	i = 0;
+	tmp[i] = ft_strdup(expand_token(tmp[i], last_exit));
+	printf("bura: %s\n", tmp[i]);
 	while (tmp[i])
 	{
+		printf("bura\n");
+		printf("before: %s\n", expand_token(tmp[i], last_exit));
 		tmp[i] = ft_strdup(expand_token(tmp[i], last_exit));
+		printf("after: %s\n", tmp[i]);
+
 		i++;
 	}
+	tmp[i] = '\0';
 	return (tmp);
 }
 

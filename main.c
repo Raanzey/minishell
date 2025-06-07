@@ -6,7 +6,7 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/07 08:38:03 by musisman         ###   ########.fr       */
+/*   Updated: 2025/06/07 10:06:05 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	main(int ac, char **av)
 		printf("\nEXPANSION\n\n"); //* token yazdırma
 		while (expand[++q])
 			printf("token[%d]: %s\n", q, expand[q]);
-		if (!tokens || handle_error(expand)) //TODO expansion yap ondan sonra kontrol et < $blabla.txt yaparsan hata vermen  gerekiyor
+		if (!expand || handle_error(expand)) //TODO expansion yap ondan sonra kontrol et < $blabla.txt yaparsan hata vermen  gerekiyor
 		{
 			printf("Token failed.\n");
 			free_tokens(tokens);
