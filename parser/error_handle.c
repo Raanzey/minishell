@@ -84,6 +84,8 @@ int	redir_error(char **tokens)
 
 int	handle_error(char **tokens)
 {
+	if (!tokens)
+		return (1);
 	if (pipe_error(tokens))
 		return (1);
 	if (redir_error(tokens))

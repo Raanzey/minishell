@@ -37,6 +37,8 @@ char	**expand_args(char **tokens, int last_exit)
 	int		i;
 
 	i = 0;
+	if (!tokens)
+		return (NULL);
 	while (tokens[i])
 		i++;
 	expanded = ft_calloc(i + 1, sizeof(char *));
