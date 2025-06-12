@@ -27,7 +27,7 @@ char	*remove_quotes(const char *str)
 		if (str[i] == '\'' || str[i] == '\"')
 		{
 			quote = str[i++];
-			while (str[i] && str[i] != quote)
+			while (str[i] && str[i] != quote) //! düzelt enayi
 				res[j++] = str[i++];
 			if (str[i])
 				i++;
