@@ -1,13 +1,23 @@
 #ifndef EXEC_H
 # define EXEC_H
 
+typedef struct s_env {
+	char *key;
+	char *value;
+	struct s_env *next;
+} t_env;
 
-
-int built_in(t_command *cmd);
+int built_in(t_command *cmd, char **env);
 int is_parent_builtin(t_command *cmd);
 int exec(t_command *cmd, char **env);
 int echo_cmd(char **str);
 int cd_cmd(char *str);
 int pwd_cmd();
+int env_cmd(t_env *env);
+int export_cmd(char **av, t_env *env);
+t_env *init_env(char **env);
+void print_export(t_env *env);
+void add_or_update_env(t_env *env, char *eq, char *av);
+void export_key_only(t_env *env, const char *key);
 
 # endif

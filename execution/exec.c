@@ -14,40 +14,29 @@ static char *find_path(char *cmd)
 	char *candidate;
 	char *full_path;
 	int i = 0;
-
-	// Eğer komut bir path içeriyorsa → doğrudan kontrol et
+	// Eğer komut bir path içeriyorsa doğrudan kontrol et
 	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) == 0)
 			return ft_strdup(cmd);
 		else
 			return NULL;
-	}
-
-	// PATH ortam değişkenini al
+	}// PATH ortam değişkenini al
 	tmp = ft_path();
 	if (!tmp)
 		return NULL;
-
 	paths = ft_split(tmp, ':');
 	free(tmp);
-
 	while (paths[i])
 	{
 		candidate = ft_strjoin(paths[i], "/");
 		full_path = ft_strjoin(candidate, cmd);
 		free(candidate);
-
 		if (access(full_path, X_OK) == 0)
-		{
-			// paths dizisini free etmeyi unutma (ileride)
-			return full_path;
-		}
+			return full_path;// paths dizisini free etmeyi unutma (ileride)
 		free(full_path);
 		i++;
-	}
-
-	// paths dizisini burada da free etmeyi unutma (ileride)
+	}// paths dizisini burada da free etmeyi unutma (ileride)
 	return NULL;
 }
 static void handle_redirections(t_redirect *redir)
@@ -90,7 +79,7 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], char **env)
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	if (!built_in(cmd))
+	if (!built_in(cmd, env))
 		exit(1);//ERORR GELCEK
 	execve(find_path(cmd->av[0]), cmd->av, env);
 	perror("execve");//ERORR GELCEK
@@ -104,8 +93,7 @@ int exec(t_command *cmd, char **env)
 	pid_t pid;
 
 	if (!cmd->next && is_parent_builtin(cmd))
-		return built_in(cmd);
-	
+		return built_in(cmd, env);
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipe_fd) == -1)

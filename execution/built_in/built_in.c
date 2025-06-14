@@ -1,7 +1,9 @@
 # include "../../minishell.h"
 
-int built_in(t_command *cmd)
+int built_in(t_command *cmd, char **env)
 {
+	t_env *env_list;
+
 	if(!ft_strncmp(cmd->av[0], "echo",ft_strlen(cmd->av[0])))
 		return (echo_cmd(cmd->av));
 	else if(!ft_strncmp(cmd->av[0], "cd",ft_strlen(cmd->av[0]))) 
@@ -9,17 +11,21 @@ int built_in(t_command *cmd)
 	else if(!ft_strncmp(cmd->av[0], "pwd",ft_strlen(cmd->av[0])))
 		return (pwd_cmd());
 	else if(!ft_strncmp(cmd->av[0], "export",ft_strlen(cmd->av[0])))
-		return 0;
+	{
+		env_list = init_env(env);
+		return (export_cmd(cmd->av, env_list));
+	}	
 	else if(!ft_strncmp(cmd->av[0], "unset",ft_strlen(cmd->av[0])))
 		return 0;
 	if(!ft_strncmp(cmd->av[0], "env",ft_strlen(cmd->av[0]))) 
-		return 0;
+	{
+		env_list = init_env(env);	
+		return (env_cmd(env_list));
+	}
 	//EXIT GELCEKMİ ??????
 	else
 		return 1;//komut yok 
 }
-
-
 int echo_cmd(char **str)
 {
 	int i;
@@ -48,22 +54,17 @@ int echo_cmd(char **str)
 	return 0;
 	
 }
-
-int cd_cmd(char *str)
+int env_cmd(t_env *env)
 {
-	char *path;
-	if (!str)
+	while (env)
 	{
-		path = getenv("HOME");
-		if (!path)
-			return 1;//PATH YOKSA HATA DURUMU
+		if (env->value)
+			printf("%s=%s\n", env->key, env->value);
+		env = env->next;
 	}
-	else
-		path = str;
-	if(chdir(path))
-		printf("HATA\n");//error kullanılacak
 	return 0;
 }
+
 
 int pwd_cmd()
 {
