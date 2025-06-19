@@ -1,8 +1,8 @@
 # include "../../minishell.h"
 
-int built_in(t_command *cmd, char **env)
+int built_in(t_command *cmd)
 {
-	t_env *env_list;
+	//t_env *env_list;
 
 	if(!ft_strncmp(cmd->av[0], "echo",ft_strlen(cmd->av[0])))
 		return (echo_cmd(cmd->av));
@@ -12,15 +12,15 @@ int built_in(t_command *cmd, char **env)
 		return (pwd_cmd());
 	else if(!ft_strncmp(cmd->av[0], "export",ft_strlen(cmd->av[0])))
 	{
-		env_list = init_env(env);
-		return (export_cmd(cmd->av, env_list));
+		//env_list = init_env(env);
+		return (export_cmd(cmd->av, g_env_list));
 	}	
 	else if(!ft_strncmp(cmd->av[0], "unset",ft_strlen(cmd->av[0])))
 		return 0;
 	if(!ft_strncmp(cmd->av[0], "env",ft_strlen(cmd->av[0]))) 
 	{
-		env_list = init_env(env);	
-		return (env_cmd(env_list));
+		//env_list = init_env(env);	
+		return (env_cmd(g_env_list));
 	}
 	//EXIT GELCEKMİ ??????
 	else

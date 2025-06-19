@@ -64,6 +64,7 @@ void append_env(t_env *env, const char *key, const char *value)
 	new->value = ft_strdup(value);
 	new->next = NULL;
 
+	//printf("%s = %s", new->key, new->value);
 	if (!env)
 		env = new; // Liste boşsa bu ilk eleman olur
 	else

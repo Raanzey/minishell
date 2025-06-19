@@ -5,6 +5,8 @@
 //TODO "exit 3213 32132" ya da "exit 3213 dsadas" girersem too many arguments diyor ve 1 döndürüyor ama çıkmıyor
 //TODO ayrıca exit built-in fonksiyonmuş bununla boşuna uğraşmışm :(
 
+t_env *g_env_list = NULL;
+
 int exit_time(char *input)
 {
 	int returnnumber;
@@ -27,6 +29,7 @@ int	main(int ac, char **av, char **env)
 	char **tokens;
 	//int q;
 
+	g_env_list = init_env(env);
 	(void)av;
 	if (ac >= 2)
 		return (error(ERR_ARG));

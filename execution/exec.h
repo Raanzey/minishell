@@ -7,7 +7,9 @@ typedef struct s_env {
 	struct s_env *next;
 } t_env;
 
-int built_in(t_command *cmd, char **env);
+extern t_env *g_env_list;
+
+int built_in(t_command *cmd);
 int is_parent_builtin(t_command *cmd);
 int exec(t_command *cmd, char **env);
 int echo_cmd(char **str);

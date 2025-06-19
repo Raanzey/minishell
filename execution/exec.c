@@ -66,7 +66,7 @@ static void handle_redirections(t_redirect *redir)
 
 static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], char **env)
 {
-	if (cmd->redir)
+	if (cmd->redir)							//FONKSİYONDKİ DEĞİŞKEN SAYISINA DİKKAT
 		handle_redirections(cmd->redir);
 	if (prev_fd != -1)
 	{
@@ -79,7 +79,7 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], char **env)
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	if (!built_in(cmd, env))
+	if (!built_in(cmd))
 		exit(1);//ERORR GELCEK
 	execve(find_path(cmd->av[0]), cmd->av, env);
 	perror("execve");//ERORR GELCEK
@@ -93,7 +93,7 @@ int exec(t_command *cmd, char **env)
 	pid_t pid;
 
 	if (!cmd->next && is_parent_builtin(cmd))
-		return built_in(cmd, env);
+		return built_in(cmd);
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipe_fd) == -1)
