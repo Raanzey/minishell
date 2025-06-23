@@ -2,26 +2,18 @@
 
 int built_in(t_command *cmd)
 {
-	//t_env *env_list;
-
-	if(!ft_strncmp(cmd->av[0], "echo",ft_strlen(cmd->av[0])))
+	if(!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
 		return (echo_cmd(cmd->av));
-	else if(!ft_strncmp(cmd->av[0], "cd",ft_strlen(cmd->av[0]))) 
+	else if(!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0') 
 		return (cd_cmd(cmd->av[1]));
-	else if(!ft_strncmp(cmd->av[0], "pwd",ft_strlen(cmd->av[0])))
+	else if(!ft_strncmp(cmd->av[0], "pwd", 3) && cmd->av[0][3] == '\0')
 		return (pwd_cmd());
-	else if(!ft_strncmp(cmd->av[0], "export",ft_strlen(cmd->av[0])))
-	{
-		//env_list = init_env(env);
+	else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
 		return (export_cmd(cmd->av, g_env_list));
-	}	
-	else if(!ft_strncmp(cmd->av[0], "unset",ft_strlen(cmd->av[0])))
-		return 0;
-	if(!ft_strncmp(cmd->av[0], "env",ft_strlen(cmd->av[0]))) 
-	{
-		//env_list = init_env(env);	
+	else if(!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0')
+		return (unset_cmd(cmd->av));
+	if(!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0') 
 		return (env_cmd(g_env_list));
-	}
 	//EXIT GELCEKMİ ??????
 	else
 		return 1;//komut yok 

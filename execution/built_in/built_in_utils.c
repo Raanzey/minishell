@@ -1,14 +1,15 @@
 # include "../../minishell.h"
+
 //BURAYA ANA PROCESSDE ÇALIŞACAK BUİLT_İN FONKSİYONLARI GELECEK
 
 int is_parent_builtin(t_command *cmd)
 {
 	if (!cmd || !cmd->av || !cmd->av[0])
 		return 0;
-	if (!ft_strncmp(cmd->av[0], "cd", 3)
-		|| !ft_strncmp(cmd->av[0], "exit", 5)
-		|| !ft_strncmp(cmd->av[0], "export", 7)
-		|| !ft_strncmp(cmd->av[0], "unset", 6))
+if ((!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0')
+		|| (!ft_strncmp(cmd->av[0], "exit", 4) && cmd->av[0][4] == '\0')
+		|| (!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
+		|| (!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0'))
 		return 1;
 	return 0;
 }
@@ -49,7 +50,17 @@ int export_cmd(char **av, t_env *env)
 	}
 	return 0;
 }
+int unset_cmd(char **av)
+{
+	int i = 1;
 
+	while (av[i])
+	{
+		unset_var(&g_env_list, av[i]); // global env list'ten sil
+		i++;
+	}
+	return 0;
+}
 void print_export(t_env *env)
 {
 	while (env)
