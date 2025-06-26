@@ -1,12 +1,5 @@
 #include "../minishell.h"
 
-static char *ft_path(void)
-{
-    char *path_env = getenv("PATH");
-    if (!path_env)
-        exit(1);//ERORR GELCEK
-    return strdup(path_env);
-}
 static char *find_path(char *cmd)
 {
 	char **paths;
@@ -50,6 +43,12 @@ static void handle_redirections(t_redirect *redir)
 			fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else if (redir->type == 3)
 			fd = open(redir->filename, O_RDONLY);
+		else if (redir->type == 4)
+		{
+			handle_heredoc(redir->filename);
+			redir = redir->next;
+			continue;
+		}
 		if (fd == -1)
 		{
 			perror("redir");//ERORR GELCEK

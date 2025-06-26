@@ -18,6 +18,8 @@ int pwd_cmd();
 int env_cmd(t_env *env);
 int export_cmd(char **av, t_env *env);
 int unset_cmd(char **av);
+char *ft_path(void);
+void	handle_heredoc(const char *delimiter);
 void print_export(t_env *env);
 void add_or_update_env(t_env *env, char *eq, char *av);
 void export_key_only(t_env *env, const char *key);
