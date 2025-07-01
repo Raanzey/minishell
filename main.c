@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/12 14:11:13 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/01 18:45:46 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,8 +142,8 @@ int	main(int ac, char **av)
 		}
 		print_cmd(cmd); //* parser yazdırma
 
-		// exec(cmd);
-
+		// exec(cmd); 
+		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
 		free_command(cmd);
 		free_tokens(tokens);
 		free_tokens(expand);
