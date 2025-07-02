@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/05 20:27:48 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/02 23:59:53 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int error(char *err)
+int	error(char *err)
 {
 	printf("%s", err);
 	return (1);

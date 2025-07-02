@@ -38,11 +38,11 @@ size_t		skip_word(const char *s, size_t i);
 size_t		redirect(char **tokens, const char *s, size_t *i, size_t k);
 int			handle_error(char **tokens);
 char		**tokenizer(char const *s);
-char	*remove_quotes(const char *str);
-char	*ft_strjoin_free(char *s1, char *s2);
-char	*ft_strjoin_char(char *s, char c);
-char	*expand_dollar(const char *s, int last_exit);
-char **expand_args(char  **tokens, int last_exit);
+char		*ft_strjoin_free(char *s1, char *s2);
+char		*ft_strjoin_char(char *s, char c);
+char		*append_substring(char *res, const char *src, int one, int end);
+char		*expand_dollar(const char *s, int last_exit);
+char		**expand_args(char **tokens, int last_exit);
 
 void		print_cmd(t_command *cmd); //!sil
 

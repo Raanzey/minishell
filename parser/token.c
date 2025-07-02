@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/02 18:39:59 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/03 00:01:58 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,28 +101,3 @@ char	**tokenizer(const char *s)
 	tokens[k] = NULL;
 	return (tokens);
 }
-
-
-// waow
-
-// musisman@k1m32s04:~/Desktop/minishell$ cat <in.txt | grep a < out.txt 
-// main.c
-// Makefile
-// parser
-// main.c
-// Makefile
-// parser
-// main.c
-// Makefile
-// parser
-// main.c
-// Makefile
-// parser
-// main.c
-// Makefile
-// parser
-// main.c
-// Makefile
-// parser
-// musisman@k1m32s04:~/Desktop/minishell$ cat <in.txt | grep a
-// aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

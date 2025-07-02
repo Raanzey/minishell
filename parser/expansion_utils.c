@@ -12,70 +12,6 @@
 
 #include "../minishell.h"
 
-char	*remove_quotes(const char *str)
-{
-	char	*res;
-	char	quote;
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	res = ft_calloc(ft_strlen(str) + 1, 1);
-	while (str[i])
-	{
-		if (str[i] == '\'' || str[i] == '\"')
-		{
-			quote = str[i++];
-			while (str[i] && str[i] != quote) //! düzelt enayi
-				res[j++] = str[i++];
-			if (str[i])
-				i++;
-		}
-		else
-			res[j++] = str[i++];
-	}
-	return (res);
-}
-
-char	*ft_strjoin_char(char *s, char c)
-{
-	char	*res;
-	size_t	len;
-
-	if (!s)
-		return (NULL);
-	len = ft_strlen(s);
-	res = malloc(len + 2);
-	if (!res)
-		return (NULL);
-	ft_memcpy(res, s, len);
-	res[len] = c;
-	res[len + 1] = '\0';
-	free(s);
-	return (res);
-}
-
-char	*ft_strjoin_free(char *s1, char *s2)
-{
-	char	*res;
-	size_t	len1;
-	size_t	len2;
-
-	if (!s1 || !s2)
-		return (NULL);
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	res = malloc(len1 + len2 + 1);
-	if (!res)
-		return (NULL);
-	ft_memcpy(res, s1, len1);
-	ft_memcpy(res + len1, s2, len2);
-	res[len1 + len2] = '\0';
-	free(s1);
-	return (res);
-}
-
 char	*extract_var_name(const char *str, size_t *i)
 {
 	size_t	start;
@@ -88,29 +24,45 @@ char	*extract_var_name(const char *str, size_t *i)
 	return (var);
 }
 
+static void	handle_exit_code(char **res, int *i, int last_exit)
+{
+	char	*tmp;
+
+	tmp = ft_itoa(last_exit);
+	*res = ft_strjoin_free(*res, tmp);
+	free(tmp);
+	*i += 2;
+}
+
+static void	handle_env_var(char **res, const char *s, size_t *i)
+{
+	char	*tmp;
+	char	*env_value;
+
+	tmp = extract_var_name(s, i);
+	env_value = getenv(tmp);
+	if (env_value)
+		*res = ft_strjoin_free(*res, env_value);
+	else
+		*res = ft_strjoin_free(*res, "");
+	free(tmp);
+}
+
 char	*expand_dollar(const char *s, int last_exit)
 {
 	size_t	i;
 	char	*res;
-	char	*tmp;
 
 	i = 0;
 	res = ft_calloc(1, 1);
 	while (s[i])
 	{
 		if (s[i] == '$' && s[i + 1] == '?')
-		{
-			tmp = ft_itoa(last_exit);
-			res = ft_strjoin_free(res, tmp);
-			free(tmp); //! silinecek
-			i += 2;
-		}
+			handle_exit_code(&res, (int *)&i, last_exit);
 		else if (s[i] == '$' && (ft_isalpha(s[i + 1]) || s[i + 1] == '_'))
 		{
 			i++;
-			tmp = extract_var_name(s, &i);
-			tmp = ft_strjoin_free(res, getenv(tmp) ?: "");
-			res = tmp;
+			handle_env_var(&res, s, &i);
 		}
 		else
 			res = ft_strjoin_char(res, s[i++]);

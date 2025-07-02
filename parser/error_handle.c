@@ -27,9 +27,9 @@ int	ambiguous_redirect_error(char **tokens)
 	while (tokens[i])
 	{
 		if ((!ft_strncmp(tokens[i], "<", 2)
-			|| !ft_strncmp(tokens[i], ">", 2)
-			|| !ft_strncmp(tokens[i], "<<", 3)
-			|| !ft_strncmp(tokens[i], ">>", 3))
+				|| !ft_strncmp(tokens[i], ">", 2)
+				|| !ft_strncmp(tokens[i], "<<", 3)
+				|| !ft_strncmp(tokens[i], ">>", 3))
 			&& (!tokens[i + 1] || tokens[i + 1][0] == '\0'))
 		{
 			printf("%s: ambiguous redirect\n", tokens[i + 1]);
@@ -70,11 +70,11 @@ int	redir_error(char **tokens)
 			|| !ft_strncmp(tokens[i], ">>", 3))
 		{
 			if (!tokens[i + 1] || !ft_strncmp(tokens[i + 1], "<", 2)
-					|| !ft_strncmp(tokens[i + 1], ">", 2)
-					|| !ft_strncmp(tokens[i + 1], "<<", 3)
-					|| !ft_strncmp(tokens[i + 1], ">>", 3)
-					|| !ft_strncmp(tokens[i + 1], "|", 2)
-					|| tokens[i + 1][0] == '\0')
+				|| !ft_strncmp(tokens[i + 1], ">", 2)
+				|| !ft_strncmp(tokens[i + 1], "<<", 3)
+				|| !ft_strncmp(tokens[i + 1], ">>", 3)
+				|| !ft_strncmp(tokens[i + 1], "|", 2)
+				|| tokens[i + 1][0] == '\0')
 				return (print_unexpected_token(tokens[i + 1]));
 		}
 		i++;
@@ -94,4 +94,3 @@ int	handle_error(char **tokens)
 		return (1);
 	return (0);
 }
-
