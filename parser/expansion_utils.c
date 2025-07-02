@@ -102,7 +102,7 @@ char	*expand_dollar(const char *s, int last_exit)
 		{
 			tmp = ft_itoa(last_exit);
 			res = ft_strjoin_free(res, tmp);
-			free(tmp);
+			free(tmp); //! silinecek
 			i += 2;
 		}
 		else if (s[i] == '$' && (ft_isalpha(s[i + 1]) || s[i + 1] == '_'))

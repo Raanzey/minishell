@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/01 18:45:46 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/02 21:43:43 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	main(int ac, char **av)
 
 	(void)av;
 	if (ac >= 2)
-		return (error(ERR_ARG));
+		return (1); //? error(ERR_ARG) neden saçmalıyor
 	while (1)
 	{
 		input = readline("minishell~ ");
@@ -103,11 +103,9 @@ int	main(int ac, char **av)
 			// free(input);
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
-		tokens = tokenizer(input); //? " seg fault alıyor bak
+		tokens = tokenizer(input);
 		int q = -1;
 		printf("\nTOKENIZER\n\n"); //* token yazdırma
-		while (tokens[++q])
-			printf("token[%d]: %s\n", q, tokens[q]);
 		if (!tokens)
 		{	
 			printf("Token failed.\n");
@@ -115,11 +113,14 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
+		else
+		{
+			while (tokens[++q])
+				printf("token[%d]: %s\n", q, tokens[q]);
+		}
 		expand = expand_args(tokens,g_exit_code);
 		q = -1;
 		printf("\nEXPANSION\n\n"); //* token yazdırma
-		while (expand[++q])
-			printf("token[%d]: %s\n", q, expand[q]);
 		if (!expand || handle_error(expand))
 		{
 			printf("Expand failed.\n");
@@ -128,6 +129,11 @@ int	main(int ac, char **av)
 				// free_tokens(expand); // burada tüm tokenları temizle
 			free(input);
 			continue;
+		}
+		else
+		{
+			while (expand[++q])
+				printf("token[%d]: %s\n", q, expand[q]);
 		}
 		
 		printf("\nPARSER\n\n");

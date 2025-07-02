@@ -13,7 +13,7 @@ DIR_LIBFT	= Libft
 all: $(NAME)
 
 $(NAME): $(SRCS)
-	make -s -C $(DIR_LIBFT)
+	make -s  -C $(DIR_LIBFT)
 	$(CC) $(CFLAGS) $(SRCS) $(LIBFT) $(LIBFLAGS) -o $(NAME)
 
 clean:

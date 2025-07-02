@@ -12,24 +12,48 @@
 
 #include "../minishell.h"
 
-char	*expand_token(char *token, int last_exit)
+char	*expand_token(const char *token, int last_exit)
 {
-	char	*tmp;
+	size_t	i;
 	char	*res;
+	char	*tmp;
+	char	quote;
 
 	if (!token)
 		return (NULL);
-	if (token[0] == '\'' && token[ft_strlen(token) - 1] == '\'')
-		return (remove_quotes(token));
-	if (token[0] == '"' && token[ft_strlen(token) - 1] == '"')
+	i = 0;
+	res = ft_calloc(1, 1);
+	while (token[i])
 	{
-		tmp = remove_quotes(token);
-		res = expand_dollar(tmp, last_exit);
-		free(tmp);
-		return (res);
+		if (token[i] == '\'' || token[i] == '"')
+		{
+			quote = token[i++];
+			while (token[i] && token[i] != quote)
+			{
+				if (quote == '"')
+				{
+					tmp = expand_dollar((char[]){token[i], 0}, last_exit);
+					res = ft_strjoin_free(res, tmp);
+					free(tmp);
+				}
+				else
+					res = ft_strjoin_char(res, token[i]);
+				i++;
+			}
+			if (token[i] == quote)
+				i++;
+		}
+		else
+		{
+			tmp = expand_dollar((char[]){token[i], 0}, last_exit);
+			res = ft_strjoin_free(res, tmp);
+			free(tmp);
+			i++;
+		}
 	}
-	return (expand_dollar(token, last_exit));
+	return (res);
 }
+
 
 char	**expand_args(char **tokens, int last_exit)
 {

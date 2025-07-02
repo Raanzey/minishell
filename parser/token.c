@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/03 12:00:46 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/02 18:39:59 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,10 @@ char	**tokenizer(const char *s)
 	i = 0;
 	k = 0;
 	total = token_count(s, 0, 0, 0);
-	if (total == 0)
-		return (NULL);//TODO error durumu
 	tokens = ft_calloc(total + 1, sizeof(char *));
 	if (!tokens)
 		return (NULL);
-	while (s[i])
+	while (s[i] && total != 0)
 	{
 		i = skip_space(s, i);
 		if (!s[i])
