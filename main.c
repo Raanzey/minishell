@@ -5,7 +5,23 @@
 //TODO "exit 3213 32132" ya da "exit 3213 dsadas" girersem too many arguments diyor ve 1 döndürüyor ama çıkmıyor
 //TODO ayrıca exit built-in fonksiyonmuş bununla boşuna uğraşmışm :(
 
-t_env *g_env_list = NULL;
+//t_env *g_env_list = NULL;
+volatile sig_atomic_t g_received_signal = 0;
+
+void sigint_handler(int sig)
+{
+    (void)sig;
+    write(1, "\n", 1);
+	rl_on_new_line();
+ 	rl_redisplay();
+    g_received_signal = 1;
+}
+
+void setup_signals(void)
+{
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
 
 int exit_time(char *input)
 {
@@ -25,19 +41,25 @@ int exit_time(char *input)
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
-	t_command	*cmd;
 	char **tokens;
+	t_command	*cmd;
+	t_env *env_list;
 	//int q;
 
-	g_env_list = init_env(env);
+	setup_signals();
+	env_list = init_env(env);
 	(void)av;
 	if (ac >= 2)
 		return (error(ERR_ARG));
 	while (1)
 	{
 		input = readline("minishell~ ");
+		signal(SIGINT, sigint_handler);
 		if (!input)
-			break ;
+		{
+			write(1, "exit\n", 5); // shell gibi davran
+			exit(0);
+		}
 		if (*input)
 			add_history(input);
 		if (!ft_strncmp(input, "exit", 4) && (input[4] == ' ' || !input[4]))
@@ -47,22 +69,10 @@ int	main(int ac, char **av, char **env)
 		tokens = tokenizer(input);
 		if (!tokens)
 		{
-			printf("Token failed.\n");
+			//printf("Token failed.\n");
 			free(input);
 			continue;
 		}
-		//q = -1;
-		// printf("\n"); //* token yazdırma
-		// while (tokens[++q])
-		// 	printf("token[%d]: %s*\n", q, tokens[q]);
-		// printf("\n");
-
-		// if (!check_syntax(tokens)) //* token kontrol
-		// {
-		// 	// tokens free’le (opsiyonel)
-		// 	return (0);
-		// }
-		
 		cmd = parser(tokens);
 		if (!cmd)
 		{
@@ -71,7 +81,7 @@ int	main(int ac, char **av, char **env)
 			continue;
 		}
 		// print_cmd(cmd); //* parser yazdırma
-		exec(cmd, env);
+		exec(cmd, env_list);
 		//TODO cmd freelemeyi unutma
 		free(input);
 	}

@@ -7,17 +7,15 @@ typedef struct s_env {
 	struct s_env *next;
 } t_env;
 
-extern t_env *g_env_list;
-
-int built_in(t_command *cmd);
+int built_in(t_command *cmd, t_env *env_list);
 int is_parent_builtin(t_command *cmd);
-int exec(t_command *cmd, char **env);
+int exec(t_command *cmd, t_env *env_list);
 int echo_cmd(char **str);
 int cd_cmd(char *str);
 int pwd_cmd();
 int env_cmd(t_env *env);
 int export_cmd(char **av, t_env *env);
-int unset_cmd(char **av);
+int unset_cmd(t_command *cmd, t_env *env_list);
 char *ft_path(void);
 void	handle_heredoc(const char *delimiter);
 void print_export(t_env *env);

@@ -13,6 +13,7 @@ typedef struct s_command {
 	struct s_command *next; // pipe varsa sonraki komut
 } t_command;
 
+t_command	*new_command(void);
 t_command *parser(char **tokens);
 size_t	skip_space(const char *s, size_t i);
 size_t	skip_word_count(const char *s, size_t i);

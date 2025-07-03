@@ -32,7 +32,7 @@ int cd_cmd(char *str)
 int export_cmd(char **av, t_env *env)
 {
 	int i = 1;
-	char *eq;
+	char *value;
 
 	if (!av[i]) // sadece export → listeyi yazdır
 	{
@@ -41,22 +41,23 @@ int export_cmd(char **av, t_env *env)
 	}
 	while (av[i])
 	{
-		eq = ft_strchr(av[i], '=');
-		if (eq) // KEY=VALUE varsa
-			add_or_update_env(env, eq,av[i]);
+		value = ft_strchr(av[i], '=');
+		if (value) // KEY=VALUE varsa
+			add_or_update_env(env, value,av[i]);
 		else // sadece KEY varsa, boş değerli ekle
 			export_key_only(env, av[i]);
 		i++;
 	}
 	return 0;
 }
-int unset_cmd(char **av)
+int unset_cmd(t_command *cmd,t_env *env_list)
 {
+	
 	int i = 1;
 
-	while (av[i])
+	while (cmd->av[i])
 	{
-		unset_var(&g_env_list, av[i]); // global env list'ten sil
+		unset_var(&env_list ,cmd->av[i]); // global env list'ten sil
 		i++;
 	}
 	return 0;

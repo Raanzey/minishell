@@ -63,7 +63,33 @@ static void handle_redirections(t_redirect *redir)
 	}
 }
 
-static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], char **env)
+static char **convert_env_to_array(t_env *env, int count, int i)
+{
+	t_env	*tmp;
+	char	**env_array;
+	char	*joined;
+
+	tmp = env;
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	env_array = malloc(sizeof(char *) * (count + 1)); // +1 NULL için
+	if (!env_array)
+		return NULL;
+	tmp = env;
+	while (tmp)
+	{
+		joined = ft_strjoin(tmp->key, "=");              // "KEY="
+		env_array[i++] = ft_strjoin(joined, tmp->value);   // "KEY=VALUE"
+		free(joined); // silinecek
+		tmp = tmp->next;
+	}
+	env_array[i] = NULL; // NULL sonlandır
+	return env_array;
+}
+static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env *env_list)
 {
 	if (cmd->redir)							//FONKSİYONDKİ DEĞİŞKEN SAYISINA DİKKAT
 		handle_redirections(cmd->redir);
@@ -78,21 +104,21 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], char **env)
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	if (!built_in(cmd))
+	if (!built_in(cmd, env_list))
 		exit(1);//ERORR GELCEK
-	execve(find_path(cmd->av[0]), cmd->av, env);
+	execve(find_path(cmd->av[0]), cmd->av, convert_env_to_array(env_list, 0, 0));
 	perror("execve");//ERORR GELCEK
 	exit(1);//ERORR GELCEK
 }
 
-int exec(t_command *cmd, char **env)
+int exec(t_command *cmd, t_env *env_list)
 {
 	int prev_fd = -1;
 	int pipe_fd[2];
 	pid_t pid;
 
 	if (!cmd->next && is_parent_builtin(cmd))
-		return built_in(cmd);
+		return built_in(cmd, env_list);
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipe_fd) == -1)
@@ -107,7 +133,11 @@ int exec(t_command *cmd, char **env)
 			exit(1);//ERORR GELCEK
 		}
 		if (pid == 0)
-			exec_child(cmd, prev_fd, pipe_fd, env);
+		{
+			signal(SIGINT, SIG_DFL);   // Ctrl+C child'ı öldürsün
+			signal(SIGQUIT, SIG_DFL);
+			exec_child(cmd, prev_fd, pipe_fd, env_list);
+		}
 		if (prev_fd != -1)
 			close(prev_fd);
 		if (cmd->next)
@@ -119,6 +149,17 @@ int exec(t_command *cmd, char **env)
 			prev_fd = -1;
 		cmd = cmd->next;
 	}
-	while (wait(NULL) > 0);
+int status;
+while (wait(&status) > 0)
+{
+	if (WIFSIGNALED(status))
+	{
+		int sig = WTERMSIG(status);
+		if (sig == SIGINT)
+			write(1, "\n", 1); // Ctrl+C için satır atlat
+		else if (sig == SIGQUIT)
+			write(1, "Quit (core dumped)\n", 20);
+	}
+}	
 	return 0;
 }
