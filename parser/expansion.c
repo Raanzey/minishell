@@ -98,7 +98,8 @@ char	**expand_args(char **tokens, int last_exit)
 	i = 0;
 	while (tokens[i])
 	{
-		expanded[i] = ft_strdup(expand_token(tokens[i], last_exit));
+		// if (i != 0 && ft_strncmp(tokens[i - 1], "<<", 3)) //? buraya heredoc için şart ekle expand yapmayacak ama tırnakları da silecek
+			expanded[i] = ft_strdup(expand_token(tokens[i], last_exit));
 		if (!expanded[i])
 		{
 			free_tokens(expanded);
