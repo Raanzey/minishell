@@ -6,16 +6,11 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/10 16:19:16 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:22:34 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//TODO exit dsadas ahta durumunu işlemeye çalıştım ama yapamadım 
-//TODO eğer "exit dsadas" girersem 2 döndürüyor ve çıktı olarak bash: exit: dsadas: numeric argument required verip çıkıyor
-//TODO "exit 3213 32132" ya da "exit 3213 dsadas" girersem too many arguments diyor ve 1 döndürüyor ama çıkmıyor
-//TODO ayrıca exit built-in fonksiyonmuş bununla boşuna uğraşmışm :(
 
 void	free_tokens(char **tokens)
 {
