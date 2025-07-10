@@ -95,8 +95,8 @@ char	**expand_args(char **tokens, int last_exit)
 	expanded = ft_calloc(i + 1, sizeof(char *));
 	if (!expanded)
 		return (NULL);
-	i = 0;
-	while (tokens[i])
+	i = -1;
+	while (tokens[++i])
 	{
 		// if (i != 0 && ft_strncmp(tokens[i - 1], "<<", 3)) //? buraya heredoc için şart ekle expand yapmayacak ama tırnakları da silecek
 			expanded[i] = ft_strdup(expand_token(tokens[i], last_exit));
@@ -105,7 +105,6 @@ char	**expand_args(char **tokens, int last_exit)
 			free_tokens(expanded);
 			return (NULL);
 		}
-		i++;
 	}
 	expanded[i] = NULL;
 	return (expanded);
