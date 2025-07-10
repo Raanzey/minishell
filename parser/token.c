@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/03 06:17:46 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:10:16 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	quotes_control(const char *s, size_t *i)
+static int	quotes_control(const char *s, size_t *i) //TODO hata durumunda ekrana uyarı basmıyor ekle
 {
 	char	quote;
 
