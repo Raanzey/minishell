@@ -84,31 +84,21 @@ char	*expand_token(const char *token, int last_exit)
 
 int	expand_args(t_command *cmd, int last_exit, int i)
 {
-	char		*tmp;
 	t_redirect	*redir;
 
 	while (cmd)
 	{
 		i = -1;
 		while (cmd->av && cmd->av[++i])
-		{
-			tmp = expand_token(cmd->av[i], last_exit);
-			free(cmd->av[i]);
-			cmd->av[i] = tmp;
-		}
+			expand_and_replace(&cmd->av[i], last_exit);
 		redir = cmd->redir;
 		while (redir)
 		{
 			if (redir->filename)
-			{
-				tmp = expand_token(redir->filename, last_exit);
-				free(redir->filename);
-				redir->filename = tmp;
-			}
+				expand_and_replace(&redir->filename, last_exit);
 			redir = redir->next;
 		}
 		cmd = cmd->next;
 	}
 	return (1);
 }
-

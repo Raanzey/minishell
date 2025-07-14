@@ -84,4 +84,3 @@ char	*expand_dollar(const char *s, int last_exit)
 	}
 	return (res);
 }
-

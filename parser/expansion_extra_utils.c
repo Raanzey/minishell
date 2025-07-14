@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 23:57:49 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/02 23:58:57 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/14 19:27:50 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,13 @@ char	*append_substring(char *res, const char *src, int one, int end)
 	new_res = ft_strjoin_free(res, part);
 	free(part);
 	return (new_res);
+}
+
+void	expand_and_replace(char **str, int last_exit)
+{
+	char	*tmp;
+
+	tmp = expand_token(*str, last_exit);
+	free(*str);
+	*str = tmp;
 }
