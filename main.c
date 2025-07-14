@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/14 19:21:15 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/14 19:42:22 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,8 @@ int	main(int ac, char **av)
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
-		int q = -1;
-		printf("\nTOKENIZER\n\n"); //* token yazdırma
+		// int q = -1;
+		// printf("\nTOKENIZER\n\n"); //* token yazdırma
 		if (!tokens)
 		{	
 			// printf("Token failed.\n");
@@ -109,8 +109,8 @@ int	main(int ac, char **av)
 		}
 		else
 		{
-			while (tokens[++q])
-				printf("token[%d]: %s\n", q, tokens[q]);
+			// while (tokens[++q])
+			// 	printf("token[%d]: %s\n", q, tokens[q]);
 		}
 
 		
@@ -132,7 +132,7 @@ int	main(int ac, char **av)
 		// 		printf("token[%d]: %s\n", q, expand[q]);
 		// }
 		
-		printf("\nPARSER\n\n");
+		// printf("\nPARSER\n\n");
 		// cmd = parser(tokens); //! sıra değişecek expand sonra olacak
 		// if (!cmd)
 		// {
@@ -150,10 +150,18 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
-		// print_cmd(cmd); //* parser yazdırma
+		print_cmd(cmd); //* parser yazdırma
 
-		printf("\nEXPANSION\n\n");
+		// printf("\nEXPANSION\n\n");
 		expand_args(cmd, g_exit_code, -1);
+		if (handle_error(cmd))
+		{
+			free_command(cmd);
+			free_tokens(tokens);
+			free(input);
+			continue;
+		}
+
 		print_cmd(cmd); //* parser yazdırma
 
 		// exec(cmd); 

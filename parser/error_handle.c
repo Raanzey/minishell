@@ -19,78 +19,65 @@ int	print_unexpected_token(char *token)
 	return (printf("syntax error near unexpected token `%s'\n", token), 1);
 }
 
-int	ambiguous_redirect_error(char **tokens)
+int	ambiguous_redirect_error(t_command *cmd)
 {
-	int	i;
+	t_redirect	*redir;
 
-	i = 0;
-	while (tokens[i])
+	while (cmd)
 	{
-		if ((!ft_strncmp(tokens[i], "<", 2)
-				|| !ft_strncmp(tokens[i], ">", 2)
-				|| !ft_strncmp(tokens[i], "<<", 3)
-				|| !ft_strncmp(tokens[i], ">>", 3))
-			&& (!tokens[i + 1] || tokens[i + 1][0] == '\0'))
+		redir = cmd->redir;
+		while (redir)
 		{
-			printf("%s: ambiguous redirect\n", tokens[i + 1]);
-			return (1);
+			if (redir->filename && redir->filename[0] == '\0')
+			{
+				printf("minishell: ambiguous redirect\n");
+				return (1);
+			}
+			redir = redir->next;
 		}
-		i++;
+		cmd = cmd->next;
 	}
 	return (0);
 }
 
-int	pipe_error(char **tokens)
+int	pipe_error(t_command *cmd)
 {
-	int	i;
-
-	i = 0;
-	while (tokens[i])
+	if (!cmd)
+		return (print_unexpected_token("|"));
+	while (cmd)
 	{
-		if (!ft_strncmp(tokens[i], "|", 2))
-		{
-			if (i == 0 || !tokens[i + 1] || !ft_strncmp(tokens[i + 1], "|", 2))
-				return (print_unexpected_token("|"));
-		}
-		i++;
+		if (!cmd->av || !cmd->av[0])
+			return (print_unexpected_token("|"));
+		cmd = cmd->next;
 	}
 	return (0);
 }
 
-int	redir_error(char **tokens)
+int	redir_error(t_command *cmd)
 {
-	int	i;
+	t_redirect	*redir;
 
-	i = 0;
-	while (tokens[i])
+	while (cmd)
 	{
-		if (!ft_strncmp(tokens[i], "<", 2)
-			|| !ft_strncmp(tokens[i], ">", 2)
-			|| !ft_strncmp(tokens[i], "<<", 3)
-			|| !ft_strncmp(tokens[i], ">>", 3))
+		redir = cmd->redir;
+		while (redir)
 		{
-			if (!tokens[i + 1] || !ft_strncmp(tokens[i + 1], "<", 2)
-				|| !ft_strncmp(tokens[i + 1], ">", 2)
-				|| !ft_strncmp(tokens[i + 1], "<<", 3)
-				|| !ft_strncmp(tokens[i + 1], ">>", 3)
-				|| !ft_strncmp(tokens[i + 1], "|", 2)
-				|| tokens[i + 1][0] == '\0')
-				return (print_unexpected_token(tokens[i + 1]));
+			if (!redir->filename || redir->filename[0] == '\0')
+				return (print_unexpected_token("newline"));
+			redir = redir->next;
 		}
-		i++;
+		cmd = cmd->next;
 	}
 	return (0);
 }
 
-int	handle_error(char **tokens)
+int	handle_error(t_command *cmd)
 {
-	if (!tokens)
+	if (pipe_error(cmd))
 		return (1);
-	if (pipe_error(tokens))
+	if (redir_error(cmd))
 		return (1);
-	if (redir_error(tokens))
-		return (1);
-	if (ambiguous_redirect_error(tokens))
+	if (ambiguous_redirect_error(cmd))
 		return (1);
 	return (0);
 }

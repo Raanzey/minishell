@@ -34,7 +34,7 @@ t_command	*parser(char **tokens);
 size_t		skip_space(const char *s, size_t i);
 // size_t		quotes(char **tokens, const char *s, size_t *i, size_t k);
 size_t		redirect(char **tokens, const char *s, size_t *i, size_t k);
-int			handle_error(char **tokens);
+int			handle_error(t_command *cmd);
 char		**tokenizer(char const *s);
 char		*ft_strjoin_free(char *s1, char *s2);
 char		*ft_strjoin_char(char *s, char c);
