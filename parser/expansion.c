@@ -82,30 +82,33 @@ char	*expand_token(const char *token, int last_exit)
 	return (res);
 }
 
-char	**expand_args(char **tokens, int last_exit)
+int	expand_args(t_command *cmd, int last_exit, int i)
 {
-	char	**expanded;
-	int		i;
+	char		*tmp;
+	t_redirect	*redir;
 
-	i = 0;
-	if (!tokens)
-		return (NULL);
-	while (tokens[i])
-		i++;
-	expanded = ft_calloc(i + 1, sizeof(char *));
-	if (!expanded)
-		return (NULL);
-	i = -1;
-	while (tokens[++i])
+	while (cmd)
 	{
-		// if (i != 0 && ft_strncmp(tokens[i - 1], "<<", 3)) //? buraya heredoc için şart ekle expand yapmayacak ama tırnakları da silecek
-			expanded[i] = ft_strdup(expand_token(tokens[i], last_exit));
-		if (!expanded[i])
+		i = -1;
+		while (cmd->av && cmd->av[++i])
 		{
-			free_tokens(expanded);
-			return (NULL);
+			tmp = expand_token(cmd->av[i], last_exit);
+			free(cmd->av[i]);
+			cmd->av[i] = tmp;
 		}
+		redir = cmd->redir;
+		while (redir)
+		{
+			if (redir->filename)
+			{
+				tmp = expand_token(redir->filename, last_exit);
+				free(redir->filename);
+				redir->filename = tmp;
+			}
+			redir = redir->next;
+		}
+		cmd = cmd->next;
 	}
-	expanded[i] = NULL;
-	return (expanded);
+	return (1);
 }
+

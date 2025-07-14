@@ -6,13 +6,13 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/14 15:41:56 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/14 17:15:44 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	quotes_control(const char *s, size_t *i) //TODO hata durumunda ekrana uyarı basmıyor ekle
+static int	quotes_control(const char *s, size_t *i)
 {
 	char	quote;
 
@@ -24,11 +24,13 @@ static int	quotes_control(const char *s, size_t *i) //TODO hata durumunda ekrana
 		if (s[*i] == quote)
 		{
 			(*i)++;
-			printf("tırnak error");
 			return (1);
 		}
 		else
+		{
+			printf("quotes error\n");
 			return (0);
+		}
 	}
 	(*i)++;
 	return (1);
@@ -44,7 +46,7 @@ static size_t	token_count(const char *s, size_t tc, size_t i, char redir)
 		if (s[i] == '<' || s[i] == '>' || s[i] == '|')
 		{
 			redir = s[i++];
-			if (s[i] == redir)
+			if (s[i] == redir && s[i] != '|')
 				i++;
 		}
 		else

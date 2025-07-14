@@ -48,6 +48,20 @@ static void	handle_env_var(char **res, const char *s, size_t *i)
 	free(tmp);
 }
 
+static void	handle_env_or_positional(char **res, const char *s, size_t *i)
+{
+	if (ft_isalpha(s[*i]) || s[*i] == '_')
+		handle_env_var(res, s, i);
+	else if (ft_isdigit(s[*i]))
+		(*i)++;
+	else
+	{
+		*res = ft_strjoin_char(*res, '$');
+		if (s[*i])
+			*res = ft_strjoin_char(*res, s[(*i)++]);
+	}
+}
+
 char	*expand_dollar(const char *s, int last_exit)
 {
 	size_t	i;
@@ -57,15 +71,17 @@ char	*expand_dollar(const char *s, int last_exit)
 	res = ft_calloc(1, 1);
 	while (s[i])
 	{
-		if (s[i] == '$' && s[i + 1] == '?')
-			handle_exit_code(&res, (int *)&i, last_exit);
-		else if (s[i] == '$' && (ft_isalpha(s[i + 1]) || s[i + 1] == '_'))
+		if (s[i] == '$')
 		{
 			i++;
-			handle_env_var(&res, s, &i);
+			if (s[i] == '?')
+				handle_exit_code(&res, (int *)&i, last_exit);
+			else
+				handle_env_or_positional(&res, s, &i);
 		}
 		else
 			res = ft_strjoin_char(res, s[i++]);
 	}
 	return (res);
 }
+
