@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/10 16:10:16 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:41:56 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static int	quotes_control(const char *s, size_t *i) //TODO hata durumunda ekrana
 		if (s[*i] == quote)
 		{
 			(*i)++;
+			printf("tırnak error");
 			return (1);
 		}
 		else

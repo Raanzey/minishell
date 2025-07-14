@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/10 16:22:34 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:40:11 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,26 +99,26 @@ int	main(int ac, char **av)
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
 		tokens = tokenizer(input);
-		int q = -1;
-		printf("\nTOKENIZER\n\n"); //* token yazdırma
+		// int q = -1;
+		// printf("\nTOKENIZER\n\n"); //* token yazdırma
 		if (!tokens)
 		{	
-			printf("Token failed.\n");
+			// printf("Token failed.\n");
 			free_tokens(tokens);
 			free(input);
 			continue;
 		}
 		else
 		{
-			while (tokens[++q])
-				printf("token[%d]: %s\n", q, tokens[q]);
+			// while (tokens[++q])
+			// 	printf("token[%d]: %s\n", q, tokens[q]);
 		}
 		expand = expand_args(tokens,g_exit_code);
-		q = -1;
-		printf("\nEXPANSION\n\n"); //* token yazdırma
+		// q = -1;
+		// printf("\nEXPANSION\n\n"); //* token yazdırma
 		if (!expand || handle_error(expand))
 		{
-			printf("Expand failed.\n");
+			// printf("Expand failed.\n");
 			// free_tokens(tokens); //? ||| durumunda abort alıyor neden
 			// if (expand)
 				// free_tokens(expand); // burada tüm tokenları temizle
@@ -127,21 +127,21 @@ int	main(int ac, char **av)
 		}
 		else
 		{
-			while (expand[++q])
-				printf("token[%d]: %s\n", q, expand[q]);
+			// while (expand[++q])
+			// 	printf("token[%d]: %s\n", q, expand[q]);
 		}
 		
-		printf("\nPARSER\n\n");
+		// printf("\nPARSER\n\n");
 		cmd = parser(expand);
 		if (!cmd)
 		{
-			printf("Parsing failed.\n");
+			// printf("Parsing failed.\n");
 			free_tokens(tokens);
 			free_tokens(expand);
 			free(input);
 			continue;
 		}
-		print_cmd(cmd); //* parser yazdırma
+		// print_cmd(cmd); //* parser yazdırma
 
 		// exec(cmd); 
 		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
