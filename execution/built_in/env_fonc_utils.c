@@ -1,32 +1,52 @@
 # include "../../minishell.h"
-
-void export_key_only(t_env *env, const char *key)
+int ft_strcmp(const char *s1, const char *s2)
 {
-	t_env *new;
-	t_env *tail;
-	// 1. Anahtar zaten varsa → hiçbir şey yapma
-	if (find_env(env, key))
-		return;
+	while (*s1 && (*s1 == *s2))
+	{
+		s1++;
+		s2++;
+	}
+	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
 
-	// 2. Yeni node oluştur
-	new = malloc(sizeof(t_env));
+void insert_sorted_env(t_env **env, char *key, char *value)
+{
+	t_env *curr = *env;
+	t_env *prev = NULL;
+
+	
+	while (curr && ft_strcmp(curr->key, key) < 0)
+	{
+		prev = curr;
+		curr = curr->next;
+	}
+
+	if (curr && ft_strcmp(curr->key, key) == 0)
+	{
+		// Aynı key varsa, değeri güncelle
+		update_env(curr, value);
+		return;
+	}
+
+	// Yeni düğüm oluştur
+	t_env *new = malloc(sizeof(t_env));
 	if (!new)
 		return;
-
 	new->key = ft_strdup(key);
-	new->value = ft_strdup(""); // Boş string, NULL değil
-	new->next = NULL;
+	new->value = value ? ft_strdup(value) : NULL;
+	new->next = curr;
 
-	// 3. Listeye ekle
-	if (!env)
-		env = new;
+	if (prev)
+		prev->next = new;
 	else
-	{
-		tail = env;
-		while (tail->next)
-			tail = tail->next;
-		tail->next = new;
-	}
+		*env = new;
+}
+void export_key_only(t_env **env, const char *key)
+{
+	if (find_env(*env, key))
+		return;
+
+	insert_sorted_env(env, (char *)key, NULL);
 }
 void unset_var(t_env **env, const char *key)
 {
@@ -51,3 +71,4 @@ void unset_var(t_env **env, const char *key)
 		curr = curr->next;
 	}
 }
+

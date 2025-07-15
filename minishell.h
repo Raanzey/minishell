@@ -17,6 +17,8 @@
 # define ERR_ARG "Please no argument\n" // .minishell dasda hata durumu
 # define ERR_EXIT "numeric argument required\n" // exit dsda hata durumu
 
+extern int g_signal;
+
 int error(char *err);
 
 # endif

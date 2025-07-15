@@ -1,6 +1,6 @@
 # include "../../minishell.h"
 
-int built_in(t_command *cmd, t_env *env_list)
+int built_in(t_command *cmd, t_env **env_list)
 {
 	if(!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
 		return (echo_cmd(cmd->av));
@@ -13,7 +13,7 @@ int built_in(t_command *cmd, t_env *env_list)
 	else if(!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0')
 		return (unset_cmd(cmd, env_list));
 	if(!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0') 
-		return (env_cmd(env_list));
+		return (env_cmd(*env_list));
 	//EXIT GELCEKMİ ??????
 	else
 		return 1;//komut yok 
@@ -50,7 +50,7 @@ int env_cmd(t_env *env)
 {
 	while (env)
 	{
-		if (env->value)
+		if (env->value != NULL)
 			printf("%s=%s\n", env->key, env->value);
 		env = env->next;
 	}

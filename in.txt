@@ -1,3 +1,4 @@
 $USER
 $HOME
 $USER$HOME
+a

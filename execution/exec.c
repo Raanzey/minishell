@@ -34,6 +34,10 @@ static char *find_path(char *cmd)
 }
 static void handle_redirections(t_redirect *redir)
 {
+	t_redirect *tmp = redir;
+
+	handle_heredocs(tmp); // sadece heredoc'ları burada işliyoruz
+
 	while (redir)
 	{
 		int fd = -1;
@@ -43,22 +47,17 @@ static void handle_redirections(t_redirect *redir)
 			fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else if (redir->type == 3)
 			fd = open(redir->filename, O_RDONLY);
-		else if (redir->type == 4)
+		if (redir->type != 4 && fd == -1)
 		{
-			handle_heredoc(redir->filename);
-			redir = redir->next;
-			continue;
-		}
-		if (fd == -1)
-		{
-			perror("redir");//ERORR GELCEK
-			exit(1);//ERORR GELCEK
+			perror("redir");// hatakodu(56);
+			exit(1);//HATAA DURUMUUU//error(56);
 		}
 		if (redir->type == 3)
 			dup2(fd, STDIN_FILENO);
-		else
+		else if (redir->type == 1 || redir->type == 2)
 			dup2(fd, STDOUT_FILENO);
-		close(fd);
+		if (fd != -1)
+			close(fd);
 		redir = redir->next;
 	}
 }
@@ -89,7 +88,7 @@ static char **convert_env_to_array(t_env *env, int count, int i)
 	env_array[i] = NULL; // NULL sonlandır
 	return env_array;
 }
-static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env *env_list)
+static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env **env_list)
 {
 	if (cmd->redir)							//FONKSİYONDKİ DEĞİŞKEN SAYISINA DİKKAT
 		handle_redirections(cmd->redir);
@@ -106,18 +105,19 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env *env_l
 	}
 	if (!built_in(cmd, env_list))
 		exit(1);//ERORR GELCEK
-	execve(find_path(cmd->av[0]), cmd->av, convert_env_to_array(env_list, 0, 0));
+	execve(find_path(cmd->av[0]), cmd->av, convert_env_to_array(*env_list, 0, 0));
 	perror("execve");//ERORR GELCEK
 	exit(1);//ERORR GELCEK
 }
 
-int exec(t_command *cmd, t_env *env_list)
+int exec(t_command *cmd, t_env **env_list)
 {
 	
 	int prev_fd = -1;
 	int pipe_fd[2];
 	pid_t pid;
 
+	g_signal=1;
 	if (!cmd->next && is_parent_builtin(cmd))
 		return built_in(cmd, env_list);
 	while (cmd)
@@ -134,11 +134,7 @@ int exec(t_command *cmd, t_env *env_list)
 			exit(1);//ERORR GELCEK
 		}
 		if (pid == 0)
-		{
-			signal(SIGINT, SIG_DFL);   // Ctrl+C child'ı öldürsün
-			signal(SIGQUIT, SIG_DFL);
 			exec_child(cmd, prev_fd, pipe_fd, env_list);
-		}
 		if (prev_fd != -1)
 			close(prev_fd);
 		if (cmd->next)

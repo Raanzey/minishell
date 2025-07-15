@@ -1,14 +1,14 @@
 # include "../../minishell.h"
 
-t_env *init_env(char **env)
+t_env *init_env(char **env, int i)
 {
-	t_env *head = NULL;
-	t_env *tail = NULL;
-	t_env *node;
+	t_env *env_list;
 	char *eq;
 	int key_len;
-	int i = 0;
-
+	char *key;
+	char *val;
+	i = 0;
+	env_list = NULL;
 	while (env[i])
 	{
 		eq = ft_strchr(env[i], '=');
@@ -18,25 +18,14 @@ t_env *init_env(char **env)
 			continue;
 		}
 		key_len = eq - env[i];
-		node = malloc(sizeof(t_env));
-		if (!node)
-			return NULL;
-		node->key = ft_substr(env[i], 0, key_len);
-		node->value = ft_strdup(eq + 1);
-		node->next = NULL;
-		if (!head)
-		{
-			head = node;   // ilk node
-			tail = node;
-		}
-		else
-		{
-			tail->next = node; // sıraya ekle
-			tail = node;
-		}
+		key = ft_substr(env[i], 0, key_len);
+		val = ft_strdup(eq + 1);
+		insert_sorted_env(&env_list, key, val);
+		free(key);
+		free(val);
 		i++;
 	}
-	return head;
+	return env_list;
 }
 t_env *find_env(t_env *env, const char *key)
 {
@@ -78,24 +67,14 @@ void append_env(t_env *env, const char *key, const char *value)
 		tail->next = new; // Yeni elemanı sona ekle
 	}
 }
-void add_or_update_env(t_env *env, char *eq, char *av)
+void add_or_update_env(t_env **env, char *eq, char *av)
 {
-	int key_len;
-	char *key;
-	char *val;
+	int key_len = eq - av;
+	char *key = ft_substr(av, 0, key_len);
+	char *val = ft_strdup(eq + 1);
 
-	key_len = eq - av; 
-	key = ft_substr(av, 0, key_len);// "KEY" ve "VALUE" kısımlarını ayır
-	val = ft_strdup(eq + 1); // '=' karakterinden sonrasını al
+	insert_sorted_env(env, key, val);
 
-	// KEY varsa node'u bul
-	t_env *node = find_env(env, key);
-	if (node)
-		update_env(node, val);       // varsa güncelle
-	else
-		append_env(env, key, val);  // yoksa ekle
-
-	// Bellek temizliği
 	free(key);
 	free(val);
 }

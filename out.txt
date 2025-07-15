@@ -1,0 +1,6 @@
+a
+int hada_kodu(int msg, int 1)
+{
+    static int hada_kodu = msg;
+    return (hada_kodu);
+}

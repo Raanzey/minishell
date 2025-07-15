@@ -29,35 +29,35 @@ int cd_cmd(char *str)
 	return 0;
 }
 
-int export_cmd(char **av, t_env *env)
+int export_cmd(char **av, t_env **env)
 {
 	int i = 1;
 	char *value;
 
-	if (!av[i]) // sadece export → listeyi yazdır
+	if (!av[i])
 	{
-		print_export(env); // declare -x key="val"
+		print_export(*env);
 		return 0;
 	}
 	while (av[i])
 	{
 		value = ft_strchr(av[i], '=');
-		if (value) // KEY=VALUE varsa
-			add_or_update_env(env, value,av[i]);
-		else // sadece KEY varsa, boş değerli ekle
+		if (value)
+			add_or_update_env(env, value, av[i]);  // **env → env**
+		else
 			export_key_only(env, av[i]);
 		i++;
 	}
 	return 0;
 }
-int unset_cmd(t_command *cmd,t_env *env_list)
+int unset_cmd(t_command *cmd,t_env **env_list)
 {
 	
 	int i = 1;
 
 	while (cmd->av[i])
 	{
-		unset_var(&env_list ,cmd->av[i]); // global env list'ten sil
+		unset_var(env_list ,cmd->av[i]); // global env list'ten sil
 		i++;
 	}
 	return 0;
@@ -68,9 +68,7 @@ void print_export(t_env *env)
 	{
 		if (env->value)
 			printf("declare -x %s=\"%s\"\n", env->key, env->value);
-		else if (env->value != NULL) // boş değer
-			printf("declare -x %s=\"\"\n", env->key);
-		else // hiç değer yok
+		else if (env->value == NULL)
 			printf("declare -x %s\n", env->key);
 		env = env->next;
 	}
