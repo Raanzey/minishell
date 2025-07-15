@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 23:57:49 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/14 19:27:50 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/15 18:53:41 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,31 @@ void	expand_and_replace(char **str, int last_exit)
 	tmp = expand_token(*str, last_exit);
 	free(*str);
 	*str = tmp;
+}
+
+void	here_doc_no_expand(char **target, size_t i, size_t j)
+{
+	char	*res;
+	char	quote;
+
+	if (!*target)
+		return ;
+	res = ft_calloc(ft_strlen(*target) + 1, 1);
+	if (!res)
+		return ;
+	while ((*target)[i])
+	{
+		if ((*target)[i] == '\'' || (*target)[i] == '"')
+		{
+			quote = (*target)[i++];
+			while ((*target)[i] && (*target)[i] != quote)
+				res[j++] = (*target)[i++];
+			if ((*target)[i] == quote)
+				i++;
+		}
+		else
+			res[j++] = (*target)[i++];
+	}
+	free(*target);
+	*target = res;
 }

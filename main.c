@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/15 15:17:36 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/15 19:15:32 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,6 @@ int exit_time(char *input)
 	return (returnnumber);
 }
 
-int  g_exit_code = 999;
-
 int	main(int ac, char **av)
 {
 	char		*input;
@@ -99,7 +97,7 @@ int	main(int ac, char **av)
 		}
 		
 		tokens = tokenizer(input);
-		if (!tokens)
+		if (!tokens || pre_parser_error(tokens, -1))
 		{	
 			// printf("Token failed.\n");
 			free_tokens(tokens);
@@ -108,7 +106,7 @@ int	main(int ac, char **av)
 		}
 		else
 		{
-			printf("\nTOKENIZER\n\n"); //* token yazdırma
+			// printf("\nTOKENIZER\n\n"); //* token yazdırma
 			int q = -1;
 			while (tokens[++q])
 				printf("token[%d]: %s\n", q, tokens[q]);
@@ -123,11 +121,15 @@ int	main(int ac, char **av)
 		}
 		else
 		{
-			printf("\nPARSER\n\n");
-			print_cmd(cmd); //* parser yazdırma
+			// printf("\nPARSER\n\n");
+			// print_cmd(cmd); //* parser yazdırma
 		}
 
-		expand_args(cmd, g_exit_code, -1);
+		expand_args(cmd, cmd->exit_code);
+		// printf("\ndeneme\n");
+		// 	print_cmd(cmd); //* expansion yazdırma
+		// printf("\ndeneme\n");
+
 		if (handle_error(cmd))
 		{
 			free_command(cmd);

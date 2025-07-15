@@ -82,9 +82,10 @@ char	*expand_token(const char *token, int last_exit)
 	return (res);
 }
 
-int	expand_args(t_command *cmd, int last_exit, int i)
+int	expand_args(t_command *cmd, int last_exit)
 {
 	t_redirect	*redir;
+	int			i;
 
 	while (cmd)
 	{
@@ -94,8 +95,10 @@ int	expand_args(t_command *cmd, int last_exit, int i)
 		redir = cmd->redir;
 		while (redir)
 		{
-			if (redir->filename)
+			if (redir->type != 4 && redir->filename)
 				expand_and_replace(&redir->filename, last_exit);
+			else if (redir->filename)
+				here_doc_no_expand(&redir->filename, 0, 0);
 			redir = redir->next;
 		}
 		cmd = cmd->next;
