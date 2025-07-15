@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/14 19:42:22 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:17:36 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,8 @@ int	main(int ac, char **av)
 			// free(input);
 			return (exit_time(input)); //* varsayılan olarak sadece çık
 		}
+		
 		tokens = tokenizer(input);
-		// int q = -1;
-		// printf("\nTOKENIZER\n\n"); //* token yazdırma
 		if (!tokens)
 		{	
 			// printf("Token failed.\n");
@@ -109,40 +108,12 @@ int	main(int ac, char **av)
 		}
 		else
 		{
-			// while (tokens[++q])
-			// 	printf("token[%d]: %s\n", q, tokens[q]);
+			printf("\nTOKENIZER\n\n"); //* token yazdırma
+			int q = -1;
+			while (tokens[++q])
+				printf("token[%d]: %s\n", q, tokens[q]);
 		}
 
-		
-		// expand = expand_args(tokens,g_exit_code, -1);
-		// q = -1;
-		// printf("\nEXPANSION\n\n"); //* token yazdırma
-		// if (!expand || handle_error(expand))
-		// {
-		// 	// printf("Expand failed.\n");
-		// 	// free_tokens(tokens); //? ||| durumunda abort alıyor neden
-		// 	// if (expand)
-		// 		// free_tokens(expand); // burada tüm tokenları temizle
-		// 	free(input);
-		// 	continue;
-		// }
-		// else
-		// {
-		// 	while (expand[++q])
-		// 		printf("token[%d]: %s\n", q, expand[q]);
-		// }
-		
-		// printf("\nPARSER\n\n");
-		// cmd = parser(tokens); //! sıra değişecek expand sonra olacak
-		// if (!cmd)
-		// {
-		// 	// printf("Parsing failed.\n");
-		// 	free_tokens(tokens);
-		// 	free_tokens(expand);
-		// 	free(input);
-		// 	continue;
-		// }
-		
 		cmd = parser(tokens);
 		if (!cmd)
 		{
@@ -150,9 +121,12 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
-		print_cmd(cmd); //* parser yazdırma
+		else
+		{
+			printf("\nPARSER\n\n");
+			print_cmd(cmd); //* parser yazdırma
+		}
 
-		// printf("\nEXPANSION\n\n");
 		expand_args(cmd, g_exit_code, -1);
 		if (handle_error(cmd))
 		{
@@ -161,8 +135,11 @@ int	main(int ac, char **av)
 			free(input);
 			continue;
 		}
-
-		print_cmd(cmd); //* parser yazdırma
+		else
+		{
+			printf("\nEXPANSION\n\n");
+			print_cmd(cmd); //* expansion yazdırma
+		}
 
 		// exec(cmd); 
 		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
