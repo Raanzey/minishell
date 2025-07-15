@@ -113,6 +113,7 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env *env_l
 
 int exec(t_command *cmd, t_env *env_list)
 {
+	
 	int prev_fd = -1;
 	int pipe_fd[2];
 	pid_t pid;
@@ -149,17 +150,16 @@ int exec(t_command *cmd, t_env *env_list)
 			prev_fd = -1;
 		cmd = cmd->next;
 	}
-int status;
-while (wait(&status) > 0)
-{
-	if (WIFSIGNALED(status))
+	int status;
+	while (wait(&status) > 0)
 	{
-		int sig = WTERMSIG(status);
-		if (sig == SIGINT)
-			write(1, "\n", 1); // Ctrl+C için satır atlat
-		else if (sig == SIGQUIT)
-			write(1, "Quit (core dumped)\n", 20);
+		if (WIFSIGNALED(status))
+		{
+			int sig = WTERMSIG(status);
+			if (sig == SIGQUIT)
+				write(1, "Quit (core dumped)\n", 20);//ERROR DURUMU
+			// SIGINT (Ctrl+C) için bir şey yazma, readline kendisi işler
+		}
 	}
-}	
 	return 0;
 }

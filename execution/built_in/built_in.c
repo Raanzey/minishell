@@ -44,7 +44,7 @@ int echo_cmd(char **str)
 		printf("\n");
 	}
 	return 0;
-	
+
 }
 int env_cmd(t_env *env)
 {
