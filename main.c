@@ -1,42 +1,81 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
+/*   Updated: 2025/07/15 19:42:54 by musisman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-// **  BETTER  COMMENTS eklentisi ile daha güzel comment satırları :D
-//TODO exit dsadas ahta durumunu işlemeye çalıştım ama yapamadım 
-//TODO eğer "exit dsadas" girersem 2 döndürüyor ve çıktı olarak bash: exit: dsadas: numeric argument required verip çıkıyor
-//TODO "exit 3213 32132" ya da "exit 3213 dsadas" girersem too many arguments diyor ve 1 döndürüyor ama çıkmıyor
-//TODO ayrıca exit built-in fonksiyonmuş bununla boşuna uğraşmışm :(
+void	free_tokens(char **tokens)
+{
+	int i = 0;
+	if (!tokens)
+		return ;
+	while (tokens[i])
+		free(tokens[i++]);
+	free(tokens);
+}
 
-// int exit_time(char *input)
-// {
-// 	int returnnumber;
-// 	char *tmp;
-// 	int i;
+void	free_redirects(t_redirect *redir)
+{
+	t_redirect	*tmp;
 
-// 	i = -1;
-// 	returnnumber = 0;
-// 	if (input[4])
-// 	{
-// 		tmp = ft_substr(input, 5, ft_strlen(input) - 5);
-// 		printf("tmp: %s\n",tmp);
-// 		returnnumber = ft_atoi(tmp);
-// 		printf("1: %d\n",returnnumber);
-// 		while (++i < (int)ft_strlen(tmp))
-// 		{
-// 			if (!ft_isdigit(tmp[i]))
-// 			{
-// 				returnnumber = 2;
-// 				printf("minishell: exit: %s", tmp);
-// 				error(ERR_EXIT);
-// 				break;
-// 			}
-// 		}
-// 		printf("2: %d\n",returnnumber);
-// 		returnnumber = returnnumber % 256;
-// 		printf("3: %d\n",returnnumber);
-// 	}
-// 	return (returnnumber);
-// }
+	while (redir)
+	{
+		tmp = redir->next;
+		free(redir->filename);
+		free(redir);
+		redir = tmp;
+	}
+}
+
+void	free_command(t_command *cmd)
+{
+	t_command	*tmp;
+	int			i;
+
+	while (cmd)
+	{
+		tmp = cmd->next;
+		if (cmd->av)
+		{
+			i = -1;
+			while (cmd->av[++i])
+				free(cmd->av[i]);
+			free(cmd->av);
+		}
+		free_redirects(cmd->redir);
+		free(cmd);
+		cmd = tmp;
+	}
+}
+
+int		g_signal;
+
+void	sigint_handler(int sig)
+{
+	(void)sig;
+	if (g_signal==0)
+	{
+		write(1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+	else if (g_signal==1)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+ 	}
+	else if (g_signal==2)
+		close(STDIN_FILENO);
+}
 
 int exit_time(char *input)
 {
@@ -50,32 +89,181 @@ int exit_time(char *input)
 		returnnumber = ft_atoi(tmp);
 		returnnumber = returnnumber % 256;
 	}
+	free(input);
 	return (returnnumber);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av, char **env)
 {
-	char *input;
-	char *tmp1;
-	char *tmp2;
-	char *name;
-	
+	char		*input;
+	t_command	*cmd;
+	t_env		*env_list;
+	char **tokens;
+
+	signal(SIGINT, sigint_handler);
+	env_list = init_env(env, 0);
+	(void)av;
 	if (ac >= 2)
-		return (error(ERR_ARG));
-	tmp1 = ft_substr(av[0], 2, 9);
-	tmp2 = ft_strjoin(tmp1, "~ ");
-	name = ft_strdup(tmp2);
+		return (1); //? error(ERR_ARG) neden saçmalıyor
 	while (1)
 	{
-		input = readline(name);
-		add_history(input);
-		if (!ft_strncmp(input, "exit", 4) && (input[4] == 32 || !input[4]))
-			return (exit_time(input));
-		// parser();
+		g_signal = 0;
+		input = readline("minishell~ ");
+		signal(SIGINT, sigint_handler);
+		if (!input) // readline okumazsa hata bastır
+			break ;
+		if (*input)
+			add_history(input);
+		if (!ft_strncmp(input, "exit", 4) && (input[4] == ' ' || !input[4])) //! gidecek
+		{
+			// free(input);
+			return (exit_time(input)); //* varsayılan olarak sadece çık
+		}
+		
+		tokens = tokenizer(input);
+		if (!tokens || pre_parser_error(tokens, -1))
+		{	
+			// printf("Token failed.\n");
+			free_tokens(tokens);
+			free(input);
+			continue;
+		}
+		else
+		{
+			// // printf("\nTOKENIZER\n\n"); //* token yazdırma
+			// int q = -1;
+			// while (tokens[++q])
+			// 	printf("token[%d]: %s\n", q, tokens[q]);
+		}
+
+		cmd = parser(tokens);
+		if (!cmd)
+		{
+			free_tokens(tokens);
+			free(input);
+			continue;
+		}
+		else
+		{
+			// printf("\nPARSER\n\n");
+			// print_cmd(cmd); //* parser yazdırma
+		}
+
+		expand_args(cmd, cmd->exit_code);
+		if (handle_error(cmd))
+		{
+			free_command(cmd);
+			free_tokens(tokens);
+			free(input);
+			continue;
+		}
+		else
+		{
+			// printf("\nEXPANSION\n\n");
+			// print_cmd(cmd); //* expansion yazdırma
+		}
+		exec(cmd, &env_list);
+		// exec(cmd); 
+		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
+		free_command(cmd);
+		free_tokens(tokens);
+		free(input);
 	}
-	free(input);
-	free(tmp1);
-	free(tmp2);
-	free(name);
 	return (0);
 }
+
+// < "$EMPTY" //TODOfarklı çalışıyor düzelt
+
+// ** minishell **
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler/3.2__Minishell/minishell (0) $ ./minishell
+// 	minishell~ < "$EMPTY"
+	
+// 	TOKENIZER
+	
+// 	token[0]: <
+// 	token[1]: "$EMPTY"
+	
+// 	EXPANSION
+	
+// 	syntax error near unexpected token `newline'
+// 	Expand failed.
+// 	minishell~ 
+
+// ** bash **
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (0) $ < "$EMPTY"
+// 	-bash: : No such file or directory
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ < bla
+// 	-bash: bla: No such file or directory
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
+
+
+// < $EMPTY
+
+// ** minishell **
+// 	minishell~ < $EMPTY
+	
+// 	TOKENIZER
+	
+// 	token[0]: <
+// 	token[1]: $EMPTY
+	
+// 	EXPANSION
+	
+// 	syntax error near unexpected token `newline'
+// 	Expand failed.
+// 	minishell~
+// ** bash **
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ < $EMPTY   
+// 	-bash: $EMPTY: ambiguous redirect
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
+
+
+
+// echo a > "$EMPTY"
+
+// ** minishell **
+// 	minishell~ echo a > "$EMPTY"
+	
+// 	TOKENIZER
+	
+// 	token[0]: echo
+// 	token[1]: a
+// 	token[2]: >
+// 	token[3]: "$EMPTY"
+	
+// 	EXPANSION
+	
+// 	syntax error near unexpected token `newline'
+// 	Expand failed.
+// 	minishell~ 
+
+// ** bash **
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ echo a > "$EMPTY"
+// 	-bash: : No such file or directory
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
+
+
+
+// echo a > $EMPTY
+
+// ** minishell **
+// 	minishell~ echo a > $EMPTY
+	
+// 	TOKENIZER
+	
+// 	token[0]: echo
+// 	token[1]: a
+// 	token[2]: >
+// 	token[3]: $EMPTY
+	
+// 	EXPANSION
+	
+// 	syntax error near unexpected token `newline'
+// 	Expand failed.
+// 	minishell~
+
+// ** bash **
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ echo a > $EMPTY
+// 	-bash: $EMPTY: ambiguous redirect
+// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
+	
