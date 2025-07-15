@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/15 20:05:47 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/15 21:24:04 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,22 +77,6 @@ void	sigint_handler(int sig)
 		close(STDIN_FILENO);
 }
 
-int exit_time(char *input)
-{
-	int returnnumber;
-	char *tmp;
-
-	returnnumber = 0;
-	if (input[4])
-	{
-		tmp = ft_substr(input, 5, ft_strlen(input) - 5);
-		returnnumber = ft_atoi(tmp);
-		returnnumber = returnnumber % 256;
-	}
-	free(input);
-	return (returnnumber);
-}
-
 int	main(int ac, char **av, char **env)
 {
 	char		*input;
@@ -114,11 +98,6 @@ int	main(int ac, char **av, char **env)
 			break ;
 		if (*input)
 			add_history(input);
-		if (!ft_strncmp(input, "exit", 4) && (input[4] == ' ' || !input[4])) //! gidecek
-		{
-			// free(input);
-			return (exit_time(input)); //* varsayılan olarak sadece çık
-		}
 		
 		tokens = tokenizer(input);
 		if (!tokens || pre_parser_error(tokens, -1))
@@ -159,8 +138,8 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 		{
-			// printf("\nEXPANSION\n\n");
-			// print_cmd(cmd); //* expansion yazdırma
+			printf("\nEXPANSION\n\n");
+			print_cmd(cmd); //* expansion yazdırma
 		}
 		exec(cmd, &env_list);
 		// exec(cmd); 

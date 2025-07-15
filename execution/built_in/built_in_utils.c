@@ -13,19 +13,25 @@ if ((!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0')
 		return 1;
 	return 0;
 }
-int cd_cmd(char *str)
+int cd_cmd(t_command *cmd)
 {
 	char *path;
-	if (!str)
+	if (!cmd->av[1] || !cmd->av[1][0])
 	{
 		path = getenv("HOME");
 		if (!path)
-			return 1;//PATH YOKSA HATA DURUMU
+		{
+			printf("cd fonksiyon içi = %d\n", cmd->exit_code);
+			return /*error_value(cmd, 0)*/1;//PATH YOKSA HATA DURUMU
+		}
 	}
 	else
-		path = str;
+		path = cmd->av[1];
 	if(chdir(path))
-		printf("HATA\n");//error kullanılacak
+	{
+		printf("cd fonksiyon içi = %d\n", cmd->exit_code);
+		return /*error_value(cmd, 1)*/1;//error kullanılacak
+	}
 	return 0;
 }
 

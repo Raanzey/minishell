@@ -1,5 +1,11 @@
 #include "../minishell.h"
 
+int error_value(t_command *cmd,int num)
+{
+	cmd->exit_code = num;	
+	return 1;
+}
+
 char *ft_path(void)
 {
     char *path_env = getenv("PATH");
@@ -45,4 +51,23 @@ void	handle_heredocs(t_redirect *redir)
 	}
 	if (heredoc_fd != -1)
 		dup2(heredoc_fd, STDIN_FILENO);
+}
+
+int is_numeric(const char *str)
+{
+	int i = 0;
+
+	if (!str)
+		return (0);
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
 }

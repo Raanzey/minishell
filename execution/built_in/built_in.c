@@ -3,27 +3,29 @@
 int built_in(t_command *cmd, t_env **env_list)
 {
 	if(!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
-		return (echo_cmd(cmd->av));
+		return (echo_cmd(cmd->av, cmd));
 	else if(!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0') 
-		return (cd_cmd(cmd->av[1]));
+		return (cd_cmd(cmd));
 	else if(!ft_strncmp(cmd->av[0], "pwd", 3) && cmd->av[0][3] == '\0')
 		return (pwd_cmd());
 	else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
 		return (export_cmd(cmd->av, env_list));
 	else if(!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0')
 		return (unset_cmd(cmd, env_list));
-	if(!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0') 
+	else if(!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0') 
 		return (env_cmd(*env_list));
-	//EXIT GELCEKMİ ??????
+	else if (!ft_strncmp(cmd->av[0], "exit", 4) && cmd->av[0][4] == '\0')
+		return (exit_cmd(cmd->av));
 	else
 		return 1;//komut yok 
 }
-int echo_cmd(char **str)
+int echo_cmd(char **str, t_command *cmd)
 {
 	int i;
 	i = 0;
 	if (!ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
 	{
+		printf("cd fonksiyon içi = %d\n", cmd->exit_code);
 		while (str[++i])
 		{
 			if (!str[i + 1])
@@ -34,6 +36,7 @@ int echo_cmd(char **str)
 	}
 	else
 	{
+		printf("cd fonksiyon içi = %d\n", cmd->exit_code);
 		while (str[++i])
 		{
 			if (!str[i + 1])
@@ -68,4 +71,27 @@ int pwd_cmd()
 	}	
 	printf("%s\n", cwd);
 	return 0;
+}
+
+int	exit_cmd(char **av)
+{
+	int code;
+
+	printf("exit\n");
+	if (!av[1])
+		exit(0);
+	if (!is_numeric(av[1]))
+	{
+		printf("minishell: exit: %s: numeric argument required\n", av[1]);
+		exit(255);
+	}
+	if (av[2])
+	{
+		printf("minishell: exit: too many arguments\n");
+		return (1);
+	}
+	code = ft_atoi(av[1]) % 256;
+	if (code < 0)
+		code += 256;
+	exit(code);
 }
