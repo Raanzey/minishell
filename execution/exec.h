@@ -7,11 +7,11 @@ typedef struct s_env {
 	struct s_env *next;
 } t_env;
 
-int built_in(t_command *cmd, t_env **env_list, int exit_code);
+int built_in(t_command *cmd, t_env **env_list);
 int is_parent_builtin(t_command *cmd);
-int exec(t_command *cmd, t_env **env_list, int exit_code);
+int exec(t_command *cmd, t_env **env_list);
 int echo_cmd(char **str);
-int cd_cmd(t_command *cmd, int exit_code);
+int cd_cmd(t_command *cmd);
 int pwd_cmd();
 int env_cmd(t_env *env);
 int export_cmd(char **av, t_env **env);

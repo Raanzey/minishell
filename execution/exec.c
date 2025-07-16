@@ -110,7 +110,7 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env **env_
 	exit(1);//ERORR GELCEK
 }
 
-int exec(t_command *cmd, t_env **env_list, int exit_code)
+int exec(t_command *cmd, t_env **env_list)
 {
 	
 	int prev_fd = -1;
@@ -119,7 +119,7 @@ int exec(t_command *cmd, t_env **env_list, int exit_code)
 
 	g_signal=1;
 	if (!cmd->next && is_parent_builtin(cmd))
-		return built_in(cmd, env_list, exit_code);
+		return built_in(cmd, env_list);
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipe_fd) == -1)
@@ -147,15 +147,25 @@ int exec(t_command *cmd, t_env **env_list, int exit_code)
 		cmd = cmd->next;
 	}
 	int status;
-	while (wait(&status) > 0)
-	{
-		if (WIFSIGNALED(status))
-		{
-			int sig = WTERMSIG(status);
-			if (sig == SIGQUIT)
-				write(1, "Quit (core dumped)\n", 20);//ERROR DURUMU
-			// SIGINT (Ctrl+C) için bir şey yazma, readline kendisi işler
-		}
-	}
-	return 0;
+	// int last_exit = 0;
+	// while (wait(&status) > 0)
+	// {
+	// 	if (WIFSIGNALED(status))
+	// 	{
+	// 		int sig = WTERMSIG(status);
+	// 		if (sig == SIGQUIT)
+	// 			write(1, "Quit (core dumped)\n", 20);//ERROR DURUMU
+	// 		// SIGINT (Ctrl+C) için bir şey yazma, readline kendisi işler
+	// 	}
+	// }
+	// return 0;
+	int last_exit = 0;
+    	while (wait(&status) > 0)
+    	{
+    	    if (WIFEXITED(status))
+    	        last_exit = WEXITSTATUS(status);
+    	    else if (WIFSIGNALED(status))
+    	        last_exit = 128 + WTERMSIG(status);
+    	}
+    return last_exit;
 }

@@ -1,11 +1,11 @@
 # include "../../minishell.h"
 
-int built_in(t_command *cmd, t_env **env_list, int exit_code)
+int built_in(t_command *cmd, t_env **env_list)
 {
 	if(!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
 		return (echo_cmd(cmd->av));
 	else if(!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0') 
-		return (cd_cmd(cmd, exit_code));
+		return (cd_cmd(cmd));
 	else if(!ft_strncmp(cmd->av[0], "pwd", 3) && cmd->av[0][3] == '\0')
 		return (pwd_cmd());
 	else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')

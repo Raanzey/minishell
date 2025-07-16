@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/16 19:14:36 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:53:34 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,10 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 		{
-			// // printf("\nTOKENIZER\n\n"); //* token yazdırma
-			// int q = -1;
-			// while (tokens[++q])
-			// 	printf("token[%d]: %s\n", q, tokens[q]);
+			printf("\nTOKENIZER\n\n"); //* token yazdırma
+			int q = -1;
+			while (tokens[++q])
+				printf("token[%d]: %s\n", q, tokens[q]);
 		}
 
 		cmd = parser(tokens);
@@ -126,8 +126,8 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 		{
-			// printf("\nPARSER\n\n");
-			// print_cmd(cmd); //* parser yazdırma
+			printf("\nPARSER\n\n");
+			print_cmd(cmd); //* parser yazdırma
 		}
 
 		expand_args(cmd, exit_code);
@@ -140,10 +140,10 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 		{
-			// printf("\nEXPANSION\n\n");
-			// print_cmd(cmd); //* expansion yazdırma
+			printf("\nEXPANSION\n\n");
+			print_cmd(cmd); //* expansion yazdırma
 		}
-		exec(cmd, &env_list, exit_code);
+		exit_code = exec(cmd, &env_list);
 		// exec(cmd); 
 		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
 		free_command(cmd);
