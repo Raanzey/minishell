@@ -22,6 +22,7 @@ int built_in(t_command *cmd, t_env **env_list)
 int echo_cmd(char **str)
 {
 	int i;
+	
 	i = 0;
 	if (!ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
 	{
@@ -80,12 +81,13 @@ int	exit_cmd(char **av)
 		exit(0);
 	if (!is_numeric(av[1]))
 	{
-		printf("minishell: exit: %s: numeric argument required\n", av[1]);
-		exit(255);
+		printf(" numeric argument required\n");
+		write(2, " numeric argument required\n", 28);
+		exit(2); // 255 di değiştirdim
 	}
 	if (av[2])
 	{
-		printf("minishell: exit: too many arguments\n");
+		// printf("minishell: exit: too many arguments\n");
 		return (1);
 	}
 	code = ft_atoi(av[1]) % 256;

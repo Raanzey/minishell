@@ -90,25 +90,40 @@ static char **convert_env_to_array(t_env *env, int count, int i)
 }
 static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env **env_list)
 {
-	if (cmd->redir)							//FONKSİYONDKİ DEĞİŞKEN SAYISINA DİKKAT
-		handle_redirections(cmd->redir);
-	if (prev_fd != -1)
-	{
-		dup2(prev_fd, STDIN_FILENO);
-		close(prev_fd);
-	}
-	if (cmd->next)
-	{
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-	}
-	if (!built_in(cmd, env_list))
-		exit(1);//ERORR GELCEK
-	execve(find_path(cmd->av[0]), cmd->av, convert_env_to_array(*env_list, 0, 0));
-	perror("execve");//ERORR GELCEK
-	exit(1);//ERORR GELCEK
+    if (cmd->redir)
+        handle_redirections(cmd->redir);
+
+    if (prev_fd != -1)
+    {
+        dup2(prev_fd, STDIN_FILENO);
+        close(prev_fd);
+    }
+
+    if (cmd->next)
+    {
+        dup2(pipe_fd[1], STDOUT_FILENO);
+        close(pipe_fd[0]);
+        close(pipe_fd[1]);
+    }
+
+    // ✅ 1. Builtin ise exit ile dön
+    if (built_in(cmd, env_list) == 0)
+        exit(0);
+
+    // ✅ 2. Execve için PATH çöz
+    char *path = find_path(cmd->av[0]);
+    if (!path)
+    {
+        perror(cmd->av[0]);
+        exit(127);
+    }
+
+    // ✅ 3. Execve çağır
+    execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
+    perror("execve");
+    exit(126);
 }
+
 
 int exec(t_command *cmd, t_env **env_list)
 {

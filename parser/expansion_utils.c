@@ -30,6 +30,7 @@ static void	handle_exit_code(char **res, int *i, int exit_code)
 
 	tmp = ft_itoa(exit_code);
 	*res = ft_strjoin_free(*res, tmp);
+	// printf("\nthe value: %s\n",*res);
 	free(tmp);
 	*i += 2;
 }
