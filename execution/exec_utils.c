@@ -1,9 +1,8 @@
 #include "../minishell.h"
 
-int error_value(t_command *cmd,int num)
+int error_value(int num)
 {
-	cmd->exit_code = num;	
-	return 1;
+	return num; // :D
 }
 
 char *ft_path(void)

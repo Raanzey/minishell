@@ -24,11 +24,11 @@ char	*extract_var_name(const char *str, size_t *i)
 	return (var);
 }
 
-static void	handle_exit_code(char **res, int *i, int last_exit)
+static void	handle_exit_code(char **res, int *i, int exit_code)
 {
 	char	*tmp;
 
-	tmp = ft_itoa(last_exit);
+	tmp = ft_itoa(exit_code);
 	*res = ft_strjoin_free(*res, tmp);
 	free(tmp);
 	*i += 2;
@@ -62,7 +62,7 @@ static void	handle_env_or_positional(char **res, const char *s, size_t *i)
 	}
 }
 
-char	*expand_dollar(const char *s, int last_exit)
+char	*expand_dollar(const char *s, int exit_code)
 {
 	size_t	i;
 	char	*res;
@@ -75,7 +75,7 @@ char	*expand_dollar(const char *s, int last_exit)
 		{
 			i++;
 			if (s[i] == '?')
-				handle_exit_code(&res, (int *)&i, last_exit);
+				handle_exit_code(&res, (int *)&i, exit_code);
 			else
 				handle_env_or_positional(&res, s, &i);
 		}

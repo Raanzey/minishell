@@ -22,7 +22,7 @@ typedef struct s_redirect {
 typedef struct s_command {
 	char				**av;
 	t_redirect			*redir;
-	int					exit_code;
+	// int					exit_code;
 	struct s_command	*next;
 }	t_command;
 

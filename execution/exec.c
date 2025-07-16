@@ -110,7 +110,7 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env **env_
 	exit(1);//ERORR GELCEK
 }
 
-int exec(t_command *cmd, t_env **env_list)
+int exec(t_command *cmd, t_env **env_list, int exit_code)
 {
 	
 	int prev_fd = -1;
@@ -119,7 +119,7 @@ int exec(t_command *cmd, t_env **env_list)
 
 	g_signal=1;
 	if (!cmd->next && is_parent_builtin(cmd))
-		return built_in(cmd, env_list);
+		return built_in(cmd, env_list, exit_code);
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipe_fd) == -1)

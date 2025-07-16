@@ -1,11 +1,11 @@
 # include "../../minishell.h"
 
-int built_in(t_command *cmd, t_env **env_list)
+int built_in(t_command *cmd, t_env **env_list, int exit_code)
 {
 	if(!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
-		return (echo_cmd(cmd->av, cmd));
+		return (echo_cmd(cmd->av));
 	else if(!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0') 
-		return (cd_cmd(cmd));
+		return (cd_cmd(cmd, exit_code));
 	else if(!ft_strncmp(cmd->av[0], "pwd", 3) && cmd->av[0][3] == '\0')
 		return (pwd_cmd());
 	else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
@@ -19,13 +19,12 @@ int built_in(t_command *cmd, t_env **env_list)
 	else
 		return 1;//komut yok 
 }
-int echo_cmd(char **str, t_command *cmd)
+int echo_cmd(char **str)
 {
 	int i;
 	i = 0;
 	if (!ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
 	{
-		printf("cd fonksiyon içi = %d\n", cmd->exit_code);
 		while (str[++i])
 		{
 			if (!str[i + 1])
@@ -36,7 +35,6 @@ int echo_cmd(char **str, t_command *cmd)
 	}
 	else
 	{
-		printf("cd fonksiyon içi = %d\n", cmd->exit_code);
 		while (str[++i])
 		{
 			if (!str[i + 1])

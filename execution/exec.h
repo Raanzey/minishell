@@ -7,11 +7,11 @@ typedef struct s_env {
 	struct s_env *next;
 } t_env;
 
-int built_in(t_command *cmd, t_env **env_list);
+int built_in(t_command *cmd, t_env **env_list, int exit_code);
 int is_parent_builtin(t_command *cmd);
-int exec(t_command *cmd, t_env **env_list);
-int echo_cmd(char **str, t_command *cmd);
-int cd_cmd(t_command *cmd);
+int exec(t_command *cmd, t_env **env_list, int exit_code);
+int echo_cmd(char **str);
+int cd_cmd(t_command *cmd, int exit_code);
 int pwd_cmd();
 int env_cmd(t_env *env);
 int export_cmd(char **av, t_env **env);
@@ -27,7 +27,7 @@ void update_env(t_env *node, const char *value);
 t_env *init_env(char **env, int i);
 t_env *find_env(t_env *env, const char *key);
 
-int error_value(t_command *cmd,int num);
+int error_value(int num);
 int is_numeric(const char *str);
 int	exit_cmd(char **av);
 

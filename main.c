@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/15 21:24:04 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/16 19:14:36 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,9 @@ int	main(int ac, char **av, char **env)
 	t_command	*cmd;
 	t_env		*env_list;
 	char **tokens;
+	int exit_code;
 
+	exit_code = 0;
 	signal(SIGINT, sigint_handler);
 	env_list = init_env(env, 0);
 	(void)av;
@@ -128,7 +130,7 @@ int	main(int ac, char **av, char **env)
 			// print_cmd(cmd); //* parser yazdırma
 		}
 
-		expand_args(cmd, cmd->exit_code);
+		expand_args(cmd, exit_code);
 		if (handle_error(cmd))
 		{
 			free_command(cmd);
@@ -138,10 +140,10 @@ int	main(int ac, char **av, char **env)
 		}
 		else
 		{
-			printf("\nEXPANSION\n\n");
-			print_cmd(cmd); //* expansion yazdırma
+			// printf("\nEXPANSION\n\n");
+			// print_cmd(cmd); //* expansion yazdırma
 		}
-		exec(cmd, &env_list);
+		exec(cmd, &env_list, exit_code);
 		// exec(cmd); 
 		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
 		free_command(cmd);

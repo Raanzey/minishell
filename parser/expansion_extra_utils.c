@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_extra_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 23:57:49 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/15 21:15:25 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/16 19:02:17 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ char	*append_substring(char *res, const char *src, int one, int end)
 	return (new_res);
 }
 
-void	expand_and_replace(char **str, int last_exit)
+void	expand_and_replace(char **str, int exit_code)
 {
 	char	*tmp;
 
-	tmp = expand_token(*str, last_exit);
+	tmp = expand_token(*str, exit_code);
 	free(*str);
 	*str = tmp;
 }
