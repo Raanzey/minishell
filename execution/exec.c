@@ -144,11 +144,11 @@ if (ft_strchr(cmd->av[0], '/'))
 {
 	struct stat st; // tyeni eklendi dosya bilgilerini alıyormuş detaylı bak
 	if (access(cmd->av[0], F_OK) != 0)
-		error(cmd->av[0], ": No such file or directory\n", 127);
+		error(0, cmd->av[0], ": No such file or directory\n", 127);
 	else if (access(cmd->av[0], X_OK) != 0)
-		error(cmd->av[0], ": Permission denied\n", 126);
+		error(0, cmd->av[0], ": Permission denied\n", 126);
 	else if (stat(cmd->av[0], &st) == 0 && S_ISDIR(st.st_mode))
-		error(cmd->av[0], ": Is a directory\n", 126);
+		error(0, cmd->av[0], ": Is a directory\n", 126);
 	else
 		path = ft_strdup(cmd->av[0]);
 }
@@ -156,7 +156,7 @@ else
 {
 	path = find_path(cmd->av[0]);
 	if (!path)
-		error(cmd->av[0], ": command not found\n", 127);
+		error(0, cmd->av[0], ": command not found\n", 127);
 }
 
 

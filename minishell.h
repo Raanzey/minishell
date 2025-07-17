@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/17 19:25:09 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/17 20:03:53 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,15 @@
 # include "parser/pars.h"
 # include "execution/exec.h"
 
-# define ERR_ARG "Please no argument\n" // .minishell dasda hata durumu
-# define ERR_EXIT "numeric argument required\n" // exit dsda hata durumu
+# define ERR_ARG "Please no argument\n"
+# define ERR_EXIT ": numeric argument required\n"
+# define ERR_2_ARG ": too many arguments\n"
 # define ERR_CMD ": command not found\n"
+# define ERR_CD ": No such file or directory\n"
+# define ERR_EXP "': not a valid identifier\n"
 
 extern int g_signal;
 
-int	error(char *word, char *err, int exit_code);
+int	error(char *word, char *cmd, char *err, int exit_code);
 
 #	endif

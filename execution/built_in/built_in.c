@@ -80,16 +80,9 @@ int	exit_cmd(char **av)
 	if (!av[1])
 		exit(0);
 	if (!is_numeric(av[1]))
-	{
-		printf(" numeric argument required\n");
-		write(2, " numeric argument required\n", 28);
-		exit(2); // 255 di değiştirdim
-	}
+		error("minishell: exit: `", 0, ERR_EXIT, 2);
 	if (av[2])
-	{
-		// printf("minishell: exit: too many arguments\n");
-		return (1);
-	}
+		error("minishell: exit: `", 0, ERR_2_ARG, 1);
 	code = ft_atoi(av[1]) % 256;
 	if (code < 0)
 		code += 256;
