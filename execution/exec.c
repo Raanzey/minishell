@@ -1,21 +1,47 @@
 #include "../minishell.h"
 
-static char *find_path(char *cmd)
+// static char *find_path(char *cmd)
+// {
+// 	char **paths;
+// 	char *tmp;
+// 	char *candidate;
+// 	char *full_path;
+// 	int i = 0;
+// 	// Eğer komut bir path içeriyorsa doğrudan kontrol et
+// 	if (ft_strchr(cmd, '/'))
+// 	{
+// 		if (access(cmd, X_OK) == 0)
+// 			return ft_strdup(cmd);
+// 		else
+// 			return NULL;
+// 	}// PATH ortam değişkenini al
+// 	tmp = ft_path();
+// 	if (!tmp)
+// 		return NULL;
+// 	paths = ft_split(tmp, ':');
+// 	free(tmp);
+// 	while (paths[i])
+// 	{
+// 		candidate = ft_strjoin(paths[i], "/");
+// 		full_path = ft_strjoin(candidate, cmd);
+// 		free(candidate);
+// 		if (access(full_path, X_OK) == 0)
+// 			return full_path;// paths dizisini free etmeyi unutma (ileride)
+// 		free(full_path);
+// 		i++;
+// 	}// paths dizisini burada da free etmeyi unutma (ileride)
+// 	return NULL;
+// }
+
+char *find_path(char *cmd)
 {
 	char **paths;
 	char *tmp;
 	char *candidate;
 	char *full_path;
 	int i = 0;
-	// Eğer komut bir path içeriyorsa doğrudan kontrol et
-	if (ft_strchr(cmd, '/'))
-	{
-		if (access(cmd, X_OK) == 0)
-			return ft_strdup(cmd);
-		else
-			return NULL;
-	}// PATH ortam değişkenini al
-	tmp = ft_path();
+
+	tmp = ft_path(); // PATH environment değişkeni
 	if (!tmp)
 		return NULL;
 	paths = ft_split(tmp, ':');
@@ -26,12 +52,13 @@ static char *find_path(char *cmd)
 		full_path = ft_strjoin(candidate, cmd);
 		free(candidate);
 		if (access(full_path, X_OK) == 0)
-			return full_path;// paths dizisini free etmeyi unutma (ileride)
+			return full_path;
 		free(full_path);
 		i++;
-	}// paths dizisini burada da free etmeyi unutma (ileride)
+	}
 	return NULL;
 }
+
 static void handle_redirections(t_redirect *redir)
 {
 	t_redirect *tmp = redir;
@@ -111,12 +138,29 @@ static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env **env_
         exit(0);
 
     // ✅ 2. Execve için PATH çöz
-    char *path = find_path(cmd->av[0]);
-    if (!path)
-    {
-        perror(cmd->av[0]);
-        exit(127);
-    }
+    char *path = NULL;
+
+if (ft_strchr(cmd->av[0], '/'))
+{
+	struct stat st; // tyeni eklendi dosya bilgilerini alıyormuş detaylı bak
+	if (access(cmd->av[0], F_OK) != 0)
+		error(cmd->av[0], ": No such file or directory\n", 127);
+	else if (access(cmd->av[0], X_OK) != 0)
+		error(cmd->av[0], ": Permission denied\n", 126);
+	else if (stat(cmd->av[0], &st) == 0 && S_ISDIR(st.st_mode))
+		error(cmd->av[0], ": Is a directory\n", 126);
+	else
+		path = ft_strdup(cmd->av[0]);
+}
+else
+{
+	path = find_path(cmd->av[0]);
+	if (!path)
+		error(cmd->av[0], ": command not found\n", 127);
+}
+
+
+
 
     // ✅ 3. Execve çağır
     execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
