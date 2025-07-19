@@ -1,23 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/17 19:44:53 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/29 12:15:45 by musisman          #+#    #+#             */
+/*   Updated: 2024/10/29 12:33:51 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	error(char *word, char *cmd, char *err, int exit_code)
+void	ft_putnbr_fd(int n, int fd)
 {
-	if (word)
-		write(2, word, ft_strlen(word));
-	if (cmd)
-		write(2, cmd, ft_strlen(cmd));
-	write(2, err, ft_strlen(err));
-	exit(exit_code);
+	size_t	nb;
+
+	if (n == -2147483648)
+	{
+		write(fd, "-2147483648", 11);
+		return ;
+	}
+	else if (n < 0)
+	{
+		ft_putchar_fd('-', fd);
+		nb = -n;
+	}
+	else
+		nb = n;
+	if (nb > 9)
+	{
+		ft_putnbr_fd(nb / 10, fd);
+		nb %= 10;
+	}
+	ft_putchar_fd(nb + '0', fd);
 }

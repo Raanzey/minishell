@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/17 19:44:53 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/23 13:07:07 by musisman          #+#    #+#             */
+/*   Updated: 2024/10/29 00:02:17 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	error(char *word, char *cmd, char *err, int exit_code)
+char	*ft_strtrim(char const *s1, char const *set)
 {
-	if (word)
-		write(2, word, ft_strlen(word));
-	if (cmd)
-		write(2, cmd, ft_strlen(cmd));
-	write(2, err, ft_strlen(err));
-	exit(exit_code);
+	size_t	i;
+	size_t	len_s1;
+	char	*a;
+
+	i = 0;
+	while (s1[i] && ft_strchr(set, s1[i]))
+		i++;
+	len_s1 = ft_strlen(s1);
+	while (len_s1 > i && ft_strchr(set, s1[len_s1 - 1]))
+		len_s1--;
+	a = ft_calloc(len_s1 - i + 1, sizeof(char));
+	if (!a)
+		return (NULL);
+	ft_memcpy(a, s1 + i, len_s1 - i);
+	return (a);
 }

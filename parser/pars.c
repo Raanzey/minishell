@@ -73,7 +73,7 @@ void	print_cmd(t_command *cmd)
 		printf("ARGS:\n");
 		i = -1;
 		while (cmd->av && cmd->av[++i])
-			printf("av[%d]: %s\n", i, cmd->av[i]);
+			printf("av[%d]: **%s**\n", i, cmd->av[i]);
 		printf("REDIRS:\n");
 		r = cmd->redir;
 		while (r)

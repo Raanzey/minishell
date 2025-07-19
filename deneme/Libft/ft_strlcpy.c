@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/17 19:44:53 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/19 16:29:14 by musisman          #+#    #+#             */
+/*   Updated: 2024/10/19 21:01:03 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	error(char *word, char *cmd, char *err, int exit_code)
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
-	if (word)
-		write(2, word, ft_strlen(word));
-	if (cmd)
-		write(2, cmd, ft_strlen(cmd));
-	write(2, err, ft_strlen(err));
-	exit(exit_code);
+	size_t	i;
+
+	i = 0;
+	if (dstsize == 0)
+		return (ft_strlen(src));
+	while (src[i] && i < dstsize - 1)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (ft_strlen(src));
 }

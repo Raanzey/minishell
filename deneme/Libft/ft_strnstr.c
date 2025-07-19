@@ -1,23 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/17 19:44:53 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/19 21:06:47 by musisman          #+#    #+#             */
+/*   Updated: 2024/10/19 21:26:30 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	error(char *word, char *cmd, char *err, int exit_code)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	if (word)
-		write(2, word, ft_strlen(word));
-	if (cmd)
-		write(2, cmd, ft_strlen(cmd));
-	write(2, err, ft_strlen(err));
-	exit(exit_code);
+	size_t	i;
+	size_t	j;
+	char	*a;
+
+	a = (char *)haystack;
+	i = 0;
+	j = 0;
+	if (needle[j] == '\0')
+		return (a);
+	while (a[i] && i < len)
+	{
+		j = 0;
+		while (i + j < len && a[i + j] == needle[j] && a[i + j] != '\0')
+			j++;
+		if (needle[j] == '\0')
+			return (a + i);
+		i++;
+	}
+	return (0);
 }

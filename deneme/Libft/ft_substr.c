@@ -1,23 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/17 19:44:53 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/23 10:30:44 by musisman          #+#    #+#             */
+/*   Updated: 2024/10/24 17:50:27 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	error(char *word, char *cmd, char *err, int exit_code)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	if (word)
-		write(2, word, ft_strlen(word));
-	if (cmd)
-		write(2, cmd, ft_strlen(cmd));
-	write(2, err, ft_strlen(err));
-	exit(exit_code);
+	size_t	i;
+	char	*a;
+
+	if (!s)
+		return (NULL);
+	if (start >= ft_strlen(s))
+		return (ft_strdup(""));
+	if ((ft_strlen(s) - start) < len)
+		len = ft_strlen(s) - start;
+	a = ft_calloc(len + 1, sizeof(char));
+	if (!a)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		a[i] = s[start + i];
+		i++;
+	}
+	return (a);
 }
