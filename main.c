@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/19 14:18:43 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/19 18:42:45 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,8 @@ int	main(int ac, char **av, char **env)
 			// print_cmd(cmd); //* expansion yazdırma
 		}
 		clean_empty_args_inplace(cmd);
+		// print_cmd(cmd); //* expansion yazdırma
+
 		exit_code = exec(cmd, &env_list);
 		// exec(cmd); 
 		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
