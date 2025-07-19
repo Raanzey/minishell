@@ -1,49 +1,17 @@
 #include "../minishell.h"
 
-// static char *find_path(char *cmd)
-// {
-// 	char **paths;
-// 	char *tmp;
-// 	char *candidate;
-// 	char *full_path;
-// 	int i = 0;
-// 	// Eğer komut bir path içeriyorsa doğrudan kontrol et
-// 	if (ft_strchr(cmd, '/'))
-// 	{
-// 		if (access(cmd, X_OK) == 0)
-// 			return ft_strdup(cmd);
-// 		else
-// 			return NULL;
-// 	}// PATH ortam değişkenini al
-// 	tmp = ft_path();
-// 	if (!tmp)
-// 		return NULL;
-// 	paths = ft_split(tmp, ':');
-// 	free(tmp);
-// 	while (paths[i])
-// 	{
-// 		candidate = ft_strjoin(paths[i], "/");
-// 		full_path = ft_strjoin(candidate, cmd);
-// 		free(candidate);
-// 		if (access(full_path, X_OK) == 0)
-// 			return full_path;// paths dizisini free etmeyi unutma (ileride)
-// 		free(full_path);
-// 		i++;
-// 	}// paths dizisini burada da free etmeyi unutma (ileride)
-// 	return NULL;
-// }
-
-char *find_path(char *cmd)
+char	*find_path(char *cmd)
 {
-	char **paths;
-	char *tmp;
-	char *candidate;
-	char *full_path;
-	int i = 0;
+	char	**paths;
+	char	*tmp;
+	char	*candidate;
+	char	*full_path;
+	int		i;
 
+	i = 0;
 	tmp = ft_path(); // PATH environment değişkeni
 	if (!tmp)
-		return NULL;
+		return (NULL);
 	paths = ft_split(tmp, ':');
 	free(tmp);
 	while (paths[i])
@@ -52,22 +20,23 @@ char *find_path(char *cmd)
 		full_path = ft_strjoin(candidate, cmd);
 		free(candidate);
 		if (access(full_path, X_OK) == 0)
-			return full_path;
+			return (full_path);
 		free(full_path);
 		i++;
 	}
-	return NULL;
+	return (NULL);
 }
 
-static void handle_redirections(t_redirect *redir)
+static void	handle_redirections(t_redirect *redir)
 {
-	t_redirect *tmp = redir;
+	t_redirect	*tmp;
+	int			fd;
 
+	tmp = redir;
 	handle_heredocs(tmp); // sadece heredoc'ları burada işliyoruz
-
 	while (redir)
 	{
-		int fd = -1;
+		fd = -1;
 		if (redir->type == 1)
 			fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (redir->type == 2)
@@ -76,8 +45,8 @@ static void handle_redirections(t_redirect *redir)
 			fd = open(redir->filename, O_RDONLY);
 		if (redir->type != 4 && fd == -1)
 		{
-			perror("redir");// hatakodu(56);
-			exit(1);//HATAA DURUMUUU//error(56);
+			perror("redir"); // hatakodu(56);
+			exit(1);         // HATAA DURUMUUU//error(56);
 		}
 		if (redir->type == 3)
 			dup2(fd, STDIN_FILENO);
@@ -89,7 +58,7 @@ static void handle_redirections(t_redirect *redir)
 	}
 }
 
-static char **convert_env_to_array(t_env *env, int count, int i)
+static char	**convert_env_to_array(t_env *env, int count, int i)
 {
 	t_env	*tmp;
 	char	**env_array;
@@ -103,94 +72,155 @@ static char **convert_env_to_array(t_env *env, int count, int i)
 	}
 	env_array = malloc(sizeof(char *) * (count + 1)); // +1 NULL için
 	if (!env_array)
-		return NULL;
+		return (NULL);
 	tmp = env;
 	while (tmp)
 	{
 		joined = ft_strjoin(tmp->key, "=");              // "KEY="
-		env_array[i++] = ft_strjoin(joined, tmp->value);   // "KEY=VALUE"
-		free(joined); // silinecek
+		env_array[i++] = ft_strjoin(joined, tmp->value); // "KEY=VALUE"
+		free(joined);                                    // silinecek
 		tmp = tmp->next;
 	}
 	env_array[i] = NULL; // NULL sonlandır
-	return env_array;
+	return (env_array);
 }
-static void exec_child(t_command *cmd, int prev_fd, int pipe_fd[2], t_env **env_list)
+// static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
+// 		t_env **env_list)
+// {
+// 	char	*path;
+
+// 	if (cmd->redir)
+// 		handle_redirections(cmd->redir);
+// 	if (prev_fd != -1)
+// 	{
+// 		dup2(prev_fd, STDIN_FILENO);
+// 		close(prev_fd);
+// 	}
+// 	if (cmd->next)
+// 	{
+// 		dup2(pipe_fd[1], STDOUT_FILENO);
+// 		close(pipe_fd[0]);
+// 		close(pipe_fd[1]);
+// 	}
+// 	// ✅ 1. Builtin ise exit ile dön
+// 	if (built_in(cmd, env_list) == 0)
+// 		exit(0);
+// 	// ✅ 2. Execve için PATH çöz
+// 	path = NULL;
+// 	if (ft_strchr(cmd->av[0], '/'))
+// 	{
+// 		struct stat st; // tyeni eklendi dosya bilgilerini alıyormuş detaylı bak
+// 		if (access(cmd->av[0], F_OK) != 0)
+// 			error(0, cmd->av[0], ": No such file or directory\n", 127);
+// 		else if (access(cmd->av[0], X_OK) != 0)
+// 			error(0, cmd->av[0], ": Permission denied\n", 126);
+// 		else if (stat(cmd->av[0], &st) == 0 && S_ISDIR(st.st_mode))
+// 			error(0, cmd->av[0], ": Is a directory\n", 126);
+// 		else
+// 			path = ft_strdup(cmd->av[0]);
+// 	}
+// 	else
+// 	{
+// 		path = find_path(cmd->av[0]);
+// 		if (!path)
+// 			error(0, cmd->av[0], ": command not found\n", 127);
+// 	}
+// 	// ✅ 3. Execve çağır
+// 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
+// 	perror("execve");
+// 	exit(126);
+// }
+
+int	has_input_redir(t_redirect *redir)
 {
-    if (cmd->redir)
-        handle_redirections(cmd->redir);
+	while (redir)
+	{
+		if (redir->type == 3 || redir->type == 4)
+			return (1);
+		redir = redir->next;
+	}
+	return (0);
+}
 
-    if (prev_fd != -1)
-    {
-        dup2(prev_fd, STDIN_FILENO);
-        close(prev_fd);
-    }
 
-    if (cmd->next)
-    {
-        dup2(pipe_fd[1], STDOUT_FILENO);
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-    }
-
-    // ✅ 1. Builtin ise exit ile dön
-    if (built_in(cmd, env_list) == 0)
-        exit(0);
-
-    // ✅ 2. Execve için PATH çöz
-    char *path = NULL;
-
-if (ft_strchr(cmd->av[0], '/'))
+static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
+		t_env **env_list)
 {
-	struct stat st; // tyeni eklendi dosya bilgilerini alıyormuş detaylı bak
-	if (access(cmd->av[0], F_OK) != 0)
-		error(0, cmd->av[0], ": No such file or directory\n", 127);
-	else if (access(cmd->av[0], X_OK) != 0)
-		error(0, cmd->av[0], ": Permission denied\n", 126);
-	else if (stat(cmd->av[0], &st) == 0 && S_ISDIR(st.st_mode))
-		error(0, cmd->av[0], ": Is a directory\n", 126);
+	int		heredoc_fd;
+	char	*path;
+
+	heredoc_fd = handle_heredocs(cmd->redir);
+	if (cmd->redir)
+		handle_redirections(cmd->redir);
+	if (heredoc_fd != -1)
+	{
+		dup2(heredoc_fd, STDIN_FILENO);
+		close(heredoc_fd);
+	}
+	else if (prev_fd != -1 && !has_input_redir(cmd->redir))
+	{
+		dup2(prev_fd, STDIN_FILENO);
+		close(prev_fd);
+	}
+	if (cmd->next)
+	{
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+	}
+	if (built_in(cmd, env_list) == 0)
+		exit(0);
+	path = NULL;
+	if (ft_strchr(cmd->av[0], '/'))
+	{
+		struct stat st; // tyeni eklendi dosya bilgilerini alıyormuş detaylı bak
+		if (access(cmd->av[0], F_OK) != 0)
+			error(0, cmd->av[0], ": No such file or directory\n", 127);
+		else if (access(cmd->av[0], X_OK) != 0)
+			error(0, cmd->av[0], ": Permission denied\n", 126);
+		else if (stat(cmd->av[0], &st) == 0 && S_ISDIR(st.st_mode))
+			error(0, cmd->av[0], ": Is a directory\n", 126);
+		else
+			path = ft_strdup(cmd->av[0]);
+	}
 	else
-		path = ft_strdup(cmd->av[0]);
+	{
+		path = find_path(cmd->av[0]);
+		if (!path)
+			error(0, cmd->av[0], ": command not found\n", 127);
+	}
+	// ✅ 3. Execve çağır
+	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
+	perror("execve");
+	exit(126);
 }
-else
+
+int	exec(t_command *cmd, t_env **env_list)
 {
-	path = find_path(cmd->av[0]);
-	if (!path)
-		error(0, cmd->av[0], ": command not found\n", 127);
-}
+	int		prev_fd;
+	int		pipe_fd[2];
+	pid_t	pid;
+	int		status;
+	int		last_exit;
 
-
-
-
-    // ✅ 3. Execve çağır
-    execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
-    perror("execve");
-    exit(126);
-}
-
-
-int exec(t_command *cmd, t_env **env_list)
-{
-	
-	int prev_fd = -1;
-	int pipe_fd[2];
-	pid_t pid;
-
-	g_signal=1;
+	prev_fd = -1;
+	g_signal = 1;
+	if (!cmd->av || !cmd->av[0])
+		return (0);
 	if (!cmd->next && is_parent_builtin(cmd))
-		return built_in(cmd, env_list);
+		return (built_in(cmd, env_list));
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipe_fd) == -1)
 		{
-			perror("pipe");//ERORR GELCEK
-			exit(1);//ERORR GELCEK
+			perror("pipe"); // ERORR GELCEK
+			exit(1);        // ERORR GELCEK
 		}
 		pid = fork();
 		if (pid == -1)
 		{
-			perror("fork");//ERORR GELCEK
-			exit(1);//ERORR GELCEK
+			perror("fork"); // ERORR GELCEK
+			exit(1);        // ERORR GELCEK
 		}
 		if (pid == 0)
 			exec_child(cmd, prev_fd, pipe_fd, env_list);
@@ -205,26 +235,13 @@ int exec(t_command *cmd, t_env **env_list)
 			prev_fd = -1;
 		cmd = cmd->next;
 	}
-	int status;
-	// int last_exit = 0;
-	// while (wait(&status) > 0)
-	// {
-	// 	if (WIFSIGNALED(status))
-	// 	{
-	// 		int sig = WTERMSIG(status);
-	// 		if (sig == SIGQUIT)
-	// 			write(1, "Quit (core dumped)\n", 20);//ERROR DURUMU
-	// 		// SIGINT (Ctrl+C) için bir şey yazma, readline kendisi işler
-	// 	}
-	// }
-	// return 0;
-	int last_exit = 0;
-    	while (wait(&status) > 0)
-    	{
-    	    if (WIFEXITED(status))
-    	        last_exit = WEXITSTATUS(status);
-    	    else if (WIFSIGNALED(status))
-    	        last_exit = 128 + WTERMSIG(status);
-    	}
-    return last_exit;
+	last_exit = 0;
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status))
+			last_exit = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			last_exit = 128 + WTERMSIG(status);
+	}
+	return (last_exit);
 }

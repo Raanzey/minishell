@@ -6,7 +6,7 @@ SRCS		= main.c utils.c execution/exec.c execution/exec_utils.c \
 			execution/built_in/built_in.c execution/built_in/built_in_utils.c \
 			execution/built_in/env_fonc_utils.c execution/built_in/env_fonc.c \
 			parser/token.c parser/token_utils.c parser/error_handle.c \
-			parser/pars.c parser/pars_utils.c \
+			parser/pars.c parser/pars_utils.c parser/clean.c\
 			parser/expansion.c parser/expansion_utils.c parser/expansion_extra_utils.c\
 
 LIBFT		= Libft/libft.a

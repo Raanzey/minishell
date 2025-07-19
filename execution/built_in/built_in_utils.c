@@ -32,10 +32,11 @@ int	cd_cmd(t_command *cmd)
 	return (0);
 }
 //* Yeni eklendi export hata durumu için
-int is_valid_identifier(char *str)
+int	is_valid_identifier(char *str)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
 		return (0);
 	while (str[i] && str[i] != '=')

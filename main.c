@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/16 21:29:23 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/19 14:18:43 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ int	main(int ac, char **av, char **env)
 			// printf("\nEXPANSION\n\n");
 			// print_cmd(cmd); //* expansion yazdırma
 		}
+		clean_empty_args_inplace(cmd);
 		exit_code = exec(cmd, &env_list);
 		// exec(cmd); 
 		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
