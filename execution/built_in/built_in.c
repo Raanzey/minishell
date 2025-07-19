@@ -65,7 +65,7 @@ int pwd_cmd()
 	char cwd[1024];
     if(!getcwd(cwd, sizeof(cwd)))
 	{
-		perror("pwd");//hata DURUMUUUUU
+		perror("pwd");//hata DURUMUUUUU    
 		return 1;
 	}	
 	printf("%s\n", cwd);
