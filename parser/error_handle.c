@@ -74,7 +74,7 @@ int	pre_parser_error(char **tokens, int i)
 		if (!ft_strncmp(tokens[i], "|", 2))
 		{
 			if (i == 0 || !tokens[i + 1] || !ft_strncmp(tokens[i + 1], "|", 2))
-				return (print_unexpected_token("|"));
+				return (err_prs(ERR_SNTX, "`|'", 2));
 		}
 		else if (!ft_strncmp(tokens[i], "<", 2)
 			|| !ft_strncmp(tokens[i], ">", 2)
@@ -82,13 +82,13 @@ int	pre_parser_error(char **tokens, int i)
 			|| !ft_strncmp(tokens[i], ">>", 3))
 		{
 			if (!tokens[i + 1])
-				return (print_unexpected_token("newline"));
+				return (err_prs(ERR_SNTX, "`newline'", 2));
 			if (!ft_strncmp(tokens[i + 1], "<", 2)
 				|| !ft_strncmp(tokens[i + 1], ">", 2)
 				|| !ft_strncmp(tokens[i + 1], "<<", 3)
 				|| !ft_strncmp(tokens[i + 1], ">>", 3)
 				|| !ft_strncmp(tokens[i + 1], "|", 2))
-				return (print_unexpected_token(tokens[i + 1]));
+				return (err_prs(ERR_SNTX, tokens[i + 1], 2));
 		}
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/17 19:44:53 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/19 16:10:18 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,13 @@ int	error(char *word, char *cmd, char *err, int exit_code)
 		write(2, cmd, ft_strlen(cmd));
 	write(2, err, ft_strlen(err));
 	exit(exit_code);
+}
+
+int	err_prs(char *cmd, char *err, int exit_code)
+{
+	if (cmd)
+		write(2, cmd, ft_strlen(cmd));
+	write(2, err, ft_strlen(err));
+	write(2, "\n", 2);
+	return (exit_code);
 }

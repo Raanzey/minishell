@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/19 14:18:43 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/19 16:09:22 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ int	main(int ac, char **av, char **env)
 		
 		tokens = tokenizer(input);
 		if (!tokens || pre_parser_error(tokens, -1))
-		{	
+		{
+			exit_code = 2;
 			// printf("Token failed.\n");
 			free_tokens(tokens);
 			free(input);
