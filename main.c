@@ -3,58 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/20 21:19:21 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/20 21:37:16 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_tokens(char **tokens)
-{
-	int i = 0;
-	if (!tokens)
-		return ;
-	while (tokens[i])
-		free(tokens[i++]);
-	free(tokens);
-}
+// // void	free_tokens(char **tokens)
+// {
+// 	int i = 0;
+// 	if (!tokens)
+// 		return ;
+// 	while (tokens[i])
+// 		// free(tokens[i++]);
+// 	// free(tokens);
+// }
 
-void	free_redirects(t_redirect *redir)
-{
-	t_redirect	*tmp;
+// // void	free_redirects(t_redirect *redir)
+// {
+// 	t_redirect	*tmp;
 
-	while (redir)
-	{
-		tmp = redir->next;
-		free(redir->filename);
-		free(redir);
-		redir = tmp;
-	}
-}
+// 	while (redir)
+// 	{
+// 		tmp = redir->next;
+// 		// free(redir->filename);
+// 		// free(redir);
+// 		redir = tmp;
+// 	}
+// }
 
-void	free_command(t_command *cmd)
-{
-	t_command	*tmp;
-	int			i;
+// void	free_command(t_command *cmd)
+// {
+// 	t_command	*tmp;
+// 	int			i;
 
-	while (cmd)
-	{
-		tmp = cmd->next;
-		if (cmd->av)
-		{
-			i = -1;
-			while (cmd->av[++i])
-				free(cmd->av[i]);
-			free(cmd->av);
-		}
-		free_redirects(cmd->redir);
-		free(cmd);
-		cmd = tmp;
-	}
-}
+// 	while (cmd)
+// 	{
+// 		tmp = cmd->next;
+// 		if (cmd->av)
+// 		{
+// 			i = -1;
+// 			while (cmd->av[++i])
+// 				// free(cmd->av[i]);
+// 			// free(cmd->av);
+// 		}
+// 		// free_redirects(cmd->redir);
+// 		// free(cmd);
+// 		cmd = tmp;
+// 	}
+// }
 
 
 int		g_signal;
@@ -69,7 +69,7 @@ void	handle_sigint_exec(int sig)
 	(void)sig;
 	if (isatty(STDOUT_FILENO))
 		write(STDOUT_FILENO, "\n", 1);
-		//leak olur ft_free ekle amk.
+	ft_free();
 	exit(130);
 }
 
@@ -129,8 +129,8 @@ int	main(int ac, char **av, char **env)
 		if (!tokens || pre_parser_error(tokens, -1))
 		{	
 			// printf("Token failed.\n");
-			free_tokens(tokens);
-			free(input);
+			// free_tokens(tokens);
+			// free(input);
 			continue;
 		}
 		else
@@ -144,8 +144,8 @@ int	main(int ac, char **av, char **env)
 		cmd = parser(tokens);
 		if (!cmd)
 		{
-			free_tokens(tokens);
-			free(input);
+			// free_tokens(tokens);
+			// free(input);
 			continue;
 		}
 		else
@@ -157,9 +157,9 @@ int	main(int ac, char **av, char **env)
 		expand_args(cmd, exit_code);
 		if (handle_error(cmd))
 		{
-			free_command(cmd);
-			free_tokens(tokens);
-			free(input);
+			// free_command(cmd);
+			// free_tokens(tokens);
+			// free(input);
 			continue;
 		}
 		else
@@ -173,10 +173,11 @@ int	main(int ac, char **av, char **env)
 		exit_code = exec(cmd, &env_list);
 		// exec(cmd); 
 		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
-		free_command(cmd);
-		free_tokens(tokens);
-		free(input);
+		// free_command(cmd);
+		// free_tokens(tokens);
+		// free(input);
 	}
+	ft_free();
 	return (0);
 }
 

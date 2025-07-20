@@ -30,8 +30,8 @@ static void	handle_exit_code(char **res, int *i, int exit_code)
 
 	tmp = ft_itoa(exit_code);
 	// *res = ft_strdup(tmp);
-	*res = ft_strjoin_free(*res, tmp);
-	free(tmp);
+	*res = ft_strjoin(*res, tmp);
+	// free(tmp);
 	*i += 1;
 }
 
@@ -43,10 +43,10 @@ static void	handle_env_var(char **res, const char *s, size_t *i)
 	tmp = extract_var_name(s, i);
 	env_value = getenv(tmp);
 	if (env_value)
-		*res = ft_strjoin_free(*res, env_value);
+		*res = ft_strjoin(*res, env_value);
 	else
-		*res = ft_strjoin_free(*res, "");
-	free(tmp);
+		*res = ft_strjoin(*res, "");
+	// free(tmp);
 }
 
 static void	handle_env_or_positional(char **res, const char *s, size_t *i)

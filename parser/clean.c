@@ -6,26 +6,26 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/19 13:44:22 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/19 14:20:10 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/20 21:35:38 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	free_split(char **split)
-{
-	int	i;
+// // void	free_split(char **split)
+// {
+// 	int	i;
 
-	if (!split)
-		return ;
-	i = 0;
-	while (split[i])
-	{
-		free(split[i]);
-		i++;
-	}
-	free(split);
-}
+// 	if (!split)
+// 		return ;
+// 	i = 0;
+// 	while (split[i])
+// 	{
+// 		free(split[i]);
+// 		i++;
+// 	}
+// 	free(split);
+// }
 
 char	**clean_empty_args(char **av)
 {
@@ -65,7 +65,7 @@ void	clean_empty_args_inplace(t_command *cmd)
 	while (cur)
 	{
 		tmp = clean_empty_args(cur->av);
-		free_split(cur->av);
+		// free_split(cur->av);
 		cur->av = tmp;
 		cur = cur->next;
 	}

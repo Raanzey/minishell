@@ -78,7 +78,10 @@ int	exit_cmd(char **av)
 
 	printf("exit\n");
 	if (!av[1])
+	{
+		ft_free();
 		exit(0);
+	}
 	if (!is_numeric(av[1]))
 		error("minishell: exit: `", 0, ERR_EXIT, 2);
 	if (av[2])
@@ -86,5 +89,6 @@ int	exit_cmd(char **av)
 	code = ft_atoi(av[1]) % 256;
 	if (code < 0)
 		code += 256;
+	ft_free();
 	exit(code);
 }

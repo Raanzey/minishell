@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:22:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/05/29 17:24:00 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/20 21:36:55 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_command	*new_command(void)
 {
 	t_command	*cmd;
 
-	cmd = malloc(sizeof(t_command));
+	cmd = ft_malloc(sizeof(t_command));
 	if (!cmd)
 		return (NULL);
 	cmd->av = NULL;
@@ -35,7 +35,7 @@ t_redirect	*create_redirect(char *op, char *file)
 {
 	t_redirect	*r;
 
-	r = malloc(sizeof(t_redirect));
+	r = ft_malloc(sizeof(t_redirect));
 	if (!r || !file)
 		return (NULL);
 	r->filename = ft_strdup(file);
@@ -81,6 +81,6 @@ void	add_arg(t_command *cmd, char *word)
 		new[j] = cmd->av[j];
 	new[i] = ft_strdup(word);
 	new[i + 1] = NULL;
-	free(cmd->av);
+	// free(cmd->av);
 	cmd->av = new;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: msisman <<msisman@student.42.fr>>          +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 19:06:20 by musisman          #+#    #+#             */
-/*   Updated: 2024/10/31 16:23:27 by msisman          ###   ########.fr       */
+/*   Updated: 2025/07/20 21:29:29 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,22 +40,6 @@ static size_t	control(char const *s, size_t start, size_t i)
 	return (0);
 }
 
-static void	free_tab(char **sp)
-{
-	size_t	i;
-
-	i = 0;
-	if (sp)
-	{
-		while (sp[i])
-		{
-			free(sp[i]);
-			i++;
-		}
-		free(sp);
-	}
-}
-
 static char	**last_sp(char **sp, char const *s, char c)
 {
 	size_t	start;
@@ -74,10 +58,7 @@ static char	**last_sp(char **sp, char const *s, char c)
 		{
 			sp[wc] = ft_substr(s, start, i);
 			if (!sp[wc])
-			{
-				free_tab(sp);
 				return (NULL);
-			}
 			wc++;
 		}
 		start += i + control(s, start, i);

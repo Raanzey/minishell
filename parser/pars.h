@@ -36,7 +36,6 @@ size_t		redirect(char **tokens, const char *s, size_t *i, size_t k);
 int			pre_parser_error(char **tokens, int i);
 int			handle_error(t_command *cmd);
 char		**tokenizer(char const *s);
-char		*ft_strjoin_free(char *s1, char *s2);
 char		*ft_strjoin_char(char *s, char c);
 char		*append_substring(char *res, const char *src, int one, int end);
 char		*expand_dollar(const char *s, int last_exit);

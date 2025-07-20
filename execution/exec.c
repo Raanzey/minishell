@@ -13,15 +13,15 @@ char	*find_path(char *cmd, t_env *env_list)
 	if (!tmp)
 		error("minishell: ", cmd, ERR_CD,127);
 	paths = ft_split(tmp, ':');
-	free(tmp);
+	// free(tmp);
 	while (paths[i])
 	{
 		candidate = ft_strjoin(paths[i], "/");
 		full_path = ft_strjoin(candidate, cmd);
-		free(candidate);
+		// free(candidate);
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
-		free(full_path);
+		// free(full_path);
 		i++;
 	}
 	return (NULL);
@@ -38,7 +38,7 @@ static char	**convert_env_to_array(t_env *env, int count, int i)
 		count++;
 		tmp = tmp->next;
 	}
-	env_array = malloc(sizeof(char *) * (count + 1)); // +1 NULL için
+	env_array = ft_malloc(sizeof(char *) * (count + 1)); // +1 NULL için
 	if (!env_array)
 		return (NULL);
 	tmp = env;
@@ -46,7 +46,7 @@ static char	**convert_env_to_array(t_env *env, int count, int i)
 	{
 		joined = ft_strjoin(tmp->key, "=");              // "KEY="
 		env_array[i++] = ft_strjoin(joined, tmp->value); // "KEY=VALUE"
-		free(joined);                                    // silinecek
+		// free(joined);                                    // silinecek
 		tmp = tmp->next;
 	}
 	env_array[i] = NULL; // NULL sonlandır
@@ -76,6 +76,7 @@ static void	handle_redirections(t_redirect *redir)
 		if (redir->type != 4 && fd == -1)
 		{
 			perror("redir");
+			ft_free();
 			exit(1);
 		}
 
@@ -133,6 +134,7 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	if (built_in(cmd, env_list) == 0)
 	{
 		//fprintf(stderr, "[BUILTIN] Executed in child\n");
+		ft_free();
 		exit(0);
 	}
 
@@ -157,6 +159,7 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
  	//fprintf(stderr, "[EXECVE] Executing %s\n", path);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
 	perror("[EXECVE ERROR]");
+	ft_free();
 	exit(126);
 }
 
@@ -187,6 +190,7 @@ int	exec(t_command *cmd, t_env **env_list)
 		if (cmd->next && pipe(pipe_fd) == -1)
 		{
 			perror("[PIPE ERROR]");
+			ft_free();
 			exit(1);
 		}
 		discard_signals();
@@ -194,6 +198,7 @@ int	exec(t_command *cmd, t_env **env_list)
 		if (pid == -1)
 		{
 			perror("[FORK ERROR]");
+			ft_free();
 			exit(1);
 		}
 		if (pid == 0)
