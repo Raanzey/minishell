@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/20 20:44:04 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/20 21:08:22 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,13 @@ void	sigint_handler(int sig)
 		rl_on_new_line();
 		rl_redisplay();
 	}
-	// else if (g_signal==1)
-	// {
-	// 	// write(1, "\n", 1);
-	// 	// rl_on_new_line();
- 	// }
-	else if (g_signal==2)
-		close(STDIN_FILENO);
+	else if (g_signal==1)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+ 	}
+	else if (g_signal==2){
+		close(STDIN_FILENO);}
 }
 
 int	main(int ac, char **av, char **env)
@@ -118,11 +118,7 @@ int	main(int ac, char **av, char **env)
 		input = readline("minishell~ ");
 		signal(SIGINT, sigint_handler);
 		if (!input)
-		{
-			if (g_signal != 1)
-				write(1, "exit", 5); // readline NULL ise yani Ctrl+D
 			break;
-		}
 		if (*input)
 			add_history(input);
 		
