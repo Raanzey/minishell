@@ -16,7 +16,7 @@ int pwd_cmd();
 int env_cmd(t_env *env);
 int export_cmd(char **av, t_env **env);
 int unset_cmd(t_command *cmd, t_env **env_list);
-char *ft_path(void);
+char *ft_path(t_env *env);
 void handle_heredocs(t_redirect *redir);
 void print_export(t_env *env);
 void add_or_update_env(t_env **env, char *eq, char *av);
@@ -27,7 +27,11 @@ void update_env(t_env *node, const char *value);
 t_env *init_env(char **env, int i);
 t_env *find_env(t_env *env, const char *key);
 
-int error_value(int num);
+void	setup_signals_main();
+void	sigint_handler(int sig);
+void	handle_sigint_exec(int sig);
+void	discard_signals();
+int ft_strcmp(const char *s1, const char *s2);
 int is_numeric(const char *str);
 int	exit_cmd(char **av);
 

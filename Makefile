@@ -1,6 +1,6 @@
 NAME 		= minishell
 CC		= cc
-CFLAGS 		= -Wall -Wextra -Werror
+CFLAGS 		= -Wall -Wextra -Werror -g
 LIBFLAGS	= -lreadline
 SRCS		= main.c utils.c execution/exec.c execution/exec_utils.c \
 			execution/built_in/built_in.c execution/built_in/built_in_utils.c \
@@ -26,5 +26,8 @@ fclean: clean
 	make -s -C $(DIR_LIBFT) fclean
 
 re: fclean all
+
+run:
+	./${NAME}
 
 .PHONY: all clean fclean re 

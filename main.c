@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/19 18:42:45 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/20 20:44:04 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,28 @@ void	free_command(t_command *cmd)
 	}
 }
 
+
 int		g_signal;
+
+void	setup_signals_main()
+{
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, sigint_handler);
+}
+void	handle_sigint_exec(int sig)
+{
+	(void)sig;
+	if (isatty(STDOUT_FILENO))
+		write(STDOUT_FILENO, "\n", 1);
+		//leak olur ft_free ekle amk.
+	exit(130);
+}
+
+void	discard_signals()
+{
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
+}
 
 void	sigint_handler(int sig)
 {
@@ -68,11 +89,11 @@ void	sigint_handler(int sig)
 		rl_on_new_line();
 		rl_redisplay();
 	}
-	else if (g_signal==1)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
- 	}
+	// else if (g_signal==1)
+	// {
+	// 	// write(1, "\n", 1);
+	// 	// rl_on_new_line();
+ 	// }
 	else if (g_signal==2)
 		close(STDIN_FILENO);
 }
@@ -96,8 +117,12 @@ int	main(int ac, char **av, char **env)
 		g_signal = 0;
 		input = readline("minishell~ ");
 		signal(SIGINT, sigint_handler);
-		if (!input) // readline okumazsa hata bastır
-			break ;
+		if (!input)
+		{
+			if (g_signal != 1)
+				write(1, "exit", 5); // readline NULL ise yani Ctrl+D
+			break;
+		}
 		if (*input)
 			add_history(input);
 		
@@ -156,98 +181,4 @@ int	main(int ac, char **av, char **env)
 	return (0);
 }
 
-// < "$EMPTY" //TODOfarklı çalışıyor düzelt
-
-// ** minishell **
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler/3.2__Minishell/minishell (0) $ ./minishell
-// 	minishell~ < "$EMPTY"
-	
-// 	TOKENIZER
-	
-// 	token[0]: <
-// 	token[1]: "$EMPTY"
-	
-// 	EXPANSION
-	
-// 	syntax error near unexpected token `newline'
-// 	Expand failed.
-// 	minishell~ 
-
-// ** bash **
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (0) $ < "$EMPTY"
-// 	-bash: : No such file or directory
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ < bla
-// 	-bash: bla: No such file or directory
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
-
-
-// < $EMPTY
-
-// ** minishell **
-// 	minishell~ < $EMPTY
-	
-// 	TOKENIZER
-	
-// 	token[0]: <
-// 	token[1]: $EMPTY
-	
-// 	EXPANSION
-	
-// 	syntax error near unexpected token `newline'
-// 	Expand failed.
-// 	minishell~
-// ** bash **
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ < $EMPTY   
-// 	-bash: $EMPTY: ambiguous redirect
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
-
-
-
-// echo a > "$EMPTY"
-
-// ** minishell **
-// 	minishell~ echo a > "$EMPTY"
-	
-// 	TOKENIZER
-	
-// 	token[0]: echo
-// 	token[1]: a
-// 	token[2]: >
-// 	token[3]: "$EMPTY"
-	
-// 	EXPANSION
-	
-// 	syntax error near unexpected token `newline'
-// 	Expand failed.
-// 	minishell~ 
-
-// ** bash **
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ echo a > "$EMPTY"
-// 	-bash: : No such file or directory
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
-
-
-
-// echo a > $EMPTY
-
-// ** minishell **
-// 	minishell~ echo a > $EMPTY
-	
-// 	TOKENIZER
-	
-// 	token[0]: echo
-// 	token[1]: a
-// 	token[2]: >
-// 	token[3]: $EMPTY
-	
-// 	EXPANSION
-	
-// 	syntax error near unexpected token `newline'
-// 	Expand failed.
-// 	minishell~
-
-// ** bash **
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ echo a > $EMPTY
-// 	-bash: $EMPTY: ambiguous redirect
-// 	mershim@ErsinAsmEslem:/mnt/c/Users/musta/OneDrive/Masaüstü/42 projeler (1) $ 
 	

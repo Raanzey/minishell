@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-char	*find_path(char *cmd)
+char	*find_path(char *cmd, t_env *env_list)
 {
 	char	**paths;
 	char	*tmp;
@@ -9,9 +9,9 @@ char	*find_path(char *cmd)
 	int		i;
 
 	i = 0;
-	tmp = ft_path(); // PATH environment değişkeni
+	tmp = ft_path(env_list); // PATH environment değişkeni
 	if (!tmp)
-		return (NULL);
+		error("minishell: ", cmd, ERR_CD,127);
 	paths = ft_split(tmp, ':');
 	free(tmp);
 	while (paths[i])
@@ -57,11 +57,15 @@ static void	handle_redirections(t_redirect *redir)
 	t_redirect	*tmp;
 	int			fd;
 
-	tmp = redir;
+	tmp = redir; 
+	
 	handle_heredocs(tmp); // sadece heredoc'ları burada işliyoruz
-	while (redir)
+	
+	while (redir) 
 	{
 		fd = -1;
+		//fprintf(stderr, "[REDIR] type: %d, file: %s\n", redir->type, redir->filename);
+
 		if (redir->type == 1)
 			fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (redir->type == 2)
@@ -74,20 +78,29 @@ static void	handle_redirections(t_redirect *redir)
 			perror("redir");
 			exit(1);
 		}
+
 		if (redir->type == 3)
+		{
+			//fprintf(stderr, "[DUP2] Redirecting input from fd %d\n", fd);
 			dup2(fd, STDIN_FILENO);
+		}
 		else if (redir->type == 1 || redir->type == 2)
+		{
+			//fprintf(stderr, "[DUP2] Redirecting output to fd %d\n", fd);
 			dup2(fd, STDOUT_FILENO);
+		}
+
 		if (fd != -1 && fd != STDIN_FILENO && fd != STDOUT_FILENO)
 			close(fd);
+
 		redir = redir->next;
 	}
 }
-int	has_input_redir(t_redirect *redir)
+int	has_output_redir(t_redirect *redir)
 {
 	while (redir)
 	{
-		if (redir->type == 3 || redir->type == 4) // REDIR_IN veya REDIR_HEREDOC
+		if (redir->type == 1 || redir->type == 2) // > veya >>
 			return (1);
 		redir = redir->next;
 	}
@@ -98,21 +111,31 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 {
 	char	*path = NULL;
 
+	//fprintf(stderr, "[CHILD] cmd: %s\n", cmd->av ? cmd->av[0] : "(null)");
 	if (cmd->redir)
 		handle_redirections(cmd->redir);
 	else if (prev_fd != -1)
 	{
+		//fprintf(stderr, "[DUP2] Inheriting prev_fd %d as STDIN\n", prev_fd);
 		dup2(prev_fd, STDIN_FILENO);
 		close(prev_fd);
 	}
-	if (cmd->next)
+	setup_signals_main();
+
+	if (!has_output_redir(cmd->redir) &&cmd->next)
 	{
+		//fprintf(stderr, "[DUP2] Piping STDOUT to pipe write end %d\n", pipe_fd[1]);
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
+	
 	if (built_in(cmd, env_list) == 0)
+	{
+		//fprintf(stderr, "[BUILTIN] Executed in child\n");
 		exit(0);
+	}
+
 	if (ft_strchr(cmd->av[0], '/'))
 	{
 		struct stat st;
@@ -127,12 +150,13 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	}
 	else
 	{
-		path = find_path(cmd->av[0]);
+		path = find_path(cmd->av[0], *env_list);
 		if (!path)
 			error(0, cmd->av[0], ": command not found\n", 127);
 	}
+ 	//fprintf(stderr, "[EXECVE] Executing %s\n", path);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
-	perror("execve");
+	perror("[EXECVE ERROR]");
 	exit(126);
 }
 
@@ -155,22 +179,27 @@ int	exec(t_command *cmd, t_env **env_list)
 	}
 	if (!cmd->next && is_parent_builtin(cmd))
 		return (built_in(cmd, env_list));
+	
 	while (cmd)
 	{
+		//fprintf(stderr, "[EXEC] New command: %s\n", cmd->av ? cmd->av[0] : "(null)");
+
 		if (cmd->next && pipe(pipe_fd) == -1)
 		{
-			perror("pipe");
+			perror("[PIPE ERROR]");
 			exit(1);
 		}
-
+		discard_signals();
 		pid = fork();
 		if (pid == -1)
 		{
-			perror("fork");
+			perror("[FORK ERROR]");
 			exit(1);
 		}
 		if (pid == 0)
+		{
 			exec_child(cmd, prev_fd, pipe_fd, env_list);
+		}
 
 		if (prev_fd != -1)
 			close(prev_fd);
@@ -199,8 +228,11 @@ int	exec(t_command *cmd, t_env **env_list)
 			//fprintf(stderr, "[WAIT] Child killed by signal %d\n", sig);
 			if (sig != SIGPIPE)
 				last_exit = 128 + sig;
+			if (sig == SIGINT)
+				write(1, "\n", 1);	
 			//fprintf(stderr, "[WAIT] Child killed by signal sonrası %d\n", sig);
 		}
 	}
+	setup_signals_main();
 	return (last_exit); // Sonlanan en son child’ın çıkış kodunu döndür
 }

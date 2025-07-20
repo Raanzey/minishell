@@ -1,18 +1,24 @@
 #include "../minishell.h"
 
-int	error_value(int num)
+static char *get_env_value(t_env *env, const char *key)
 {
-	return (num); // :D
+	while (env)
+	{
+		if (!ft_strcmp(env->key, key))
+			return (env->value); // NULL olabilir ama burada strdup yapmana gerek yok
+		env = env->next;
+	}
+	return (NULL);
 }
 
-char	*ft_path(void)
+char	*ft_path(t_env *env)
 {
-	char	*path_env;
+	char *path_env;
 
-	path_env = getenv("PATH");
+	path_env = get_env_value(env, "PATH");
 	if (!path_env)
-		exit(1); // ERORR GELCEK
-	return (strdup(path_env));
+		return (NULL); // Komutların PATH olmadan bulunamaması hatası
+	return (ft_strdup(path_env));
 }
 
 void	handle_heredocs(t_redirect *redir)
@@ -22,7 +28,7 @@ void	handle_heredocs(t_redirect *redir)
 	char	*line;
 
 	heredoc_fd = -1;
-	g_signal = 2;
+	signal(SIGINT, handle_sigint_exec);
 	while (redir)
 	{
 		if (redir->type == 4)
@@ -56,45 +62,7 @@ void	handle_heredocs(t_redirect *redir)
         dup2(heredoc_fd, STDIN_FILENO);
         close(heredoc_fd);
     }
-
 }
-
-// int handle_heredocs(t_redirect *redir)
-// {
-//     int fd[2];
-//     int heredoc_fd = -1;
-//     char *line;
-
-//     g_signal = 2;
-//     while (redir)
-//     {
-//         if (redir->type == 4)
-//         {
-//             if (pipe(fd) == -1)
-//             {
-//                 perror("pipe");
-//                 exit(1);
-//             }
-//             while (1)
-//             {
-//                 line = readline("> ");
-//                 if (!line || (!ft_strncmp(line, redir->filename, ft_strlen(redir->filename)) && line[ft_strlen(redir->filename)] == '\0'))
-//                     break;
-//                 write(fd[1], line, ft_strlen(line));
-//                 write(fd[1], "\n", 1);
-//                 free(line);
-//             }
-//             free(line);
-//             close(fd[1]);
-//             if (heredoc_fd != -1)
-//                 close(heredoc_fd);
-//             heredoc_fd = fd[0];
-//         }
-//         redir = redir->next;
-//     }
-//     return heredoc_fd;
-// }
-
 
 int	is_numeric(const char *str)
 {
