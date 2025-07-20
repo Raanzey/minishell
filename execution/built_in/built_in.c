@@ -24,7 +24,7 @@ int echo_cmd(char **str)
 	int i;
 	
 	i = 0;
-	if (!ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
+	if (str[1] && !ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
 	{
 		while (str[++i])
 		{
@@ -65,7 +65,7 @@ int pwd_cmd()
 	char cwd[1024];
     if(!getcwd(cwd, sizeof(cwd)))
 	{
-		perror("pwd");//hata DURUMUUUUU
+		perror("pwd");//hata DURUMUUUUU    
 		return 1;
 	}	
 	printf("%s\n", cwd);
