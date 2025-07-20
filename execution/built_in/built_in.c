@@ -24,7 +24,7 @@ int echo_cmd(char **str)
 	int i;
 	
 	i = 0;
-	if (!ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
+	if (str[1] && !ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
 	{
 		while (str[++i])
 		{

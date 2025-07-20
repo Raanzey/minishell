@@ -54,7 +54,7 @@ void	handle_heredocs(t_redirect *redir)
 	if (heredoc_fd != -1)
 	{
         dup2(heredoc_fd, STDIN_FILENO);
-        //close(heredoc_fd);
+        close(heredoc_fd);
     }
 
 }
