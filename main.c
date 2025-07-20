@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/20 21:08:22 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/20 21:19:21 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,10 @@ int	main(int ac, char **av, char **env)
 		input = readline("minishell~ ");
 		signal(SIGINT, sigint_handler);
 		if (!input)
+		{
+    		printf("exit\n");
 			break;
+		}
 		if (*input)
 			add_history(input);
 		
