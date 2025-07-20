@@ -11,8 +11,11 @@ char	*ft_path(void)
 
 	path_env = getenv("PATH");
 	if (!path_env)
+	{
+		ft_free();
 		exit(1); // ERORR GELCEK
-	return (strdup(path_env));
+	}
+	return (ft_strdup(path_env));
 }
 
 void	handle_heredocs(t_redirect *redir)
@@ -30,6 +33,7 @@ void	handle_heredocs(t_redirect *redir)
 			if (pipe(fd) == -1)
 			{
 				perror("pipe");
+				ft_free();
 				exit(1);
 			}
 			while (1)
@@ -41,9 +45,9 @@ void	handle_heredocs(t_redirect *redir)
 					break ;
 				write(fd[1], line, ft_strlen(line));
 				write(fd[1], "\n", 1);
-				free(line);
+				// free(line);
 			}
-			free(line);
+			// free(line);
 			close(fd[1]);
 			if (heredoc_fd != -1)
 				close(heredoc_fd);

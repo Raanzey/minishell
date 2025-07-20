@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 17:11:53 by musisman          #+#    #+#             */
-/*   Updated: 2024/10/31 21:12:23 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/20 16:26:00 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+
+# include "../collector/collector.h"
 
 int					ft_isalnum(int c);
 int					ft_isalpha(int c);

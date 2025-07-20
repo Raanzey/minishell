@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/19 16:10:30 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/20 16:18:09 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <sys/stat.h> // yeni eklendi exec_child için
 
 # include "Libft/libft.h"
+# include "collector/collector.h"
 # include "parser/pars.h"
 # include "execution/exec.h"
 
