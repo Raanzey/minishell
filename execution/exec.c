@@ -131,11 +131,14 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 		close(pipe_fd[1]);
 	}
 	
-	if (built_in(cmd, env_list) == 0)
+	int built_code;
+
+	built_code = built_in(cmd, env_list);
+	if (built_code == 0 || built_code != -1)
 	{
 		//fprintf(stderr, "[BUILTIN] Executed in child\n");
 		ft_free();
-		exit(0);
+		exit(built_code);
 	}
 
 	if (ft_strchr(cmd->av[0], '/'))

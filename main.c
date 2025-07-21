@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/20 21:37:16 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/21 16:20:25 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,13 @@ int	main(int ac, char **av, char **env)
 	env_list = init_env(env, 0);
 	(void)av;
 	if (ac >= 2)
-		return (1); //? error(ERR_ARG) neden saçmalıyor
+		return (err_prs("minishell: ", "Please no argument", 1)); //? error(ERR_ARG) neden saçmalıyor
 	while (1)
 	{
 		g_signal = 0;
 		input = readline("minishell~ ");
 		signal(SIGINT, sigint_handler);
+		ft_absorb(input);
 		if (!input)
 		{
     		printf("exit\n");
@@ -127,7 +128,8 @@ int	main(int ac, char **av, char **env)
 		
 		tokens = tokenizer(input);
 		if (!tokens || pre_parser_error(tokens, -1))
-		{	
+		{
+			exit_code = 2;
 			// printf("Token failed.\n");
 			// free_tokens(tokens);
 			// free(input);
@@ -157,6 +159,7 @@ int	main(int ac, char **av, char **env)
 		expand_args(cmd, exit_code);
 		if (handle_error(cmd))
 		{
+			exit_code = 2;
 			// free_command(cmd);
 			// free_tokens(tokens);
 			// free(input);

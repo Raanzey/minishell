@@ -1,6 +1,1 @@
-her şey tama ama benim bildiğim sinyal değerleri öyle değil 0 parent için  1 child için 2 de ctrl+d için neyse bu önemli değil şu an her şey doğru çelışıyor ama program açıldıktan sonra önce ctrl+c sonra ctrk+d basarsam exit'tan sonra bir tanae ekstra newline atıyor şöyle:./minishell
-minishell~ ^C
-minishell~ 
-exit
-
-yozlu@k1m25s03:~/Desktop/mini/minishel_deneme$  neden böyle 
+pwd ni çalışma mantığını anlatırmısın env denmi çekiyor yoksa başka bir şekildemi çalışıyor 

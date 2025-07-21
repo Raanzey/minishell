@@ -14,6 +14,7 @@ int echo_cmd(char **str);
 int cd_cmd(t_command *cmd);
 int pwd_cmd();
 int env_cmd(t_env *env);
+// int export_cmd(char **av, t_env **env, t_command *cmd);
 int export_cmd(char **av, t_env **env);
 int unset_cmd(t_command *cmd, t_env **env_list);
 char *ft_path(t_env *env);
@@ -31,7 +32,6 @@ void	setup_signals_main();
 void	sigint_handler(int sig);
 void	handle_sigint_exec(int sig);
 void	discard_signals();
-int ft_strcmp(const char *s1, const char *s2);
 int is_numeric(const char *str);
 int	exit_cmd(char **av);
 
