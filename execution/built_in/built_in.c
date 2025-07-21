@@ -8,10 +8,10 @@ int built_in(t_command *cmd, t_env **env_list)
 		return (cd_cmd(cmd));
 	else if(!ft_strncmp(cmd->av[0], "pwd", 3) && cmd->av[0][3] == '\0')
 		return (pwd_cmd());
-	// else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
-	// 	return (export_cmd(cmd->av, env_list, cmd));
 	else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
-		return (export_cmd(cmd->av, env_list));
+		return (export_cmd(cmd->av, env_list, cmd));
+	// else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
+	// 	return (export_cmd(cmd->av, env_list));
 	else if(!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0')
 		return (unset_cmd(cmd, env_list));
 	else if(!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0') 
@@ -27,7 +27,8 @@ int echo_cmd(char **str)
 	
 	i = 0;
 	if (str[1] && !ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
-	{//!echo -nnnnnnnnnnn merhaba yazması lazım echo -nnnnnnnnn -n -nnnnnnnnn merhaba yazması lazım yazmıyor
+	{
+	//!echo -nnnnnnnnnnn merhaba yazması lazım echo -nnnnnnnnn -n -nnnnnnnnn merhaba yazması lazım yazmıyor
 		while (str[++i])
 		{
 			if (!str[i + 1])
