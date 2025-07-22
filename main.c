@@ -6,56 +6,11 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/21 16:20:25 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 16:03:50 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// // void	free_tokens(char **tokens)
-// {
-// 	int i = 0;
-// 	if (!tokens)
-// 		return ;
-// 	while (tokens[i])
-// 		// free(tokens[i++]);
-// 	// free(tokens);
-// }
-
-// // void	free_redirects(t_redirect *redir)
-// {
-// 	t_redirect	*tmp;
-
-// 	while (redir)
-// 	{
-// 		tmp = redir->next;
-// 		// free(redir->filename);
-// 		// free(redir);
-// 		redir = tmp;
-// 	}
-// }
-
-// void	free_command(t_command *cmd)
-// {
-// 	t_command	*tmp;
-// 	int			i;
-
-// 	while (cmd)
-// 	{
-// 		tmp = cmd->next;
-// 		if (cmd->av)
-// 		{
-// 			i = -1;
-// 			while (cmd->av[++i])
-// 				// free(cmd->av[i]);
-// 			// free(cmd->av);
-// 		}
-// 		// free_redirects(cmd->redir);
-// 		// free(cmd);
-// 		cmd = tmp;
-// 	}
-// }
-
 
 int		g_signal;
 
