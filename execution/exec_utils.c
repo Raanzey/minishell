@@ -1,14 +1,16 @@
 #include "../minishell.h"
 
-static char *get_env_value(t_env *env, const char *key)
+char *get_env_value(t_env *env, const char *key)
 {
+	if (!env->value)
+		return (NULL);
 	while (env)
 	{
 		if (!ft_strcmp(env->key, key))
 			return (env->value); // NULL olabilir ama burada strdup yapmana gerek yok
 		env = env->next;
 	}
-	return (NULL);
+	return (0);
 }
 
 char	*ft_path(t_env *env)
@@ -45,7 +47,10 @@ void	handle_heredocs(t_redirect *redir)
 				if (!line || (!ft_strncmp(line, redir->filename,
 							ft_strlen(redir->filename))
 						&& line[ft_strlen(redir->filename)] == '\0'))
+				{
+					
 					break ;
+				}		
 				write(fd[1], line, ft_strlen(line));
 				write(fd[1], "\n", 1);
 				// free(line);

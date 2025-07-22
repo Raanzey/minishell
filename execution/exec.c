@@ -35,23 +35,28 @@ static char	**convert_env_to_array(t_env *env, int count, int i)
 	tmp = env;
 	while (tmp)
 	{
-		count++;
+		if (tmp->value)
+			count++;
 		tmp = tmp->next;
 	}
-	env_array = ft_malloc(sizeof(char *) * (count + 1)); // +1 NULL için
+	env_array = malloc(sizeof(char *) * (count + 1));
 	if (!env_array)
 		return (NULL);
 	tmp = env;
 	while (tmp)
 	{
-		joined = ft_strjoin(tmp->key, "=");              // "KEY="
-		env_array[i++] = ft_strjoin(joined, tmp->value); // "KEY=VALUE"
-		// free(joined);                                    // silinecek
+		if (tmp->value)
+		{
+			joined = ft_strjoin(tmp->key, "=");
+			env_array[i++] = ft_strjoin(joined, tmp->value);
+			free(joined);
+		}
 		tmp = tmp->next;
 	}
-	env_array[i] = NULL; // NULL sonlandır
+	env_array[i] = NULL;
 	return (env_array);
 }
+
 static void	handle_redirections(t_redirect *redir)
 {
 	t_redirect	*tmp;
@@ -130,7 +135,7 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
 	}
-	
+	// printf("EXEC BUILTIN ONCESI\n");
 	int built_code;
 
 	built_code = built_in(cmd, env_list);
@@ -140,7 +145,7 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 		ft_free();
 		exit(built_code);
 	}
-
+	
 	if (ft_strchr(cmd->av[0], '/'))
 	{
 		struct stat st;
@@ -208,7 +213,7 @@ int	exec(t_command *cmd, t_env **env_list)
 		{
 			exec_child(cmd, prev_fd, pipe_fd, env_list);
 		}
-
+			// printf("EXECVE SONRASI\n");
 		if (prev_fd != -1)
 			close(prev_fd);
 		if (cmd->next)
@@ -244,3 +249,4 @@ int	exec(t_command *cmd, t_env **env_list)
 	setup_signals_main();
 	return (last_exit); // Sonlanan en son child’ın çıkış kodunu döndür
 }
+		

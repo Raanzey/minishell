@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/21 18:56:36 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 19:03:17 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # define ERR_2_ARG ": too many arguments\n"
 # define ERR_CMD ": command not found\n"
 # define ERR_CD ": No such file or directory\n"
+# define ERR_HOME "HOME not set\n"
 # define ERR_EXP "': not a valid identifier\n"
 # define ERR_SNTX "minishell: syntax error: near unexpected token "
 
@@ -38,6 +39,6 @@ extern int g_signal;
 
 int	error(char *word, char *cmd, char *err, int exit_code);
 int	err_prs(char *cmd, char *err, int exit_code);
-int	err_built_in(t_command *cmd, char *err ,int exit_code);
+int	err_built_in(t_command *cmd, char *av, char *err_message, int exit_code);
 
 #	endif

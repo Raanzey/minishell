@@ -33,22 +33,22 @@ int	is_parent_builtin(t_command *cmd)
 // 	return (0);
 // }
 
-int	cd_cmd(t_command *cmd) //TODO yeni yaptım çıktı doğru gözüküyor ama tester geçmiyor düzelt
+int	cd_cmd(t_command *cmd, t_env *env_list) //TODO yeni yaptım çıktı doğru gözüküyor ama tester geçmiyor düzelt
 {
 	char	*path;
 
-	if (!cmd->av[1]) 
+	if (!cmd->av[1]) //boş cd komutu HOME yönlendiriyor
 	{
-		path = getenv("HOME");
+		path = get_env_value(env_list, "HOME");
 		if (!path)
-			return (err_built_in(cmd, ERR_CD, 2));
+			return (err_built_in(cmd, 0, ERR_HOME, 2));
 	}
-	else if (cmd->av[2])
-		return (err_built_in(cmd, ERR_2_ARG, 1));
+	else if (cmd->av[2])//fazla argüman kontrolü
+		return (err_built_in(cmd, 0,ERR_2_ARG, 1));
 	else
 		path = cmd->av[1];
-	if (chdir(path) && cmd->av[1][0])
-		return (err_built_in(cmd, ERR_CD, 1));
+	if (chdir(path) && cmd->av[1][0])//dizi bulunamazsa
+		return (err_built_in(cmd, cmd->av[1], ERR_CD, 1));
 	return (0);
 }
 
@@ -110,7 +110,7 @@ int	export_cmd(char **av, t_env **env, t_command *cmd) //TODO yeni yaptım çık
 	while (av[i])
 	{
 		if (!is_valid_identifier(av[i]))
-			exit_code =  err_built_in(cmd, ERR_EXP, 1);
+			exit_code =  err_built_in(cmd, cmd->av[i],ERR_EXP, 1);
 		value = ft_strchr(av[i], '=');
 		if (value)
 			add_or_update_env(env, value, av[i]);

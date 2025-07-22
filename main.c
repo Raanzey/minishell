@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 16:03:50 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 21:02:21 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	sigint_handler(int sig)
 		rl_on_new_line();
  	}
 	else if (g_signal==2){
+					
 		close(STDIN_FILENO);}
 }
 
@@ -72,7 +73,6 @@ int	main(int ac, char **av, char **env)
 		g_signal = 0;
 		input = readline("minishell~ ");
 		signal(SIGINT, sigint_handler);
-		ft_absorb(input);
 		if (!input)
 		{
     		printf("exit\n");
@@ -129,11 +129,6 @@ int	main(int ac, char **av, char **env)
 		// print_cmd(cmd); //* expansion yazdırma
 
 		exit_code = exec(cmd, &env_list);
-		// exec(cmd); 
-		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
-		// free_command(cmd);
-		// free_tokens(tokens);
-		// free(input);
 	}
 	ft_free();
 	return (0);
