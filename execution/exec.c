@@ -52,14 +52,21 @@ static char	**convert_env_to_array(t_env *env, int count, int i)
 	env_array[i] = NULL; // NULL sonlandır
 	return (env_array);
 }
-static void	handle_redirections(t_redirect *redir)
+static void	handle_redirections(t_command *cmd)
 {
 	t_redirect	*tmp;
+	t_redirect      *redir;
+	redir = cmd->redir;
 	int			fd;
-
+	char has_cmd;
+	if (cmd->av && cmd->av[0])
+		has_cmd = 1;
+	else
+		has_cmd = 0;
+	
 	tmp = redir; 
 	
-	handle_heredocs(tmp); // sadece heredoc'ları burada işliyoruz
+	handle_heredocs(tmp,has_cmd); // sadece heredoc'ları burada işliyoruz
 	
 	while (redir) 
 	{
@@ -114,7 +121,7 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 
 	//fprintf(stderr, "[CHILD] cmd: %s\n", cmd->av ? cmd->av[0] : "(null)");
 	if (cmd->redir)
-		handle_redirections(cmd->redir);
+		handle_redirections(cmd);
 	else if (prev_fd != -1)
 	{
 		//fprintf(stderr, "[DUP2] Inheriting prev_fd %d as STDIN\n", prev_fd);
@@ -132,15 +139,16 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	}
 	
 	int built_code;
-
-	built_code = built_in(cmd, env_list);
-	if (built_code == 0 || built_code != -1)
+	if (!cmd->av || !cmd->av[0])
 	{
-		//fprintf(stderr, "[BUILTIN] Executed in child\n");
-		ft_free();
-		exit(built_code);
+		built_code = built_in(cmd, env_list);
+		if (built_code == 0 || built_code != -1)
+		{
+			//fprintf(stderr, "[BUILTIN] Executed in child\n");
+			ft_free();
+			exit(built_code);
+		}
 	}
-
 	if (ft_strchr(cmd->av[0], '/'))
 	{
 		struct stat st;
@@ -237,7 +245,7 @@ int	exec(t_command *cmd, t_env **env_list)
 			if (sig != SIGPIPE)
 				last_exit = 128 + sig;
 			if (sig == SIGINT)
-				write(1, "\n", 1);	
+				write(1, "\n", 1);
 			//fprintf(stderr, "[WAIT] Child killed by signal sonrası %d\n", sig);
 		}
 	}

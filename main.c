@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 16:18:04 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 20:34:11 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,18 +71,21 @@ int	main(int ac, char **av, char **env)
 	{
 		g_signal = 0;
 		
+
+		// input = readline("minishell~ ");
+		
 		//* tester için eklendi
 		//*----------------------------------------------
 		if (isatty(fileno(stdin)))
 			input = readline("minishell~ ");
 		else
 		{
-			char *line;
-			line = get_next_line(fileno(stdin));
-			input = ft_strtrim(line, "\n");
-			free(line);
+			char *line = get_next_line(fileno(stdin));
+			
+				input = ft_strtrim(line, "\n");
+				free(line);
+			
 		}
-		
 		//*----------------------------------------------
 		
 		signal(SIGINT, sigint_handler);
@@ -99,49 +102,21 @@ int	main(int ac, char **av, char **env)
 		if (!tokens || pre_parser_error(tokens, -1))
 		{
 			exit_code = 2;
-			// printf("Token failed.\n");
-			// free_tokens(tokens);
-			// free(input);
 			continue;
 		}
-		else
-		{
-			// printf("\nTOKENIZER\n\n"); //* token yazdırma
-			// int q = -1;
-			// while (tokens[++q])
-			// 	printf("token[%d]: %s\n", q, tokens[q]);
-		}
-
 		cmd = parser(tokens);
 		if (!cmd)
 		{
-			// free_tokens(tokens);
-			// free(input);
 			continue;
-		}
-		else
-		{
-			// printf("\nPARSER\n\n");
-			// print_cmd(cmd); //* parser yazdırma
 		}
 
 		expand_args(cmd, exit_code);
 		if (handle_error(cmd))
 		{
 			exit_code = 2;
-			// free_command(cmd);
-			// free_tokens(tokens);
-			// free(input);
 			continue;
 		}
-		else
-		{
-			// printf("\nEXPANSION\n\n");
-			// print_cmd(cmd); //* expansion yazdırma
-		}
 		clean_empty_args_inplace(cmd);
-		// print_cmd(cmd); //* expansion yazdırma
-
 		exit_code = exec(cmd, &env_list);
 	}
 	ft_free();

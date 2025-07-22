@@ -21,7 +21,7 @@ char	*ft_path(t_env *env)
 	return (ft_strdup(path_env));
 }
 
-void	handle_heredocs(t_redirect *redir)
+void	handle_heredocs(t_redirect *redir,int has_cmd)
 {
 	int		fd[2];
 	int		heredoc_fd;
@@ -29,6 +29,7 @@ void	handle_heredocs(t_redirect *redir)
 
 	heredoc_fd = -1;
 	signal(SIGINT, handle_sigint_exec);
+	signal(SIGQUIT,handle_sigint_exec);
 	while (redir)
 	{
 		if (redir->type == 4)
@@ -42,15 +43,19 @@ void	handle_heredocs(t_redirect *redir)
 			while (1)
 			{
 				line = readline("> ");
+				if ((!line || (!ft_strncmp(line, redir->filename,
+							ft_strlen(redir->filename))
+						&& line[ft_strlen(redir->filename)] == '\0')) && !has_cmd)
+				{
+					ft_free();
+				}
 				if (!line || (!ft_strncmp(line, redir->filename,
 							ft_strlen(redir->filename))
 						&& line[ft_strlen(redir->filename)] == '\0'))
 					break ;
 				write(fd[1], line, ft_strlen(line));
 				write(fd[1], "\n", 1);
-				// free(line);
 			}
-			// free(line);
 			close(fd[1]);
 			if (heredoc_fd != -1)
 				close(heredoc_fd);
@@ -60,9 +65,9 @@ void	handle_heredocs(t_redirect *redir)
 	}
 	if (heredoc_fd != -1)
 	{
-        dup2(heredoc_fd, STDIN_FILENO);
-        close(heredoc_fd);
-    }
+        	dup2(heredoc_fd, STDIN_FILENO);
+        	close(heredoc_fd);
+    	}
 }
 
 int	is_numeric(const char *str)

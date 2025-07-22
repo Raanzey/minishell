@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 16:11:50 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 18:47:28 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@
 # include <signal.h>
 #include <sys/stat.h> // yeni eklendi exec_child için
 
-# include "Get_next_line/get_next_line.h"
+# include <stdlib.h>
+# include <string.h>
+# include "Get-Next-Line/get_next_line.h"
 
 # include "Libft/libft.h"
 # include "collector/collector.h"
