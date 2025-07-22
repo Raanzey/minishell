@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 16:13:34 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 16:18:04 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,9 @@ int	main(int ac, char **av, char **env)
 	while (1)
 	{
 		g_signal = 0;
-		// tester için eklendi
+		
+		//* tester için eklendi
+		//*----------------------------------------------
 		if (isatty(fileno(stdin)))
 			input = readline("minishell~ ");
 		else
@@ -80,7 +82,9 @@ int	main(int ac, char **av, char **env)
 			input = ft_strtrim(line, "\n");
 			free(line);
 		}
-
+		
+		//*----------------------------------------------
+		
 		signal(SIGINT, sigint_handler);
 		ft_absorb(input);
 		if (!input)
