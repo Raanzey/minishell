@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 16:03:50 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 16:07:17 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,6 @@ int	main(int ac, char **av, char **env)
 		// print_cmd(cmd); //* expansion yazdırma
 
 		exit_code = exec(cmd, &env_list);
-		// exec(cmd); 
-		// iki error olacak biri return edecek biri main içinde kontrol edip continue edecek
-		// free_command(cmd);
-		// free_tokens(tokens);
-		// free(input);
 	}
 	ft_free();
 	return (0);
