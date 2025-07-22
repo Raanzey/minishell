@@ -8,6 +8,7 @@ SRCS		= main.c utils.c execution/exec.c execution/exec_utils.c \
 			parser/token.c parser/token_utils.c parser/error_handle.c \
 			parser/pars.c parser/pars_utils.c parser/clean.c \
 			parser/expansion.c parser/expansion_utils.c parser/expansion_extra_utils.c \
+			Get_next_line/get_next_line.c Get_next_line/get_next_line_utils.c \
 			
 
 LIBFT		= Libft/libft.a
