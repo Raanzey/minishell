@@ -57,14 +57,21 @@ static char	**convert_env_to_array(t_env *env, int count, int i)
 	return (env_array);
 }
 
-static void	handle_redirections(t_redirect *redir)
+static void	handle_redirections(t_command *cmd)
 {
 	t_redirect	*tmp;
+	t_redirect      *redir;
 	int			fd;
-
+	int has_cmd;
+	
+	redir = cmd->redir;
+	if (cmd->av && cmd->av[0])
+		has_cmd = 1;
+	else
+		has_cmd = 0;
 	tmp = redir; 
 	
-	handle_heredocs(tmp); // sadece heredoc'ları burada işliyoruz
+	handle_heredocs(tmp, has_cmd); // sadece heredoc'ları burada işliyoruz
 	
 	while (redir) 
 	{
@@ -119,7 +126,7 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 
 	//fprintf(stderr, "[CHILD] cmd: %s\n", cmd->av ? cmd->av[0] : "(null)");
 	if (cmd->redir)
-		handle_redirections(cmd->redir);
+		handle_redirections(cmd);
 	else if (prev_fd != -1)
 	{
 		//fprintf(stderr, "[DUP2] Inheriting prev_fd %d as STDIN\n", prev_fd);
@@ -138,12 +145,16 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	// printf("EXEC BUILTIN ONCESI\n");
 	int built_code;
 
-	built_code = built_in(cmd, env_list);
-	if (built_code == 0 || built_code != -1)
+	if (!cmd->av || !cmd->av[0])
 	{
 		//fprintf(stderr, "[BUILTIN] Executed in child\n");
-		ft_free();
-		exit(built_code);
+		built_code = built_in(cmd, env_list);
+		if (built_code == 0 || built_code != -1)
+		{
+			//fprintf(stderr, "[BUILTIN] Executed in child\n");
+			ft_free();
+			exit(built_code);
+		}
 	}
 	
 	if (ft_strchr(cmd->av[0], '/'))
