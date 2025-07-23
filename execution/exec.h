@@ -1,11 +1,7 @@
 #ifndef EXEC_H
 # define EXEC_H
 
-typedef struct s_env {
-	char *key;
-	char *value;
-	struct s_env *next;
-} t_env;
+#include "../parser/structs.h"
 
 int built_in(t_command *cmd, t_env **env_list);
 int is_parent_builtin(t_command *cmd);

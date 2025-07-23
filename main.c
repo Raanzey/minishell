@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 21:02:21 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/23 17:04:00 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	main(int ac, char **av, char **env)
 			// print_cmd(cmd); //* parser yazdırma
 		}
 
-		expand_args(cmd, exit_code);
+		expand_args(cmd, env_list, exit_code);
 		if (handle_error(cmd))
 		{
 			exit_code = 2;
