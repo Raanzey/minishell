@@ -1,7 +1,5 @@
 #include "../../minishell.h"
 
-
-
 void	insert_sorted_env(t_env **env, char *key, char *value)
 {
 	t_env	*curr;

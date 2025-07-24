@@ -35,13 +35,28 @@ static void	handle_exit_code(char **res, int *i, int exit_code)
 	*i += 1;
 }
 
-static void	handle_env_var(char **res, const char *s, size_t *i)
+//* yeni env için
+
+char	*get_env_values(t_env *env_list, const char *key)
+{
+	while (env_list)
+	{
+		if (!ft_strcmp(env_list->key, key))
+			return (env_list->value);
+		env_list = env_list->next;
+	}
+	return (NULL);
+}
+
+//*
+
+static void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
 {
 	char	*tmp;
 	char	*env_value;
 
 	tmp = extract_var_name(s, i);
-	env_value = getenv(tmp);
+	env_value = get_env_values(env_list, tmp);
 	if (env_value)
 		*res = ft_strjoin(*res, env_value);
 	else
@@ -49,10 +64,10 @@ static void	handle_env_var(char **res, const char *s, size_t *i)
 	// free(tmp);
 }
 
-static void	handle_env_or_positional(char **res, const char *s, size_t *i)
+static void	handle_env_or_positional(char **res, const char *s, size_t *i, t_expand *info)
 {
 	if (ft_isalpha(s[*i]) || s[*i] == '_')
-		handle_env_var(res, s, i);
+		handle_env_var(res, s, i, info->env_list);
 	else if (ft_isdigit(s[*i]))
 		(*i)++;
 	else
@@ -63,7 +78,8 @@ static void	handle_env_or_positional(char **res, const char *s, size_t *i)
 	}
 }
 
-char	*expand_dollar(const char *s, int exit_code)
+
+char	*expand_dollar(char *s, t_expand *info)
 {
 	size_t	i;
 	char	*res;
@@ -76,9 +92,9 @@ char	*expand_dollar(const char *s, int exit_code)
 		{
 			i++;
 			if (s[i] == '?')
-				handle_exit_code(&res, (int *)&i, exit_code);
+				handle_exit_code(&res, (int *)&i, info->exit_code);
 			else
-				handle_env_or_positional(&res, s, &i);
+				handle_env_or_positional(&res, s, &i, info);
 		}
 		else
 			res = ft_strjoin_char(res, s[i++]);

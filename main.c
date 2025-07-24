@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 20:34:11 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/24 16:50:49 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	sigint_handler(int sig)
 		rl_on_new_line();
  	}
 	else if (g_signal==2){
+					
 		close(STDIN_FILENO);}
 }
 
@@ -89,7 +90,6 @@ int	main(int ac, char **av, char **env)
 		//*----------------------------------------------
 		
 		signal(SIGINT, sigint_handler);
-		ft_absorb(input);
 		if (!input)
 		{
     			printf("exit\n");
@@ -97,7 +97,6 @@ int	main(int ac, char **av, char **env)
 		}
 		if (*input)
 			add_history(input);
-		
 		tokens = tokenizer(input);
 		if (!tokens || pre_parser_error(tokens, -1))
 		{
@@ -109,8 +108,7 @@ int	main(int ac, char **av, char **env)
 		{
 			continue;
 		}
-
-		expand_args(cmd, exit_code);
+		expand_args(cmd, env_list, exit_code);
 		if (handle_error(cmd))
 		{
 			exit_code = 2;

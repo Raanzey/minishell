@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 18:47:28 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/24 16:50:52 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,15 @@
 # define ERR_2_ARG ": too many arguments\n"
 # define ERR_CMD ": command not found\n"
 # define ERR_CD ": No such file or directory\n"
+# define ERR_HOME "HOME not set\n"
 # define ERR_EXP "': not a valid identifier\n"
 # define ERR_SNTX "minishell: syntax error: near unexpected token "
+# define ERR_PERM "Permission denied\n"
 
 extern int g_signal;
 
 int	error(char *word, char *cmd, char *err, int exit_code);
 int	err_prs(char *cmd, char *err, int exit_code);
-int	err_built_in(t_command *cmd, char *err ,int exit_code);
+int	err_built_in(t_command *cmd, char *av, char *err_message, int exit_code);
 
 #	endif

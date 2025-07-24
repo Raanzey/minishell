@@ -1,56 +1,55 @@
-# include "../../minishell.h"
+#include "../../minishell.h"
 
-int built_in(t_command *cmd, t_env **env_list)
+int	built_in(t_command *cmd, t_env **env_list)
 {
-	if(!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
+	if (!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
 		return (echo_cmd(cmd->av));
-	else if(!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0') 
-		return (cd_cmd(cmd));
-	else if(!ft_strncmp(cmd->av[0], "pwd", 3) && cmd->av[0][3] == '\0')
+	else if (!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0')
+		return (cd_cmd(cmd, *env_list));
+	else if (!ft_strncmp(cmd->av[0], "pwd", 3) && cmd->av[0][3] == '\0')
 		return (pwd_cmd());
-	else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
+	else if (!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
 		return (export_cmd(cmd->av, env_list, cmd));
 	// else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
 	// 	return (export_cmd(cmd->av, env_list));
-	else if(!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0')
+	else if (!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0')
 		return (unset_cmd(cmd, env_list));
-	else if(!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0') 
+	else if (!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0')
 		return (env_cmd(*env_list));
 	else if (!ft_strncmp(cmd->av[0], "exit", 4) && cmd->av[0][4] == '\0')
 		return (exit_cmd(cmd->av));
 	else
-		return -1;//komut yok 
+		return (-1); // komut yok
 }
-int echo_cmd(char **str)
+int	echo_cmd(char **str)
 {
-	int i;
-	
+	int	i;
+	int	n_flag;
+	int	j;
+
 	i = 0;
-	if (str[1] && !ft_strncmp(str[1], "-n", ft_strlen(str[1])) && !(i++))//25 satır -n için -->!(i++)
+	n_flag = 0;
+	while (str[++i] && !ft_strncmp(str[i], "-n", 2))
 	{
-	//!echo -nnnnnnnnnnn merhaba yazması lazım echo -nnnnnnnnn -n -nnnnnnnnn merhaba yazması lazım yazmıyor
-		while (str[++i])
-		{
-			if (!str[i + 1])
-				printf("%s", str[i]);
-			else
-				printf("%s ", str[i]);
-		}
+		j = 2;
+		while (str[i][j] == 'n')
+			j++;
+		if (str[i][j] != '\0')
+			break ;
+		n_flag = 1;
 	}
-	else
+	while (str[i])
 	{
-		while (str[++i])
-		{
-			if (!str[i + 1])
-				printf("%s", str[i]);
-			else
-				printf("%s ", str[i]);
-		}
+		printf("%s", str[i]);
+		if (str[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (!n_flag)
 		printf("\n");
-	}
-	return 0;
+	return (0);
 }
-int env_cmd(t_env *env)
+int	env_cmd(t_env *env)
 {
 	while (env)
 	{
@@ -58,25 +57,25 @@ int env_cmd(t_env *env)
 			printf("%s=%s\n", env->key, env->value);
 		env = env->next;
 	}
-	return 0;
+	return (0);
 }
 
-
-int pwd_cmd()
+int	pwd_cmd(void)
 {
-	char cwd[1024];
-    if(!getcwd(cwd, sizeof(cwd)))
+	char	cwd[1024];
+
+	if (!getcwd(cwd, sizeof(cwd)))
 	{
-		perror("pwd");//hata DURUMUUUUU    
-		return 1;
-	}	
+		perror("pwd"); // hata DURUMUUUUU
+		return (1);
+	}
 	printf("%s\n", cwd);
-	return 0;
+	return (0);
 }
 
 int	exit_cmd(char **av)
 {
-	int code;
+	int	code;
 
 	printf("exit\n");
 	if (!av[1])

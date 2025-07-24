@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/21 18:57:02 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/22 19:11:14 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,24 @@ int	err_prs(char *cmd, char *err, int exit_code)
 	write(2, "\n", 2);
 	return (exit_code);
 }
-int	err_built_in(t_command *cmd, char *err ,int exit_code)
+
+int	err_built_in(t_command *cmd, char *av, char *err_message ,int exit_code)
 {
 	write(2, "minishell: ", 11);
 	if (is_parent_builtin(cmd))
 	{
 		write(2, cmd->av[0], ft_strlen(cmd->av[0]));
-		if (ft_strcmp(err, ERR_2_ARG))
+		if (ft_strcmp(err_message, ERR_2_ARG))
 		{
-			write(2, ": `", 3);
-			write(2, cmd->av[1], ft_strlen(cmd->av[1]));
+			if (!av)
+				write(2, ": ", 3);
+			else if (av)
+			{
+				write(2, ": `", 3);
+				write(2, av, ft_strlen(av));
+			}
 		}
-		write(2, err, ft_strlen(err));
+		write(2, err_message, ft_strlen(err_message));
 	}
 	return exit_code;
 }

@@ -1,14 +1,16 @@
 #include "../minishell.h"
 
-static char *get_env_value(t_env *env, const char *key)
+char *get_env_value(t_env *env, const char *key)
 {
+	if (!env->value)
+		return (NULL);
 	while (env)
 	{
 		if (!ft_strcmp(env->key, key))
 			return (env->value); // NULL olabilir ama burada strdup yapmana gerek yok
 		env = env->next;
 	}
-	return (NULL);
+	return (0);
 }
 
 char	*ft_path(t_env *env)
@@ -21,7 +23,7 @@ char	*ft_path(t_env *env)
 	return (ft_strdup(path_env));
 }
 
-void	handle_heredocs(t_redirect *redir,int has_cmd)
+void	handle_heredocs(t_redirect *redir, int has_cmd)
 {
 	int		fd[2];
 	int		heredoc_fd;
@@ -29,7 +31,7 @@ void	handle_heredocs(t_redirect *redir,int has_cmd)
 
 	heredoc_fd = -1;
 	signal(SIGINT, handle_sigint_exec);
-	signal(SIGQUIT,handle_sigint_exec);
+	// signal(SIGQUIT,handle_sigint_exec);
 	while (redir)
 	{
 		if (redir->type == 4)
@@ -52,7 +54,10 @@ void	handle_heredocs(t_redirect *redir,int has_cmd)
 				if (!line || (!ft_strncmp(line, redir->filename,
 							ft_strlen(redir->filename))
 						&& line[ft_strlen(redir->filename)] == '\0'))
+				{
+					
 					break ;
+				}		
 				write(fd[1], line, ft_strlen(line));
 				write(fd[1], "\n", 1);
 			}
