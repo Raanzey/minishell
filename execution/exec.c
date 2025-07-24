@@ -87,7 +87,14 @@ static void	handle_redirections(t_command *cmd)
 
 		if (redir->type != 4 && fd == -1)
 		{
-			// perror("redir");
+			char *msg;
+
+			msg = ft_strjoin("minishell: ", redir->filename);
+			perror(msg);
+			// if (fd == 255)
+			// 	error("minishell: ", redir->filename, ERR_PERM, 1);
+			// else
+			// 	error("minishell: ", redir->filename, ERR_CD, 1);
 			ft_free();
 			exit(1);
 		}

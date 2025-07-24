@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/23 17:28:07 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/24 16:38:03 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define ERR_HOME "HOME not set\n"
 # define ERR_EXP "': not a valid identifier\n"
 # define ERR_SNTX "minishell: syntax error: near unexpected token "
+# define ERR_PERM "Permission denied\n"
 
 extern int g_signal;
 
