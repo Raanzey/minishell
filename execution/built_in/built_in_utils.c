@@ -110,7 +110,11 @@ int	export_cmd(char **av, t_env **env, t_command *cmd) //TODO yeni yaptım çık
 	while (av[i])
 	{
 		if (!is_valid_identifier(av[i]))
+		{	
 			exit_code =  err_built_in(cmd, cmd->av[i],ERR_EXP, 1);
+		   	i++;
+            continue;
+		}
 		value = ft_strchr(av[i], '=');
 		if (value)
 			add_or_update_env(env, value, av[i]);

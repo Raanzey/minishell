@@ -87,7 +87,7 @@ static void	handle_redirections(t_command *cmd)
 
 		if (redir->type != 4 && fd == -1)
 		{
-			perror("redir");
+			// perror("redir");
 			ft_free();
 			exit(1);
 		}
@@ -145,7 +145,7 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	// printf("EXEC BUILTIN ONCESI\n");
 	int built_code;
 
-	if (!cmd->av || !cmd->av[0])
+	if (cmd->av || cmd->av[0])
 	{
 		//fprintf(stderr, "[BUILTIN] Executed in child\n");
 		built_code = built_in(cmd, env_list);

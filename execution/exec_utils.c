@@ -31,7 +31,7 @@ void	handle_heredocs(t_redirect *redir, int has_cmd)
 
 	heredoc_fd = -1;
 	signal(SIGINT, handle_sigint_exec);
-	signal(SIGQUIT,handle_sigint_exec);
+	// signal(SIGQUIT,handle_sigint_exec);
 	while (redir)
 	{
 		if (redir->type == 4)
