@@ -74,8 +74,4 @@ void add_or_update_env(t_env **env, char *eq, char *av)
 	char *val = ft_strdup(eq + 1);
 
 	insert_sorted_env(env, key, val);
-
-	// free(key);
-	// free(val);
 }
-

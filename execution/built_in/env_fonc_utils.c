@@ -62,3 +62,26 @@ void	unset_var(t_env **env, const char *key)
 		curr = curr->next;
 	}
 }
+
+char *get_env_value(t_env *env, const char *key)
+{
+	if (!env->value)
+		return (NULL);
+	while (env)
+	{
+		if (!ft_strcmp(env->key, key))
+			return (env->value); // NULL olabilir ama burada strdup yapmana gerek yok
+		env = env->next;
+	}
+	return (0);
+}
+
+char	*ft_path(t_env *env)
+{
+	char *path_env;
+
+	path_env = get_env_value(env, "PATH");
+	if (!path_env)
+		return (NULL); // Komutların PATH olmadan bulunamaması hatası
+	return (ft_strdup(path_env));
+}
