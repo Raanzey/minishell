@@ -6,20 +6,20 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/25 15:10:37 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/25 19:36:54 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_signal = 0; // 0: prompt, 1: exec, 2: heredoc
+int			g_signal = 0; // 0: prompt, 1: exec, 2: heredoc
 
 void	sigint_handler(int sig)
 {
 	(void)sig;
 	if (g_signal == 0 || g_signal == 3) // readline prompt sırasında
 	{
-		//write(1, "bura\n", 5);
+		// write(1, "bura\n", 5);
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
@@ -35,10 +35,9 @@ void	sigint_handler(int sig)
 	}
 	else if (g_signal == 2) // heredoc sırasında
 	{
-		
 		write(1, "\n", 1);
-		ft_free();            // varsa tüm leak temizliği
-		exit(130); 
+		ft_free(); // varsa tüm leak temizliği
+		exit(130);
 	}
 }
 
@@ -48,97 +47,74 @@ void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	discard_signals()
+void	discard_signals(void)
 {
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
 
+t_command	*do_parser(char *in, int exit_code, t_env *env_list)
+{
+	t_command	*cmd;
+	char		**tokens;
+
+	tokens = tokenizer(in);
+	if (!tokens || pre_parser_error(tokens, -1))
+	{
+		exit_code = 2;
+		return (0);
+	}
+	cmd = parser(tokens);
+	if (!cmd)
+		return (0);
+	expand_args(cmd, env_list, exit_code);
+	if (handle_error(cmd))
+	{
+		exit_code = 2;
+		return (0);
+	}
+	clean_empty_args_inplace(cmd);
+	if (!cmd->redir)
+	{
+		if (!cmd->av || !cmd->av[0])
+			return (0);
+	}
+	return (cmd);
+}
+
 int	main(int ac, char **av, char **env)
 {
-	char		*input;
-	t_command	*cmd;
-	t_env		*env_list;
-	char **tokens;
-	int exit_code;
+	char	*in;
+	t_env	*env_list;
+	int		exit_code;
 
 	exit_code = 0;
-	//signal(SIGINT, sigint_handler);
+	// signal(SIGINT, sigint_handler);
 	env_list = init_env(env, 0);
 	(void)av;
 	if (ac >= 2)
-		return (err_prs("minishell: ", "Please no argument", 1)); //? error(ERR_ARG) neden saçmalıyor
+		return (err_prs("minishell: ", "Please no argument", 1));
+			//? error(ERR_ARG) neden saçmalıyor
 	while (1)
 	{
 		g_signal = 0;
 		setup_signals();
-		input = readline("minishell~ ");
+		in = readline("minishell~ ");
 		signal(SIGINT, sigint_handler);
 		if (g_signal == 3)
 		{
 			exit_code = 130;
 			g_signal = 0; // tekrar kullanıma hazırla
-			// continue;
 		}
-		if (!input)
+		if (!in)
 		{
-    		printf("exit\n");
-			break;
+			printf("exit\n");
+			break ;
 		}
-		if (*input)
-			add_history(input);
-		
-		tokens = tokenizer(input);
-		if (!tokens || pre_parser_error(tokens, -1))
-		{
-			exit_code = 2;
-			// printf("Token failed.\n");
-			// free_tokens(tokens);
-			// free(input);
-			continue;
-		}
-		else
-		{
-			// printf("\nTOKENIZER\n\n"); //* token yazdırma
-			// int q = -1;
-			// while (tokens[++q])
-			// 	printf("token[%d]: %s\n", q, tokens[q]);
-		}
-
-		cmd = parser(tokens);
-		if (!cmd)
-		{
-			// free_tokens(tokens);
-			// free(input);
-			continue;
-		}
-		else
-		{
-			// printf("\nPARSER\n\n");
-			// print_cmd(cmd); //* parser yazdırma
-		}
-
-		expand_args(cmd, env_list, exit_code);
-		if (handle_error(cmd))
-		{
-			exit_code = 2;
-			// free_command(cmd);
-			// free_tokens(tokens);
-			// free(input);
-			continue;
-		}
-		else
-		{
-			// printf("\nEXPANSION\n\n");
-			// print_cmd(cmd); //* expansion yazdırma
-		}
-		clean_empty_args_inplace(cmd);
-		// print_cmd(cmd); //* expansion yazdırma
-
-		exit_code = exec(cmd, &env_list);
+		if (*in)
+			add_history(in);
+		exit_code = exec(do_parser(in, exit_code, env_list), &env_list);
 	}
 	ft_free();
 	return (exit_code);
 }
-
-	

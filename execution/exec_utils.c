@@ -52,8 +52,8 @@ int	handle_heredocs(t_redirect *redir ,int has_cmd)
 							ft_strlen(redir->filename))
 						&& line[ft_strlen(redir->filename)] == '\0')) && !has_cmd)
 				{
-					ft_free();// <<<<<---------------- BUNU EKLEDİM
-					break;
+					ft_free();
+					break;// <<<<<---------------- BUNU EKLEDİM
 				}
 				if (!line || (!ft_strncmp(line, redir->filename,
 							ft_strlen(redir->filename))

@@ -86,7 +86,7 @@ static void	handle_redirections(t_command *cmd)
 		else if (redir->type == 3)
 			fd = open(redir->filename, O_RDONLY);
 
-		if (!has_cmd) // <<<<<<---------- BUNU EKLEDİM
+		if (redir->type != 4 && fd == -1) // <<<<<<---------- BUNU EKLEDİM
 		{
 			char *msg;
 			//ft_putstr_fd("alo", 2);
@@ -205,11 +205,8 @@ int	exec(t_command *cmd, t_env **env_list)
 	int		sig;
 
 	prev_fd = -1;
-	if (!cmd->redir)
-	{
-		if (!cmd->av || !cmd->av[0])
-			return (0);
-	}
+	if (!cmd)
+		return (0);
 	if (!cmd->next && is_parent_builtin(cmd))
 		return (built_in(cmd, env_list));
 	
