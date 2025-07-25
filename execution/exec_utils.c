@@ -23,7 +23,7 @@ char	*ft_path(t_env *env)
 	return (ft_strdup(path_env));
 }
 
-void	handle_heredocs(t_redirect *redir ,int has_cmd)
+int	handle_heredocs(t_redirect *redir ,int has_cmd)
 {
 	int		fd[2];
 	int		heredoc_fd;
@@ -46,18 +46,19 @@ void	handle_heredocs(t_redirect *redir ,int has_cmd)
 			setup_signals(); // readline için doğru signal davranışı
 			while (1)
 			{
+				//printf("redir filename %s redir type %d \n", redir->filename, redir->type);
 				line = readline("> ");
 				if ((!line || (!ft_strncmp(line, redir->filename,
 							ft_strlen(redir->filename))
 						&& line[ft_strlen(redir->filename)] == '\0')) && !has_cmd)
 				{
-					ft_free();
+					ft_free();// <<<<<---------------- BUNU EKLEDİM
+					break;
 				}
 				if (!line || (!ft_strncmp(line, redir->filename,
 							ft_strlen(redir->filename))
 						&& line[ft_strlen(redir->filename)] == '\0'))
 				{
-					
 					break ;
 				}		
 				write(fd[1], line, ft_strlen(line));
@@ -70,13 +71,14 @@ void	handle_heredocs(t_redirect *redir ,int has_cmd)
 				close(heredoc_fd);
 			heredoc_fd = fd[0]; // sadece son heredoc'un pipe'ı tutulur
 		}
-		redir = redir->next;
+	redir = redir->next;
 	}
 	if (heredoc_fd != -1)
 	{
         dup2(heredoc_fd, STDIN_FILENO);
         close(heredoc_fd);
     }
+	return has_cmd = 1;// <<<<<---------------- BUNU EKLEDİM
 }
 
 int	is_numeric(const char *str)

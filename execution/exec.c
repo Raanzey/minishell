@@ -63,15 +63,16 @@ static void	handle_redirections(t_command *cmd)
 	t_redirect      *redir;
 	int			fd;
 	int has_cmd;
-	
+
 	redir = cmd->redir;
 	if (cmd->av && cmd->av[0])
 		has_cmd = 1;
 	else
 		has_cmd = 0;
 	tmp = redir; 
-	
-	handle_heredocs(tmp ,has_cmd); // sadece heredoc'ları burada işliyoruz
+
+	has_cmd = handle_heredocs(tmp ,has_cmd); // <<<<<------------- BUNU EKLEDİM
+	// printf("redir filename %s redir type %d tmp filenaem %s tmp type %d\n", redir->filename, redir->type ,tmp->filename, tmp->type);
 	
 	while (redir) 
 	{
@@ -85,9 +86,10 @@ static void	handle_redirections(t_command *cmd)
 		else if (redir->type == 3)
 			fd = open(redir->filename, O_RDONLY);
 
-		if (redir->type != 4 && fd == -1)
+		if (!has_cmd) // <<<<<<---------- BUNU EKLEDİM
 		{
 			char *msg;
+			//ft_putstr_fd("alo", 2);
 
 			msg = ft_strjoin("minishell: ", redir->filename);
 			perror(msg);
@@ -132,6 +134,8 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	char	*path = NULL;
 
 	//fprintf(stderr, "[CHILD] cmd: %s\n", cmd->av ? cmd->av[0] : "(null)");
+	
+
 	if (cmd->redir)
 		handle_redirections(cmd);
 	else if (prev_fd != -1)

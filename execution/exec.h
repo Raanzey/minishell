@@ -15,7 +15,7 @@ int export_cmd(char **av, t_env **env, t_command *cmd);
 int unset_cmd(t_command *cmd, t_env **env_list);
 char *ft_path(t_env *env);
 char *get_env_value(t_env *env, const char *key);
-void handle_heredocs(t_redirect *redir, int has_cmd);
+int handle_heredocs(t_redirect *redir, int has_cmd);
 void print_export(t_env *env);
 void add_or_update_env(t_env **env, char *eq, char *av);
 void export_key_only(t_env **env, const char *key);
