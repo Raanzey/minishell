@@ -71,7 +71,7 @@ static void	handle_redirections(t_command *cmd)
 		has_cmd = 0;
 	tmp = redir; 
 	
-	handle_heredocs(tmp, has_cmd); // sadece heredoc'ları burada işliyoruz
+	handle_heredocs(tmp ,has_cmd); // sadece heredoc'ları burada işliyoruz
 	
 	while (redir) 
 	{
@@ -140,7 +140,8 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 		dup2(prev_fd, STDIN_FILENO);
 		close(prev_fd);
 	}
-	setup_signals_main();
+	//setup_signals_main();
+	setup_signals();
 
 	if (!has_output_redir(cmd->redir) &&cmd->next)
 	{
@@ -200,7 +201,6 @@ int	exec(t_command *cmd, t_env **env_list)
 	int		sig;
 
 	prev_fd = -1;
-	g_signal = 1;
 	if (!cmd->redir)
 	{
 		if (!cmd->av || !cmd->av[0])
@@ -220,6 +220,9 @@ int	exec(t_command *cmd, t_env **env_list)
 			exit(1);
 		}
 		discard_signals();
+		g_signal = 1;
+		// if (!cmd->redir || cmd->redir->type != 4)
+		// 	setup_signals();
 		pid = fork();
 		if (pid == -1)
 		{
@@ -264,7 +267,7 @@ int	exec(t_command *cmd, t_env **env_list)
 			//fprintf(stderr, "[WAIT] Child killed by signal sonrası %d\n", sig);
 		}
 	}
-	setup_signals_main();
+	setup_signals();
 	return (last_exit); // Sonlanan en son child’ın çıkış kodunu döndür
 }
 		

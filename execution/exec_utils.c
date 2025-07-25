@@ -23,14 +23,14 @@ char	*ft_path(t_env *env)
 	return (ft_strdup(path_env));
 }
 
-void	handle_heredocs(t_redirect *redir, int has_cmd)
+void	handle_heredocs(t_redirect *redir ,int has_cmd)
 {
 	int		fd[2];
 	int		heredoc_fd;
 	char	*line;
 
 	heredoc_fd = -1;
-	signal(SIGINT, handle_sigint_exec);
+	// signal(SIGINT, handle_sigint_exec);
 	// signal(SIGQUIT,handle_sigint_exec);
 	while (redir)
 	{
@@ -42,6 +42,8 @@ void	handle_heredocs(t_redirect *redir, int has_cmd)
 				ft_free();
 				exit(1);
 			}
+			g_signal = 2;
+			setup_signals(); // readline için doğru signal davranışı
 			while (1)
 			{
 				line = readline("> ");

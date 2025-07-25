@@ -25,9 +25,7 @@ void update_env(t_env *node, const char *value);
 t_env *init_env(char **env, int i);
 t_env *find_env(t_env *env, const char *key);
 
-void	setup_signals_main();
-void	sigint_handler(int sig);
-void	handle_sigint_exec(int sig);
+void	setup_signals();
 void	discard_signals();
 int is_numeric(const char *str);
 int	exit_cmd(char **av);
