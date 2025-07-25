@@ -1,210 +1,58 @@
-şimdi şöyle bir sııntı var benim dosya yapım şöyle minishell adında bir klasör var  ana işleri onun içinde hallediyorum ve burada  minishell.h var şu şekilde: /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/23 17:28:07 by musisman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+void	handle_heredocs(t_redirect *redir ,int has_cmd)
+{
+	int		fd[2];
+	int		heredoc_fd;
+	char	*line;
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+	heredoc_fd = -1;
+	// signal(SIGINT, handle_sigint_exec);
+	// signal(SIGQUIT,handle_sigint_exec);
+	while (redir)
+	{
+		if (redir->type == 4)
+		{
+			if (pipe(fd) == -1)
+			{
+				perror("pipe");
+				ft_free();
+				exit(1);
+			}
+			g_signal = 2;
+			setup_signals(); // readline için doğru signal davranışı
+			while (1)
+			{
+				printf("redir filename %s redir type %d \n", redir->filename, redir->type);
+				line = readline("> ");
+				if ((!line || (!ft_strncmp(line, redir->filename,
+							ft_strlen(redir->filename))
+						&& line[ft_strlen(redir->filename)] == '\0')) && !has_cmd)
+				{
+					ft_free();
+				}
+				if (!line || (!ft_strncmp(line, redir->filename,
+							ft_strlen(redir->filename))
+						&& line[ft_strlen(redir->filename)] == '\0'))
+				{
+					break ;
+				}		
+				write(fd[1], line, ft_strlen(line));
+				write(fd[1], "\n", 1);
+				// free(line);
+			}
+			// free(line);
+			close(fd[1]);
+			if (heredoc_fd != -1)
+				close(heredoc_fd);
+			heredoc_fd = fd[0]; // sadece son heredoc'un pipe'ı tutulur
+		}
+		redir = redir->next;
+	}
+	if (heredoc_fd != -1)
+	{
+        dup2(heredoc_fd, STDIN_FILENO);
+        close(heredoc_fd);
+    }
+}
 
-# include <stdio.h>
-# include <sys/wait.h>
-# include <fcntl.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <signal.h>
-#include <sys/stat.h> // yeni eklendi exec_child için
-
-# include "Libft/libft.h"
-# include "collector/collector.h"
-# include "parser/pars.h"
-# include "execution/exec.h"
-
-# define ERR_ARG "Please no argument\n"
-# define ERR_EXIT ": numeric argument required\n"
-# define ERR_2_ARG ": too many arguments\n"
-# define ERR_CMD ": command not found\n"
-# define ERR_CD ": No such file or directory\n"
-# define ERR_HOME "HOME not set\n"
-# define ERR_EXP "': not a valid identifier\n"
-# define ERR_SNTX "minishell: syntax error: near unexpected token "
-
-extern int g_signal;
-
-int	error(char *word, char *cmd, char *err, int exit_code);
-int	err_prs(char *cmd, char *err, int exit_code);
-int	err_built_in(t_command *cmd, char *av, char *err_message, int exit_code);
-
-#	endif, bu klasör içinde de parser ve execution klasörleri var içinlerince  parser.h ve exec.h var onların içi de şöyle: /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pars.h                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/29 17:24:18 by musisman          #+#    #+#             */
-/*   Updated: 2025/05/29 17:24:18 by musisman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef PARS_H
-# define PARS_H
-
-# include "structs.h"
-
-t_command	*new_command(void);
-int			is_redir(char *s);
-t_redirect	*create_redirect(char *op, char *file);
-void		add_redirect(t_command *cmd, t_redirect *r);
-void		add_arg(t_command *cmd, char *word);
-t_command	*parser(char **tokens);
-size_t		skip_space(const char *s, size_t i);
-size_t		redirect(char **tokens, const char *s, size_t *i, size_t k);
-int			pre_parser_error(char **tokens, int i);
-int			handle_error(t_command *cmd);
-char		**tokenizer(char const *s);
-char		*ft_strjoin_char(char *s, char c);
-char		*append_substring(char *res, const char *src, int one, int end);
-char		*expand_dollar(char *s, t_expand *info);
-char		*expand_token(const char *token, t_env *env_list, int exit_code);
-void		expand_and_replace(char **str, t_env *env_list, int last_exit);
-void		here_doc_no_expand(char **target, size_t i, size_t j);
-int			expand_args(t_command *cmd, t_env *env_list, int exit_code);
-void		clean_empty_args_inplace(t_command *cmd);
-
-void		print_cmd(t_command *cmd); //!sil
-
-#	endif
-, #ifndef EXEC_H
-# define EXEC_H
-
-#include "../parser/structs.h"
-
-int built_in(t_command *cmd, t_env **env_list);
-int is_parent_builtin(t_command *cmd);
-int exec(t_command *cmd, t_env **env_list);
-int echo_cmd(char **str);
-int cd_cmd(t_command *cmd, t_env *env_list);
-int pwd_cmd();
-int env_cmd(t_env *env);
-int export_cmd(char **av, t_env **env, t_command *cmd);
-// int export_cmd(char **av, t_env **env);
-int unset_cmd(t_command *cmd, t_env **env_list);
-char *ft_path(t_env *env);
-char *get_env_value(t_env *env, const char *key);
-void handle_heredocs(t_redirect *redir);
-void print_export(t_env *env);
-void add_or_update_env(t_env **env, char *eq, char *av);
-void export_key_only(t_env **env, const char *key);
-void unset_var(t_env **env, const char *key);
-void insert_sorted_env(t_env **env, char *key, char *value);
-void update_env(t_env *node, const char *value);
-t_env *init_env(char **env, int i);
-t_env *find_env(t_env *env, const char *key);
-
-void	setup_signals_main();
-void	sigint_handler(int sig);
-void	handle_sigint_exec(int sig);
-void	discard_signals();
-int is_numeric(const char *str);
-int	exit_cmd(char **av);
-
-# endif
-, ve senin  verdiğin  structs.h  da parser klasörü içinde ve o da şöyle: /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   structs.h                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 17:22:25 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/23 17:22:25 by musisman         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef STRUCTS_H
-# define STRUCTS_H
-
-typedef struct s_env t_env;
-
-typedef struct s_redirect {
-	int					type;
-	char				*filename;
-	struct s_redirect	*next;
-}	t_redirect;
-
-typedef struct s_command {
-	char				**av;
-	t_redirect			*redir;
-	struct s_command	*next;
-}	t_command;
-
-typedef struct s_env {
-	char *key;
-	char *value;
-	struct s_env *next;
-} t_env;
-
-typedef struct s_expand {
-	t_env	*env_list;
-	int		exit_code;
-}	t_expand;
-
-#endif
-, buna rağmen make atınca da:  make
-make -s  -C Libft
-make -s  -C collector
-cc -Wall -Wextra -Werror main.c utils.c execution/exec.c execution/exec_utils.c execution/built_in/built_in.c execution/built_in/built_in_utils.c execution/built_in/env_fonc_utils.c execution/built_in/env_fonc.c parser/token.c parser/token_utils.c parser/error_handle.c parser/pars.c parser/pars_utils.c parser/clean.c parser/expansion.c parser/expansion_utils.c parser/expansion_extra_utils.c  Libft/libft.a collector/collector.a -lreadline -o minishell
-eparser/expansion.c: In function ‘handle_double_quote’:
-parser/expansion.c:40:35: error: ‘exit_code’ undeclared (first use in this function); did you mean ‘exit_cmd’?
-   40 |         tmp2 = expand_dollar(tmp, exit_code);
-      |                                   ^~~~~~~~~
-      |                                   exit_cmd
-parser/expansion.c:40:35: note: each undeclared identifier is reported only once for each function it appears in
-parser/expansion.c:29:71: error: unused parameter ‘info’ [-Werror=unused-parameter]
-   29 | e_double_quote(char *token, int i, char **res, t_expand *info) 
-      |                                                ~~~~~~~~~~^~~~  
-
-parser/expansion.c: In function ‘handle_plain_text’:
-parser/expansion.c:58:35: error: ‘exit_code’ undeclared (first use in this function); did you mean ‘exit_cmd’?
-   58 |         tmp2 = expand_dollar(tmp, exit_code);
-      |                                   ^~~~~~~~~
-      |                                   exit_cmd
-parser/expansion.c:48:69: error: unused parameter ‘info’ [-Werror=unused-parameter]
-   48 | dle_plain_text(char *token, int i, char **res, t_expand *info) 
-      |                                                ~~~~~~~~~~^~~~  
-
-cc1: all warnings being treated as errors
-parser/expansion_utils.c:68:1: error: expected identifier or ‘(’ before ‘{’ token
-   68 | {
-      | ^
-parser/expansion_utils.c: In function ‘expand_dollar’:
-parser/expansion_utils.c:95:67: error: ‘exit_code’ undeclared (first use in this function); did you mean ‘exit_cmd’?
-   95 |                  handle_exit_code(&res, (int *)&i, exit_code); 
-      |                                                    ^~~~~~~~~   
-      |                                                    exit_cmd    
-parser/expansion_utils.c:95:67: note: each undeclared identifier is reported only once for each function it appears in
-parser/expansion_utils.c:97:33: error: too few arguments to function ‘handle_env_or_positional’
-   97 |                                 handle_env_or_positional(&res, s, &i);
-      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~       
-parser/expansion_utils.c:67:17: note: declared here
-   67 | static void     handle_env_or_positional(char **res, const char *s, size_t *i, t_expand *info);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-parser/expansion_utils.c:82:43: error: unused parameter ‘info’ [-Werror=unused-parameter]
-   82 | char    *expand_dollar(char *s, t_expand *info)
-      |                                 ~~~~~~~~~~^~~~
-parser/expansion_utils.c: At top level:
-parser/expansion_utils.c:67:17: error: ‘handle_env_or_positional’ used but never defined [-Werror]
-   67 | static void     handle_env_or_positional(char **res, const char *s, size_t *i, t_expand *info);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-parser/expansion_utils.c:53:17: error: ‘handle_env_var’ defined but not used [-Werror=unused-function]
-   53 | static void     handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
-      |                 ^~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-make: *** [Makefile:23: minishell] Error 1 neden böyle oluyor
+hayır bana bu kodu düzelt benim yapım bu koda göre uygun çünkü cat yoksa dümdüz heredoc ise ft_free ile freeleyip sonra break atıp çıkmalı 
+sonraki if te yani eğer cat li heredoc ise direkt break leyip çıkmalı  
