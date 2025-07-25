@@ -35,7 +35,7 @@ fclean: clean
 re: fclean all
 
 run:
-	./${NAME}
+	@./${NAME}
 	
 leak:
 	(valgrind --leak-check=full --suppressions=readline.supp ./minishell)

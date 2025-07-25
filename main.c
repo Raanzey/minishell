@@ -6,52 +6,52 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/24 16:50:49 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/25 17:33:38 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		g_signal;
-
-void	setup_signals_main()
-{
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, sigint_handler);
-}
-void	handle_sigint_exec(int sig)
-{
-	(void)sig;
-	if (isatty(STDOUT_FILENO))
-		write(STDOUT_FILENO, "\n", 1);
-	ft_free();
-	exit(130);
-}
-
-void	discard_signals()
-{
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, SIG_IGN);
-}
+int	g_signal = 0; // 0: prompt, 1: exec, 2: heredoc
 
 void	sigint_handler(int sig)
 {
 	(void)sig;
-	if (g_signal==0)
+	if (g_signal == 0 || g_signal == 3) // readline prompt sırasında
 	{
+		//write(1, "bura\n", 5);
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
+		g_signal = 3;
 	}
-	else if (g_signal==1)
+	else if (g_signal == 1) // exec child süreci
 	{
+		// write(1, "bura\n", 5);
 		write(1, "\n", 1);
-		rl_on_new_line();
- 	}
-	else if (g_signal==2){
-					
-		close(STDIN_FILENO);}
+		ft_free(); // malloclı şeyler varsa
+		exit(130);
+	}
+	else if (g_signal == 2) // heredoc sırasında
+	{
+		
+		write(1, "\n", 1);
+		ft_free();            // varsa tüm leak temizliği
+		exit(130); 
+	}
+}
+
+void	setup_signals(void)
+{
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	discard_signals()
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 int	main(int ac, char **av, char **env)
@@ -63,7 +63,7 @@ int	main(int ac, char **av, char **env)
 	int exit_code;
 
 	exit_code = 0;
-	signal(SIGINT, sigint_handler);
+	//signal(SIGINT, sigint_handler);
 	env_list = init_env(env, 0);
 	(void)av;
 	if (ac >= 2)
@@ -72,6 +72,7 @@ int	main(int ac, char **av, char **env)
 	{
 		g_signal = 0;
 		
+		setup_signals();
 
 		// input = readline("minishell~ ");
 		
@@ -89,7 +90,14 @@ int	main(int ac, char **av, char **env)
 		}
 		//*----------------------------------------------
 		
+		// input = readline("minishell~ ");
 		signal(SIGINT, sigint_handler);
+		if (g_signal == 3)
+		{
+			exit_code = 130;
+			g_signal = 0; // tekrar kullanıma hazırla
+			// continue;
+		}
 		if (!input)
 		{
     			printf("exit\n");
@@ -118,7 +126,7 @@ int	main(int ac, char **av, char **env)
 		exit_code = exec(cmd, &env_list);
 	}
 	ft_free();
-	return (0);
+	return (exit_code);
 }
 
 	
