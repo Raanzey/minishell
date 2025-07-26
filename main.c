@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/25 17:33:38 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/26 18:31:59 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	main(int ac, char **av, char **env)
 	env_list = init_env(env, 0);
 	(void)av;
 	if (ac >= 2)
-		return (err_prs("minishell: ", "Please no argument", 1)); //? error(ERR_ARG) neden saçmalıyor
+		return (err_exp(ERR_ARG, 0, 0, 1));
 	while (1)
 	{
 		g_signal = 0;

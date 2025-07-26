@@ -11,7 +11,7 @@ char	*find_path(char *cmd, t_env *env_list)
 	i = 0;
 	tmp = ft_path(env_list); // PATH environment değişkeni
 	if (!tmp)
-		error("minishell: ", cmd, ERR_CD,127);
+		error("minishell: ", cmd, ERR_CD, 127);
 	paths = ft_split(tmp, ':');
 	// free(tmp);
 	while (paths[i])
@@ -39,7 +39,7 @@ static char	**convert_env_to_array(t_env *env, int count, int i)
 			count++;
 		tmp = tmp->next;
 	}
-	env_array = malloc(sizeof(char *) * (count + 1));
+	env_array = ft_malloc(sizeof(char *) * (count + 1));
 	if (!env_array)
 		return (NULL);
 	tmp = env;
@@ -49,7 +49,6 @@ static char	**convert_env_to_array(t_env *env, int count, int i)
 		{
 			joined = ft_strjoin(tmp->key, "=");
 			env_array[i++] = ft_strjoin(joined, tmp->value);
-			free(joined);
 		}
 		tmp = tmp->next;
 	}
@@ -87,17 +86,8 @@ static void	handle_redirections(t_command *cmd)
 
 		if (!has_cmd) // <<<<<<---------- BUNU EKLEDİM
 		{
-			char *msg;
-			//ft_putstr_fd("alo", 2);
-
-			msg = ft_strjoin("minishell: ", redir->filename);
-			perror(msg);
-			// if (fd == 255)
-			// 	error("minishell: ", redir->filename, ERR_PERM, 1);
-			// else
-			// 	error("minishell: ", redir->filename, ERR_CD, 1);
 			ft_free();
-			exit(1);
+			exit(err_exp(redir->filename, 0, 0, 1));
 		}
 
 		if (redir->type == 3)
@@ -188,9 +178,8 @@ static void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	}
  	//fprintf(stderr, "[EXECVE] Executing %s\n", path);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0));
-	perror("[EXECVE ERROR]");
 	ft_free();
-	exit(126);
+	exit(err_exp("execve: ", 0, 1, 126));
 }
 
 
@@ -218,9 +207,8 @@ int	exec(t_command *cmd, t_env **env_list)
 
 		if (cmd->next && pipe(pipe_fd) == -1)
 		{
-			perror("[PIPE ERROR]");
 			ft_free();
-			exit(1);
+			exit(err_exp( "pipe: ", 0, 1, 1));
 		}
 		discard_signals();
 		g_signal = 1;
@@ -229,9 +217,8 @@ int	exec(t_command *cmd, t_env **env_list)
 		pid = fork();
 		if (pid == -1)
 		{
-			perror("[FORK ERROR]");
 			ft_free();
-			exit(1);
+			exit(err_exp( "fork: ", 0, 1, 1));
 		}
 		if (pid == 0)
 		{

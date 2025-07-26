@@ -14,25 +14,6 @@ int	is_parent_builtin(t_command *cmd)
 	return (0);
 }
 
-// int	cd_cmd(t_command *cmd)
-// {
-// 	char	*path;
-
-// 	if (!cmd->av[1] || !cmd->av[1][0])
-// 	{
-// 		path = getenv("HOME"); //! cd "" yanlış çalışıyor home'a gidiyor
-// 		if (!path)
-// 			error("minishell: cd: `", cmd->av[1], ERR_CD, 2);
-// 	}
-// 	else if (cmd->av[2])
-// 		error("minishell: cd: `", cmd->av[1], ERR_2_ARG, 1);
-// 	else
-// 		path = cmd->av[1];
-// 	if (chdir(path))
-// 		error("minishell: cd: `", 0, ERR_CD, 1);
-// 	return (0);
-// }
-
 int	cd_cmd(t_command *cmd, t_env *env_list) //TODO yeni yaptım çıktı doğru gözüküyor ama tester geçmiyor düzelt
 {
 	char	*path;
@@ -41,14 +22,14 @@ int	cd_cmd(t_command *cmd, t_env *env_list) //TODO yeni yaptım çıktı doğru 
 	{
 		path = get_env_value(env_list, "HOME");
 		if (!path)
-			return (err_built_in(cmd, 0, ERR_HOME, 2));
+			return (err_exp("cd: ", ERR_HOME, 0, 1));
 	}
 	else if (cmd->av[2])//fazla argüman kontrolü
-		return (err_built_in(cmd, 0,ERR_2_ARG, 1));
+		return (err_exp("cd: ", ERR_2_ARG, 0, 1));
 	else
 		path = cmd->av[1];
 	if (chdir(path) && cmd->av[1][0])//dizi bulunamazsa
-		return (err_built_in(cmd, cmd->av[1], ERR_CD, 1));
+		return (err_exp("cd: ", cmd->av[1], 1, 1));
 	return (0);
 }
 
@@ -69,31 +50,6 @@ int	is_valid_identifier(char *str)
 	return (1);
 }
 
-// int	export_cmd(char **av, t_env **env) //! export yazdıktan sonra clear çalışmışmıyor
-// {
-// 	int		i;
-// 	char	*value;
-
-// 	i = 1;
-// 	if (!av[i])
-// 	{
-// 		print_export(*env);
-// 		return (0);
-// 	}
-// 	while (av[i])
-// 	{
-// 		if (!is_valid_identifier(av[i]))
-// 			error("minishell: export: `", av[i], ERR_EXP, 1);
-// 		value = ft_strchr(av[i], '=');
-// 		if (value)
-// 			add_or_update_env(env, value, av[i]);
-// 		else
-// 			export_key_only(env, av[i]);
-// 		i++;
-// 	}
-// 	return (0);
-// }
-
 int	export_cmd(char **av, t_env **env, t_command *cmd) //TODO yeni yaptım çıktı doğru gözüküyor ama tester geçmiyor düzelt
 {
 	int		i;
@@ -111,9 +67,8 @@ int	export_cmd(char **av, t_env **env, t_command *cmd) //TODO yeni yaptım çık
 	{
 		if (!is_valid_identifier(av[i]))
 		{	
-			exit_code =  err_built_in(cmd, cmd->av[i],ERR_EXP, 1);
-		   	i++;
-            continue;
+			exit_code =  err_exp(ft_strjoin(EXP, cmd->av[i++]), ERR_EXP, 0, 1);
+            		continue;
 		}
 		value = ft_strchr(av[i], '=');
 		if (value)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/24 16:50:52 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/26 18:36:10 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,20 @@
 # include "parser/pars.h"
 # include "execution/exec.h"
 
-# define ERR_ARG "Please no argument\n"
-# define ERR_EXIT ": numeric argument required\n"
-# define ERR_2_ARG ": too many arguments\n"
+# define EXP  "export: `"
+
+# define ERR_ARG "Please no argument"
+# define ERR_EXIT "numeric argument required"
+# define ERR_2_ARG "too many arguments"
 # define ERR_CMD ": command not found\n"
-# define ERR_CD ": No such file or directory\n"
-# define ERR_HOME "HOME not set\n"
-# define ERR_EXP "': not a valid identifier\n"
-# define ERR_SNTX "minishell: syntax error: near unexpected token "
-# define ERR_PERM "Permission denied\n"
+# define ERR_CD ": No such file or directory"
+# define ERR_HOME "HOME not set"
+# define ERR_EXP "': not a valid identifier"
+# define ERR_SNTX "syntax error near unexpected token "
 
 extern int g_signal;
 
 int	error(char *word, char *cmd, char *err, int exit_code);
-int	err_prs(char *cmd, char *err, int exit_code);
-int	err_built_in(t_command *cmd, char *av, char *err_message, int exit_code);
+int	err_exp(char *cmd, char *file, int err, int exit_code);
 
 #	endif

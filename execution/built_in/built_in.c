@@ -65,10 +65,7 @@ int	pwd_cmd(void)
 	char	cwd[1024];
 
 	if (!getcwd(cwd, sizeof(cwd)))
-	{
-		perror("pwd"); // hata DURUMUUUUU
-		return (1);
-	}
+		return (err_exp("pwd: ", 0, 1, 1));
 	printf("%s\n", cwd);
 	return (0);
 }
@@ -84,9 +81,12 @@ int	exit_cmd(char **av)
 		exit(0);
 	}
 	if (!is_numeric(av[1]))
-		error("minishell: exit: `", 0, ERR_EXIT, 2);
+	{
+		ft_free();
+		exit(err_exp("exit: ", ERR_EXIT, 0, 2));//! wsl burada exit atıyor
+	}
 	if (av[2])
-		error("minishell: exit: `", 0, ERR_2_ARG, 1);
+		return (err_exp("exit: ", ERR_2_ARG, 0, 1)); //! wsl burada atmıyor eskiden atıyordu wsl'den mi yoksa böyle mi kalması lazım bak
 	code = ft_atoi(av[1]) % 256;
 	if (code < 0)
 		code += 256;

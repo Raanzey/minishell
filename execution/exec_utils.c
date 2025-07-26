@@ -38,9 +38,8 @@ int	handle_heredocs(t_redirect *redir ,int has_cmd)
 		{
 			if (pipe(fd) == -1)
 			{
-				perror("pipe");
 				ft_free();
-				exit(1);
+				exit(err_exp( "pipe: ", 0, 1, 1));
 			}
 			g_signal = 2;
 			setup_signals(); // readline için doğru signal davranışı
