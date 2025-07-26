@@ -10,8 +10,6 @@ int	built_in(t_command *cmd, t_env **env_list)
 		return (pwd_cmd());
 	else if (!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
 		return (export_cmd(cmd->av, env_list, cmd));
-	// else if(!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
-	// 	return (export_cmd(cmd->av, env_list));
 	else if (!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0')
 		return (unset_cmd(cmd, env_list));
 	else if (!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0')
@@ -19,8 +17,9 @@ int	built_in(t_command *cmd, t_env **env_list)
 	else if (!ft_strncmp(cmd->av[0], "exit", 4) && cmd->av[0][4] == '\0')
 		return (exit_cmd(cmd->av));
 	else
-		return (-1); // komut yok
+		return (-1);
 }
+
 int	echo_cmd(char **str)
 {
 	int	i;
@@ -49,6 +48,7 @@ int	echo_cmd(char **str)
 		printf("\n");
 	return (0);
 }
+
 int	env_cmd(t_env *env)
 {
 	while (env)
@@ -66,7 +66,7 @@ int	pwd_cmd(void)
 
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
-		perror("pwd"); // hata DURUMUUUUU
+		perror("pwd");
 		return (1);
 	}
 	printf("%s\n", cwd);

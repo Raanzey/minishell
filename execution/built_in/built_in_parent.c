@@ -1,0 +1,73 @@
+#include "../../minishell.h"
+
+int	is_parent_builtin(t_command *cmd)
+{
+	if (!cmd || !cmd->av || !cmd->av[0])
+		return (0);
+	if ((!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0')
+		|| (!ft_strncmp(cmd->av[0], "exit", 4) && cmd->av[0][4] == '\0')
+		|| (!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
+		|| (!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0'))
+		return (1);
+	return (0);
+}
+
+int	cd_cmd(t_command *cmd, t_env *env_list)
+{
+	char	*path;
+
+	if (!cmd->av[1])
+	{
+		path = get_env_value(env_list, "HOME");
+		if (!path)
+			return (err_built_in(cmd, 0, ERR_HOME, 2));
+	}
+	else if (cmd->av[2])
+		return (err_built_in(cmd, 0, ERR_2_ARG, 1));
+	else
+		path = cmd->av[1];
+	if (chdir(path) && cmd->av[1][0])
+		return (err_built_in(cmd, cmd->av[1], ERR_CD, 1));
+	return (0);
+}
+
+int	export_cmd(char **av, t_env **env, t_command *cmd)
+{
+	int		i;
+	char	*value;
+	int		exit_code;
+
+	i = 1;
+	exit_code = 0;
+	if (!av[i])
+		return (print_export(*env), 0);
+	while (av[i])
+	{
+		if (!is_valid_identifier(av[i]))
+		{
+			exit_code = err_built_in(cmd, cmd->av[i], ERR_EXP, 1);
+			i++;
+			continue ;
+		}
+		value = ft_strchr(av[i], '=');
+		if (value)
+			add_or_update_env(env, value, av[i]);
+		else
+			export_key_only(env, av[i]);
+		i++;
+	}
+	return (exit_code);
+}
+
+int	unset_cmd(t_command *cmd, t_env **env_list)
+{
+	int	i;
+
+	i = 1;
+	while (cmd->av[i])
+	{
+		unset_var(env_list, cmd->av[i]);
+		i++;
+	}
+	return (0);
+}
