@@ -39,7 +39,6 @@ int	handle_double_quote(char *token, int i, char **res, t_expand *info)
 	tmp = ft_substr(token, start, i - start);
 	tmp2 = expand_dollar(tmp, info);
 	*res = ft_strjoin(*res, tmp2);
-	// free(tmp);
 	if (token[i] == '"')
 		i++;
 	return (i);
@@ -57,7 +56,6 @@ int	handle_plain_text(char *token, int i, char **res, t_expand *info)
 	tmp = ft_substr(token, start, i - start);
 	tmp2 = expand_dollar(tmp, info);
 	*res = ft_strjoin(*res, tmp2);
-	// free(tmp);
 	return (i);
 }
 

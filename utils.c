@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/22 19:11:14 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/26 20:30:58 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,36 +19,26 @@ int	error(char *word, char *cmd, char *err, int exit_code)
 	if (cmd)
 		write(2, cmd, ft_strlen(cmd));
 	write(2, err, ft_strlen(err));
+	write(2, "\n", 2);
 	ft_free();
 	exit(exit_code);
 }
 
-int	err_prs(char *cmd, char *err, int exit_code)
+int	err_exp(char *cmd, char *file, int err, int exit_code)
 {
-	if (cmd)
-		write(2, cmd, ft_strlen(cmd));
-	write(2, err, ft_strlen(err));
-	write(2, "\n", 2);
-	return (exit_code);
-}
+	char	*msg;
 
-int	err_built_in(t_command *cmd, char *av, char *err_message ,int exit_code)
-{
-	write(2, "minishell: ", 11);
-	if (is_parent_builtin(cmd))
+	msg = "minishell: ";
+	if (cmd)
+		msg = ft_strjoin(msg, cmd);
+	if (file)
+		msg = ft_strjoin(msg, file);
+	if (err)
+		perror(msg);
+	else
 	{
-		write(2, cmd->av[0], ft_strlen(cmd->av[0]));
-		if (ft_strcmp(err_message, ERR_2_ARG))
-		{
-			if (!av)
-				write(2, ": ", 3);
-			else if (av)
-			{
-				write(2, ": `", 3);
-				write(2, av, ft_strlen(av));
-			}
-		}
-		write(2, err_message, ft_strlen(err_message));
+		write(2, msg, ft_strlen(msg));
+		write(2, "\n", 2);
 	}
-	return exit_code;
+	return (exit_code);
 }

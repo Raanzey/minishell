@@ -17,7 +17,7 @@
 
 int	ambiguous_redirect_error(t_command *cmd)
 {
-	t_redirect *redir;
+	t_redirect	*redir;
 
 	while (cmd)
 	{
@@ -25,25 +25,7 @@ int	ambiguous_redirect_error(t_command *cmd)
 		while (redir)
 		{
 			if (redir->filename && redir->filename[0] == '\0')
-				return (err_prs("minishell: ", "ambiguous redirect", 2));
-			redir = redir->next;
-		}
-		cmd = cmd->next;
-	}
-	return (0);
-}
-
-int	redir_error(t_command *cmd)
-{
-	t_redirect *redir;
-
-	while (cmd)
-	{
-		redir = cmd->redir;
-		while (redir)
-		{
-			if (!redir->filename)
-				return (err_prs(ERR_SNTX, "`|'", 2)); // değiştir doğrusunu yaz
+				return (err_exp(redir->filename, "ambiguous redirect", 0, 2));
 			redir = redir->next;
 		}
 		cmd = cmd->next;
@@ -53,12 +35,9 @@ int	redir_error(t_command *cmd)
 
 int	handle_error(t_command *cmd)
 {
-	int exit_code;
-	// if (redir_error(cmd))
-	// 	return (1);
+	int	exit_code;
 
 	exit_code = ambiguous_redirect_error(cmd);
-	
 	return (exit_code);
 }
 
@@ -69,7 +48,7 @@ int	pre_parser_error(char **tokens, int i)
 		if (!ft_strncmp(tokens[i], "|", 2))
 		{
 			if (i == 0 || !tokens[i + 1] || !ft_strncmp(tokens[i + 1], "|", 2))
-				return (err_prs(ERR_SNTX, "`|'", 2));
+				return (err_exp(ERR_SNTX, "`|'", 0, 2));
 		}
 		else if (!ft_strncmp(tokens[i], "<", 2)
 			|| !ft_strncmp(tokens[i], ">", 2)
@@ -77,13 +56,14 @@ int	pre_parser_error(char **tokens, int i)
 			|| !ft_strncmp(tokens[i], ">>", 3))
 		{
 			if (!tokens[i + 1])
-				return (err_prs(ERR_SNTX, "`newline'", 2));
+				return (err_exp(ERR_SNTX, "`newline'", 0, 2));
 			if (!ft_strncmp(tokens[i + 1], "<", 2)
 				|| !ft_strncmp(tokens[i + 1], ">", 2)
 				|| !ft_strncmp(tokens[i + 1], "<<", 3)
 				|| !ft_strncmp(tokens[i + 1], ">>", 3)
 				|| !ft_strncmp(tokens[i + 1], "|", 2))
-				return (err_prs(ERR_SNTX, tokens[i + 1], 2));
+				return (err_exp(ft_strjoin(ERR_SNTX, "`"),
+						ft_strjoin(tokens[i + 1], "'"), 0, 2));
 		}
 	}
 	return (0);

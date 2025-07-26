@@ -24,33 +24,16 @@ char	*extract_var_name(const char *str, size_t *i)
 	return (var);
 }
 
-static void	handle_exit_code(char **res, int *i, int exit_code)
+void	handle_exit_code(char **res, int *i, int exit_code)
 {
 	char	*tmp;
 
 	tmp = ft_itoa(exit_code);
-	// *res = ft_strdup(tmp);
 	*res = ft_strjoin(*res, tmp);
-	// free(tmp);
 	*i += 1;
 }
 
-//* yeni env için
-
-char	*get_env_values(t_env *env_list, const char *key)
-{
-	while (env_list)
-	{
-		if (!ft_strcmp(env_list->key, key))
-			return (env_list->value);
-		env_list = env_list->next;
-	}
-	return (NULL);
-}
-
-//*
-
-static void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
+void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
 {
 	char	*tmp;
 	char	*env_value;
@@ -61,10 +44,9 @@ static void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list
 		*res = ft_strjoin(*res, env_value);
 	else
 		*res = ft_strjoin(*res, "");
-	// free(tmp);
 }
 
-static void	handle_env_or_positional(char **res, const char *s, size_t *i, t_expand *info)
+void	handle_env_or_pos(char **res, const char *s, size_t *i, t_expand *info)
 {
 	if (ft_isalpha(s[*i]) || s[*i] == '_')
 		handle_env_var(res, s, i, info->env_list);
@@ -77,7 +59,6 @@ static void	handle_env_or_positional(char **res, const char *s, size_t *i, t_exp
 			*res = ft_strjoin_char(*res, s[(*i)++]);
 	}
 }
-
 
 char	*expand_dollar(char *s, t_expand *info)
 {
@@ -94,7 +75,7 @@ char	*expand_dollar(char *s, t_expand *info)
 			if (s[i] == '?')
 				handle_exit_code(&res, (int *)&i, info->exit_code);
 			else
-				handle_env_or_positional(&res, s, &i, info);
+				handle_env_or_pos(&res, s, &i, info);
 		}
 		else
 			res = ft_strjoin_char(res, s[i++]);

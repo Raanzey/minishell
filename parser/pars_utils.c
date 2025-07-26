@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:22:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/20 21:36:55 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/26 19:57:06 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,5 @@ void	add_arg(t_command *cmd, char *word)
 		new[j] = cmd->av[j];
 	new[i] = ft_strdup(word);
 	new[i + 1] = NULL;
-	// free(cmd->av);
 	cmd->av = new;
 }

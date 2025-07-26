@@ -3,40 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/25 19:36:54 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/26 20:40:01 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int			g_signal = 0; // 0: prompt, 1: exec, 2: heredoc
+int			g_signal = 0;
 
 void	sigint_handler(int sig)
 {
 	(void)sig;
-	if (g_signal == 0 || g_signal == 3) // readline prompt sırasında
+	if (g_signal == 0 || g_signal == 3)
 	{
-		// write(1, "bura\n", 5);
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
 		g_signal = 3;
 	}
-	else if (g_signal == 1) // exec child süreci
+	else if (g_signal == 1)
 	{
-		// write(1, "bura\n", 5);
 		write(1, "\n", 1);
-		ft_free(); // malloclı şeyler varsa
+		ft_free();
 		exit(130);
 	}
-	else if (g_signal == 2) // heredoc sırasında
+	else if (g_signal == 2)
 	{
 		write(1, "\n", 1);
-		ft_free(); // varsa tüm leak temizliği
+		ft_free();
 		exit(130);
 	}
 }
@@ -53,7 +51,7 @@ void	discard_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-t_command	*do_parser(char *in, int exit_code, t_env *env_list)
+t_command	*do_parser(char *in, int *exit_code, t_env *env_list)
 {
 	t_command	*cmd;
 	char		**tokens;
@@ -61,16 +59,16 @@ t_command	*do_parser(char *in, int exit_code, t_env *env_list)
 	tokens = tokenizer(in);
 	if (!tokens || pre_parser_error(tokens, -1))
 	{
-		exit_code = 2;
+		*exit_code = 2;
 		return (0);
 	}
 	cmd = parser(tokens);
 	if (!cmd)
 		return (0);
-	expand_args(cmd, env_list, exit_code);
+	expand_args(cmd, env_list, *exit_code);
 	if (handle_error(cmd))
 	{
-		exit_code = 2;
+		*exit_code = 2;
 		return (0);
 	}
 	clean_empty_args_inplace(cmd);
@@ -89,12 +87,10 @@ int	main(int ac, char **av, char **env)
 	int		exit_code;
 
 	exit_code = 0;
-	// signal(SIGINT, sigint_handler);
 	env_list = init_env(env, 0);
 	(void)av;
 	if (ac >= 2)
-		return (err_prs("minishell: ", "Please no argument", 1));
-			//? error(ERR_ARG) neden saçmalıyor
+		return (err_exp(ERR_ARG, 0, 0, 1));
 	while (1)
 	{
 		g_signal = 0;
@@ -104,7 +100,7 @@ int	main(int ac, char **av, char **env)
 		if (g_signal == 3)
 		{
 			exit_code = 130;
-			g_signal = 0; // tekrar kullanıma hazırla
+			g_signal = 0;
 		}
 		if (!in)
 		{
@@ -113,7 +109,9 @@ int	main(int ac, char **av, char **env)
 		}
 		if (*in)
 			add_history(in);
-		exit_code = exec(do_parser(in, exit_code, env_list), &env_list);
+		// if (!do_parser(in, &exit_code, env_list))
+		// 	continue;
+		exit_code = exec(do_parser(in, &exit_code, env_list), &env_list);
 	}
 	ft_free();
 	return (exit_code);

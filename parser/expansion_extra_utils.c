@@ -6,7 +6,7 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 23:57:49 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/23 17:04:59 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/26 20:12:39 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ char	*ft_strjoin_char(char *s, char c)
 	ft_memcpy(res, s, len);
 	res[len] = c;
 	res[len + 1] = '\0';
-	// free(s);
 	return (res);
 }
 
@@ -37,7 +36,6 @@ char	*append_substring(char *res, const char *src, int one, int end)
 
 	part = ft_substr(src, one, end - one);
 	new_res = ft_strjoin(res, part);
-	// free(part);
 	return (new_res);
 }
 
@@ -46,7 +44,6 @@ void	expand_and_replace(char **str, t_env *env_list, int exit_code)
 	char	*tmp;
 
 	tmp = expand_token(*str, env_list, exit_code);
-	// free(*str);
 	*str = tmp;
 }
 
@@ -73,6 +70,5 @@ void	here_doc_no_expand(char **target, size_t i, size_t j)
 		else
 			res[j++] = (*target)[i++];
 	}
-	// free(*target);
 	*target = res;
 }

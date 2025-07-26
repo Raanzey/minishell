@@ -1,12 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
+/*   Updated: 2025/07/26 20:22:29 by musisman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	setup_pipe_or_die(t_command *cmd, int pipe_fd[2])
 {
 	if (cmd->next && pipe(pipe_fd) == -1)
 	{
-		perror("[PIPE ERROR]");
 		ft_free();
-		exit(1);
+		exit(err_exp("pipe: ", 0, 1, 1));
 	}
 }
 
@@ -56,11 +67,11 @@ char	*handle_path(t_command *cmd, t_env **env_list)
 	if (ft_strchr(cmd->av[0], '/'))
 	{
 		if (access(cmd->av[0], F_OK) != 0)
-			error(0, cmd->av[0], ": No such file or directory\n", 127);
+			error(0, cmd->av[0], ERR_CD, 127);
 		else if (access(cmd->av[0], X_OK) != 0)
-			error(0, cmd->av[0], ": Permission denied\n", 126);
+			error(0, cmd->av[0], ERR_PRM, 126);
 		else if (stat(cmd->av[0], &st) == 0 && S_ISDIR(st.st_mode))
-			error(0, cmd->av[0], ": Is a directory\n", 126);
+			error(0, cmd->av[0], ERR_DIC, 126);
 		else
 			return (ft_strdup(cmd->av[0]));
 	}
@@ -68,7 +79,7 @@ char	*handle_path(t_command *cmd, t_env **env_list)
 	{
 		path = find_path(cmd->av[0], *env_list);
 		if (!path)
-			error(0, cmd->av[0], ": command not found\n", 127);
+			error(0, cmd->av[0], ERR_CMD, 127);
 		return (path);
 	}
 	return (NULL);

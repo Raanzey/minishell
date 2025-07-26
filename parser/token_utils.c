@@ -34,3 +34,14 @@ size_t	redirect(char **tokens, const char *s, size_t *i, size_t k)
 	}
 	return (k + 1);
 }
+
+char	*get_env_values(t_env *env_list, const char *key)
+{
+	while (env_list)
+	{
+		if (!ft_strcmp(env_list->key, key))
+			return (env_list->value);
+		env_list = env_list->next;
+	}
+	return (NULL);
+}

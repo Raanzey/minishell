@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   built_in.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/26 20:06:45 by musisman          #+#    #+#             */
+/*   Updated: 2025/07/26 20:09:32 by musisman         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	built_in(t_command *cmd, t_env **env_list)
@@ -65,13 +77,13 @@ int	pwd_cmd(void)
 	char	cwd[1024];
 
 	if (!getcwd(cwd, sizeof(cwd)))
-	{
-		perror("pwd");
-		return (1);
-	}
+		return (err_exp("pwd: ", 0, 1, 1));
 	printf("%s\n", cwd);
 	return (0);
 }
+
+//! wsl numeric olmayan durumda exit atıyor
+//! wsl 2  parametrede atmıyor eskiden atıyordu wsl'den mi yoksa böyle mi kalması lazım bak
 
 int	exit_cmd(char **av)
 {
@@ -84,9 +96,12 @@ int	exit_cmd(char **av)
 		exit(0);
 	}
 	if (!is_numeric(av[1]))
-		error("minishell: exit: `", 0, ERR_EXIT, 2);
+	{
+		ft_free();
+		exit(err_exp("exit: ", ERR_EXIT, 0, 2));
+	}
 	if (av[2])
-		error("minishell: exit: `", 0, ERR_2_ARG, 1);
+		return (err_exp("exit: ", ERR_2_ARG, 0, 1));
 	code = ft_atoi(av[1]) % 256;
 	if (code < 0)
 		code += 256;
