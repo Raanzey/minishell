@@ -8,11 +8,11 @@ void	handle_redirections(t_command *cmd)
 
 	redir = cmd->redir;
 	has_cmd = (cmd->av && cmd->av[0]);
-	has_cmd = handle_heredocs(redir, has_cmd, -1);
+	handle_heredocs(redir, has_cmd, -1);
 	while (redir)
 	{
 		fd = open_redir_fd(redir);
-		if (redir->type != 4 && fd == -1 && !has_cmd)// <<<----------- has_cmd olmazsa "cat < (olmayan bir dosya)" durumunda hata basmiyor
+		if ((redir->type == 1 || redir->type == 2 || redir->type == 3) && fd == -1)
 		{
 			perror(ft_strjoin("minishell: ", redir->filename));
 			ft_free();

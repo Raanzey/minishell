@@ -27,7 +27,7 @@ static void	handle_heredoc_loop(t_redirect *redir, int *fd, int has_cmd)
 	}
 }
 
-int	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
+void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
 {
 	int	fd[2];
 
@@ -36,7 +36,10 @@ int	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
 		if (redir->type == 4)
 		{
 			if (pipe(fd) == -1)
-				return (perror("pipe"), ft_free(), exit(1), 1);
+			{
+				ft_free();
+				exit(1);
+			}
 			g_signal = 2;
 			setup_signals();
 			handle_heredoc_loop(redir, fd, has_cmd);
@@ -52,7 +55,6 @@ int	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
 		dup2(heredoc_fd, STDIN_FILENO);
 		close(heredoc_fd);
 	}
-	return (has_cmd = 1);
 }
 
 int	has_output_redir(t_redirect *redir)
