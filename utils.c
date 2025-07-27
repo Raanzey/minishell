@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:01:09 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/27 17:23:24 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	error(char *word, char *cmd, char *err, int exit_code)
 {
-	char *msg;
-	
+	char	*msg;
+
 	msg = "\0";
 	if (word)
 		msg = ft_strjoin(msg, "minishell: ");

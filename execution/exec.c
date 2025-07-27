@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:10:54 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/27 17:20:46 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,8 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	}
 	path = handle_path(cmd, env_list);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0, NULL));
-	exit(err_exp("execve: ", 0, 1, 126));
 	ft_free();
-	exit(26);
+	exit(err_exp("execve: ", 0, 1, 126));
 }
 
 static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
@@ -70,9 +69,8 @@ static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
 	pid = fork();
 	if (pid == -1)
 	{
-		err_exp("fork: ", 0, 1, 1);
 		ft_free();
-		exit(1);
+		exit(err_exp("fork: ", 0, 1, 1));
 	}
 	if (pid == 0)
 		exec_child(cmd, prev_fd, pipe_fd, env_list);
