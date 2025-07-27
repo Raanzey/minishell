@@ -2,7 +2,7 @@ NAME 		= minishell
 CC		= cc
 CFLAGS 		= -Wall -Wextra -Werror
 LIBFLAGS	= -lreadline
-SRCS		= main.c utils.c execution/exec.c execution/exec_utils.c execution/heredoc.c \
+SRCS		= main.c utils.c signal.c execution/exec.c execution/exec_utils.c execution/heredoc.c \
 			execution/built_in/built_in.c execution/built_in/built_in_parent.c \
 			execution/built_in/env_exp_func/env.c execution/built_in/env_exp_func/exp.c execution/built_in/env_exp_func/exp_utils.c \
 			parser/token.c parser/token_utils.c parser/error_handle.c \

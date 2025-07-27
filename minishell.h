@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/26 20:30:39 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 15:17:03 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,6 @@ extern int	g_signal;
 
 int	error(char *word, char *cmd, char *err, int exit_code);
 int	err_exp(char *cmd, char *file, int err, int exit_code);
+void	sigint_handler(int sig);
 
 #endif

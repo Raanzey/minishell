@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:45 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/26 20:09:32 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 15:31:07 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,6 @@ int	pwd_cmd(void)
 	printf("%s\n", cwd);
 	return (0);
 }
-
-//! wsl numeric olmayan durumda exit atıyor
-//! wsl 2  parametrede atmıyor eskiden atıyordu wsl'den mi yoksa böyle mi kalması lazım bak
 
 int	exit_cmd(char **av)
 {

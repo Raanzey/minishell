@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:34 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/26 20:10:40 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 15:30:23 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,9 @@ void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
 		redir = redir->next;
 	}
 	if (heredoc_fd != -1)
-	{
 		dup2(heredoc_fd, STDIN_FILENO);
+	if (heredoc_fd != -1)
 		close(heredoc_fd);
-	}
 }
 
 int	has_output_redir(t_redirect *redir)

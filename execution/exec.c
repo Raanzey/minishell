@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/26 20:40:22 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 14:59:38 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	exec(t_command *cmd, t_env **env_list)
 
 	prev_fd = -1;
 	if (!cmd)
-		return (2); //* parser hata durumu
+		return (0);
 	if (!cmd->next && is_parent_builtin(cmd))
 		return (built_in(cmd, env_list));
 	while (cmd)
