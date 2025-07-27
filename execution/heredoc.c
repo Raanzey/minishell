@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:34 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 16:32:44 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/27 17:16:37 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,8 @@ void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
 		{
 			if (pipe(fd) == -1)
 			{
-				err_exp("pipe: ", 0, 1, 1);
 				ft_free();
-				exit(1);
+				exit(err_exp("pipe: ", 0, 1, 1));
 			}
 			g_signal = 2;
 			setup_signals();

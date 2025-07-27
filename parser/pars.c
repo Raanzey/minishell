@@ -59,28 +59,3 @@ t_command	*parser(char **tokens)
 	}
 	return (first);
 }
-
-void	print_cmd(t_command *cmd)
-{
-	int			i;
-	int			num;
-	t_redirect	*r;
-
-	num = 1;
-	while (cmd)
-	{
-		printf("=== COMMAND %d ===\n", num++);
-		printf("ARGS:\n");
-		i = -1;
-		while (cmd->av && cmd->av[++i])
-			printf("av[%d]: **%s**\n", i, cmd->av[i]);
-		printf("REDIRS:\n");
-		r = cmd->redir;
-		while (r)
-		{
-			printf("type: %d, file: %s\n", r->type, r->filename);
-			r = r->next;
-		}
-		cmd = cmd->next;
-	}
-}

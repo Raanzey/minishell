@@ -39,7 +39,7 @@ void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
 	char	*env_value;
 
 	tmp = extract_var_name(s, i);
-	env_value = get_env_values(env_list, tmp);
+	env_value = get_env_value(env_list, tmp);
 	if (env_value)
 		*res = ft_strjoin(*res, env_value);
 	else

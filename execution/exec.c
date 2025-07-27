@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 16:59:43 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/27 17:10:54 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	handle_redirections(t_command *cmd)
 	{
 		fd = open_redir_fd(redir);
 		if ((redir->type == 1 || redir->type == 2 || redir->type == 3)
-		&& fd == -1)
+			&& fd == -1)
 		{
 			err_exp(redir->filename, 0, 1, 1);
 			ft_free();
