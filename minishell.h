@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:24:10 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 17:41:09 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@
 # define ERR_ARG "Please no argument"
 # define ERR_EXIT "numeric argument required"
 # define ERR_2_ARG "too many arguments"
-# define ERR_CMD ": command not found"
-# define ERR_CD ": No such file or directory"
+# define ERR_CMD ": command not found\n"
+# define ERR_CD ": No such file or directory\n"
 # define ERR_HOME "HOME not set"
 # define ERR_EXP "': not a valid identifier"
 # define ERR_SNTX "syntax error near unexpected token "
 # define ERR_PRM ": Permission denied"
-# define ERR_DIC ": Is a directory"
+# define ERR_DIC ": Is a directory\n"
 
 extern int	g_signal;
 
