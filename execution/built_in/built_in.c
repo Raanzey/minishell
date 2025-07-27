@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:45 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 15:31:07 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/27 16:33:17 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,9 @@ int	exit_cmd(char **av)
 	}
 	if (!is_numeric(av[1]))
 	{
+		err_exp("exit: ", ERR_EXIT, 0, 2);
 		ft_free();
-		exit(err_exp("exit: ", ERR_EXIT, 0, 2));
+		exit(2);
 	}
 	if (av[2])
 		return (err_exp("exit: ", ERR_2_ARG, 0, 1));

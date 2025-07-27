@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 14:59:38 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/27 16:59:43 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,11 @@ void	handle_redirections(t_command *cmd)
 	{
 		fd = open_redir_fd(redir);
 		if ((redir->type == 1 || redir->type == 2 || redir->type == 3)
-			&& fd == -1)
+		&& fd == -1)
 		{
+			err_exp(redir->filename, 0, 1, 1);
 			ft_free();
-			exit(err_exp(redir->filename, 0, 0, 1));
+			exit(1);
 		}
 		dup_redir_fd(redir, fd);
 		redir = redir->next;
@@ -54,8 +55,9 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	}
 	path = handle_path(cmd, env_list);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0, NULL));
-	ft_free();
 	exit(err_exp("execve: ", 0, 1, 126));
+	ft_free();
+	exit(26);
 }
 
 static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
@@ -68,8 +70,9 @@ static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
 	pid = fork();
 	if (pid == -1)
 	{
+		err_exp("fork: ", 0, 1, 1);
 		ft_free();
-		exit(err_exp("fork: ", 0, 1, 1));
+		exit(1);
 	}
 	if (pid == 0)
 		exec_child(cmd, prev_fd, pipe_fd, env_list);

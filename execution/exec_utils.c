@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/26 20:22:29 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 16:51:55 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@ void	setup_pipe_or_die(t_command *cmd, int pipe_fd[2])
 {
 	if (cmd->next && pipe(pipe_fd) == -1)
 	{
-		ft_free();
 		exit(err_exp("pipe: ", 0, 1, 1));
+		ft_free();
+		exit(1);
 	}
 }
 

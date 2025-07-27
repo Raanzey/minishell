@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 15:11:13 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/27 17:01:09 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,22 @@
 
 int	error(char *word, char *cmd, char *err, int exit_code)
 {
+	char *msg;
+	
+	msg = "\0";
 	if (word)
-		write(2, word, ft_strlen(word));
+		msg = ft_strjoin(msg, "minishell: ");
 	if (cmd)
-		write(2, cmd, ft_strlen(cmd));
-	write(2, err, ft_strlen(err));
-	write(2, "\n", 2);
+		msg = ft_strjoin(msg, cmd);
+	if (err)
+		msg = ft_strjoin(msg, err);
+	ft_strjoin(msg, "\n");
+	write(2, msg, ft_strlen(msg));
 	ft_free();
 	exit(exit_code);
 }
 
-int	err_exp(char *cmd, char *file, int err, int exit_code)
+int	err_exp(char *cmd, char *file, int bool_err, int exit_code)
 {
 	char	*msg;
 
@@ -33,11 +38,11 @@ int	err_exp(char *cmd, char *file, int err, int exit_code)
 		msg = ft_strjoin(msg, cmd);
 	if (file)
 		msg = ft_strjoin(msg, file);
-	if (err)
+	if (bool_err)
 		perror(msg);
 	else
 	{
-		//msg = ft_strjoin(msg, "\n");
+		msg = ft_strjoin(msg, "\n");
 		write(2, msg, ft_strlen(msg));
 	}
 	return (exit_code);
