@@ -1,58 +1,46 @@
-void	handle_heredocs(t_redirect *redir ,int has_cmd)
+void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
+		t_env **env_list)
 {
-	int		fd[2];
-	int		heredoc_fd;
-	char	*line;
+	char	*path;
+	int		built_code;
 
-	heredoc_fd = -1;
-	// signal(SIGINT, handle_sigint_exec);
-	// signal(SIGQUIT,handle_sigint_exec);
-	while (redir)
+	child_redirect(cmd, prev_fd, pipe_fd);
+	// exec içinde sinyaller: SIGINT özel, SIGQUIT default!
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_DFL); // Varsayılan: "Quit (core dumped)" için
+
+	g_signal = 1;
+
+	if (cmd->av || cmd->av[0])
 	{
-		if (redir->type == 4)
+		built_code = built_in(cmd, env_list);
+		if (built_code == 0 || built_code != -1)
 		{
-			if (pipe(fd) == -1)
-			{
-				perror("pipe");
-				ft_free();
-				exit(1);
-			}
-			g_signal = 2;
-			setup_signals(); // readline için doğru signal davranışı
-			while (1)
-			{
-				printf("redir filename %s redir type %d \n", redir->filename, redir->type);
-				line = readline("> ");
-				if ((!line || (!ft_strncmp(line, redir->filename,
-							ft_strlen(redir->filename))
-						&& line[ft_strlen(redir->filename)] == '\0')) && !has_cmd)
-				{
-					ft_free();
-				}
-				if (!line || (!ft_strncmp(line, redir->filename,
-							ft_strlen(redir->filename))
-						&& line[ft_strlen(redir->filename)] == '\0'))
-				{
-					break ;
-				}		
-				write(fd[1], line, ft_strlen(line));
-				write(fd[1], "\n", 1);
-				// free(line);
-			}
-			// free(line);
-			close(fd[1]);
-			if (heredoc_fd != -1)
-				close(heredoc_fd);
-			heredoc_fd = fd[0]; // sadece son heredoc'un pipe'ı tutulur
+			ft_free();
+			exit(built_code);
 		}
-		redir = redir->next;
 	}
-	if (heredoc_fd != -1)
-	{
-        dup2(heredoc_fd, STDIN_FILENO);
-        close(heredoc_fd);
-    }
+	path = handle_path(cmd, env_list);
+	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0, NULL));
+	ft_free();
+	exit(err_exp("execve: ", 0, 1, 126));
 }
 
-hayır bana bu kodu düzelt benim yapım bu koda göre uygun çünkü cat yoksa dümdüz heredoc ise ft_free ile freeleyip sonra break atıp çıkmalı 
-sonraki if te yani eğer cat li heredoc ise direkt break leyip çıkmalı  
+static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
+		t_env **env_list)
+{
+	pid_t	pid;
+
+	discard_signals();
+	g_signal = 1;
+	pid = fork();
+	if (pid == -1)
+	{
+		ft_free();
+		exit(err_exp("fork: ", 0, 1, 1));
+	}
+	if (pid == 0)
+		exec_child(cmd, prev_fd, pipe_fd, env_list);
+}
+
+create_child_or_die deki g_signal=1 kalsınmı 

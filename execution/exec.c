@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:20:46 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 18:19:56 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,12 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	int		built_code;
 
 	child_redirect(cmd, prev_fd, pipe_fd);
-	setup_signals();
+	// exec içinde sinyaller: SIGINT özel, SIGQUIT default!
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, sigquit_handler); // Varsayılan: "Quit (core dumped)" için
+
+	g_signal = 1;
+
 	if (cmd->av || cmd->av[0])
 	{
 		built_code = built_in(cmd, env_list);

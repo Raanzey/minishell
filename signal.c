@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 17:23:06 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:23:07 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/27 18:22:29 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,12 @@ void	discard_signals(void)
 {
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
+}
+
+void sigquit_handler(int sig)
+{
+	(void)sig;
+	write(1, "Quit\n", 5); // veya hiç yazma
+	ft_free();
+	exit(131); // SIGQUIT 3 → 128+3 = 131
 }
