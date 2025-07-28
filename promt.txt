@@ -1,46 +1,55 @@
-void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
-		t_env **env_list)
+void	update_oldpwd(t_env **env_list)
+{
+	char	cwd[1024];
+
+	if (getcwd(cwd, sizeof(cwd)))
+		insert_sorted_exp(env_list, "OLDPWD", cwd);
+		
+}
+
+int	cd_cmd(t_command *cmd, t_env **env_list)
 {
 	char	*path;
-	int		built_code;
 
-	child_redirect(cmd, prev_fd, pipe_fd);
-	// exec içinde sinyaller: SIGINT özel, SIGQUIT default!
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_DFL); // Varsayılan: "Quit (core dumped)" için
+	if (cmd->av[2])
+		return (err_exp("cd: ", ERR_2_ARG, 0, 1));
 
-	g_signal = 1;
+	update_oldpwd(env_list); // ✅ her zaman önceki konumu kaydet
 
-	if (cmd->av || cmd->av[0])
+	if (!cmd->av[1] || !ft_strcmp(cmd->av[1], "~"))
 	{
-		built_code = built_in(cmd, env_list);
-		if (built_code == 0 || built_code != -1)
-		{
-			ft_free();
-			exit(built_code);
-		}
+		path = get_env_value(*env_list, "HOME");
+		if (!path)
+			return (err_exp("cd: ", ERR_HOME, 0, 1));
 	}
-	path = handle_path(cmd, env_list);
-	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0, NULL));
-	ft_free();
-	exit(err_exp("execve: ", 0, 1, 126));
-}
-
-static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
-		t_env **env_list)
-{
-	pid_t	pid;
-
-	discard_signals();
-	g_signal = 1;
-	pid = fork();
-	if (pid == -1)
+	else if (!ft_strcmp(cmd->av[1], "-"))
 	{
-		ft_free();
-		exit(err_exp("fork: ", 0, 1, 1));
+		path = get_env_value(*env_list, "OLDPWD");
+		if (!path)
+			return (err_exp("cd: ", "OLDPWD not set", 0, 1));
+		printf("%s\n", path); // bash gibi çıktı verir
 	}
-	if (pid == 0)
-		exec_child(cmd, prev_fd, pipe_fd, env_list);
-}
+	else
+		path = cmd->av[1];
 
-create_child_or_die deki g_signal=1 kalsınmı 
+	if (chdir(path) != 0)
+		return (err_exp("cd: ", path, 1, 1));
+
+	// Yeni PWD'yi güncelle
+	char new_cwd[1024];
+	if (getcwd(new_cwd, sizeof(new_cwd)))
+		insert_sorted_exp(env_list, "PWD", new_cwd);
+
+	return (0);
+}
+kodum böyleyken 
+
+./minishell
+minishell~ env | grep OLDPWD
+minishell~ cd
+minishell~ env | grep OLDPWD
+OLDPWD=/home/yozlu/mini/minishell_norm
+minishell~ cd -
+/home/yozlu
+
+OLDPWD yi env de tutabiliyorum fakat path i değişemiyorum getcwd ile sanırım 

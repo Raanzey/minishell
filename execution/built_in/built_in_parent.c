@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in_parent.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:07:31 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:19:53 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/28 22:54:11 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	cd_cmd(t_command *cmd, t_env *env_list)
 {
 	char	*path;
 
-	if (!cmd->av[1])
+	if (!cmd->av[1] || !ft_strcmp(cmd->av[1], "~"))
 	{
 		path = get_env_value(env_list, "HOME");
 		if (!path)

@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 17:59:15 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/28 18:53:46 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	handle_redirections(t_command *cmd)
 	handle_heredocs(redir, has_cmd, -1);
 	while (redir)
 	{
+		
 		fd = open_redir_fd(redir);
 		if ((redir->type == 1 || redir->type == 2 || redir->type == 3)
 			&& fd == -1)
@@ -43,12 +44,7 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	int		built_code;
 
 	child_redirect(cmd, prev_fd, pipe_fd);
-	// exec içinde sinyaller: SIGINT özel, SIGQUIT default!
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, sigquit_handler); // Varsayılan: "Quit (core dumped)" için
-
-	g_signal = 1;
-
+	setup_signals();
 	if (cmd->av || cmd->av[0])
 	{
 		built_code = built_in(cmd, env_list);
