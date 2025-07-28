@@ -24,7 +24,7 @@ t_command	*parser(char **tokens);
 int			skip_space(const char *s, int i);
 int			redirect(char **tokens, const char *s, int *i, int k);
 int			pre_parser_error(char **tokens, int i);
-int			handle_error(t_command *cmd);
+int			ambiguous_redirect_error(t_command *cmd);
 char		**tokenizer(char const *s);
 char		*ft_strjoin_char(char *s, char c);
 char		*append_substring(char *res, const char *src, int one, int end);

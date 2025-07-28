@@ -25,20 +25,12 @@ int	ambiguous_redirect_error(t_command *cmd)
 		while (redir)
 		{
 			if (redir->filename && redir->filename[0] == '\0')
-				return (err_exp(redir->filename, "ambiguous redirect", 0, 2));
+				return (err_exp(redir->filename, "ambiguous redirect", 0, 1));
 			redir = redir->next;
 		}
 		cmd = cmd->next;
 	}
 	return (0);
-}
-
-int	handle_error(t_command *cmd)
-{
-	int	exit_code;
-
-	exit_code = ambiguous_redirect_error(cmd);
-	return (exit_code);
 }
 
 int	pre_parser_error(char **tokens, int i)

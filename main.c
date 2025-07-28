@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 15:19:32 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/28 16:37:27 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ t_command	*do_parser(char *in, int *exit_code, t_env *env_list)
 	if (!cmd)
 		return (0);
 	expand_args(cmd, env_list, *exit_code);
-	if (handle_error(cmd))
+	if (ambiguous_redirect_error(cmd))
 	{
-		*exit_code = 2;
+		*exit_code = 1;
 		return (0);
 	}
 	clean_empty_args_inplace(cmd);
