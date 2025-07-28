@@ -6,7 +6,7 @@
 /*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 15:03:12 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/28 15:08:19 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,7 @@ static int	handle_word(char **tokens, const char *s, int *i, int k)
 	start = *i;
 	while (s[*i] && !(s[*i] == ' ' || (s[*i] >= 9 && s[*i] <= 13)
 			|| s[*i] == '<' || s[*i] == '>' || s[*i] == '|'))
-	{
-		if (quotes_control(s, i))
-			return (0);
-	}
+		quotes_control(s, i);
 	tokens[k] = ft_substr(s, start, *i - start);
 	return (k + 1);
 }
