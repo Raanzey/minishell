@@ -23,7 +23,7 @@ int		cd_cmd(t_command *cmd, t_env **env_list, char *path);
 int		pwd_cmd(void);
 int		env_cmd(t_env *env);
 int		export_cmd(char **av, t_env **env, t_command *cmd);
-int     reset_pwd(t_env **env_list);
+int		reset_pwd(t_env **env_list);
 int		unset_cmd(t_command *cmd, t_env **env_list);
 int		is_valid_identifier(char *str);
 void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd);

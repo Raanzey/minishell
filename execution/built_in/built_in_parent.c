@@ -31,12 +31,11 @@ static int	update_oldpwd(t_env **env_list)
 	if (!getcwd(cwd, sizeof(cwd)))
 		return (err_exp("OLDPWD: ", 0, 1, 1));
 	insert_sorted_exp(env_list, "OLDPWD", cwd);
-	return 0;
+	return (0);
 }
 
 int	cd_cmd(t_command *cmd, t_env **env_list, char *path)
 {
-
 	if (cmd->av[2])
 		return (err_exp("cd: ", ERR_2_ARG, 0, 1));
 	if (!cmd->av[1] || !ft_strcmp(cmd->av[1], "~"))
@@ -54,7 +53,7 @@ int	cd_cmd(t_command *cmd, t_env **env_list, char *path)
 		printf("%s\n", path);
 		update_oldpwd(env_list);
 	}
-	else if(!update_oldpwd(env_list))
+	else if (!update_oldpwd(env_list))
 		path = cmd->av[1];
 	if (chdir(path) && cmd->av[1][0])
 		return (err_exp("cd: ", path, 1, 1));

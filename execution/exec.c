@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 18:53:46 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/28 23:52:33 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	handle_redirections(t_command *cmd)
 	handle_heredocs(redir, has_cmd, -1);
 	while (redir)
 	{
-		
 		fd = open_redir_fd(redir);
 		if ((redir->type == 1 || redir->type == 2 || redir->type == 3)
 			&& fd == -1)
