@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 16:33:55 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/28 15:03:12 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	quotes_control(const char *s, size_t *i)
+static int	quotes_control(const char *s, int *i)
 {
 	char	quote;
 
@@ -24,16 +24,16 @@ static int	quotes_control(const char *s, size_t *i)
 		if (s[*i] == quote)
 		{
 			(*i)++;
-			return (1);
+			return (0);
 		}
 		else
-			return (err_exp("open quotes", 0, 0, 1));
+			return (err_exp(ERR_QUOTE, &quote, 0, 2));
 	}
 	(*i)++;
-	return (1);
+	return (0);
 }
 
-static size_t	token_count(const char *s, size_t tc, size_t i, char redir)
+static int	token_count(const char *s, int tc, int i, char redir)
 {
 	while (s[i])
 	{
@@ -51,8 +51,8 @@ static size_t	token_count(const char *s, size_t tc, size_t i, char redir)
 			while (s[i] && !(s[i] == ' ' || (s[i] >= 9 && s[i] <= 13)
 					|| s[i] == '<' || s[i] == '>' || s[i] == '|'))
 			{
-				if (!quotes_control(s, &i))
-					return (0);
+				if (quotes_control(s, &i))
+					return (-1);
 			}
 		}
 		tc++;
@@ -60,15 +60,15 @@ static size_t	token_count(const char *s, size_t tc, size_t i, char redir)
 	return (tc);
 }
 
-static size_t	handle_word(char **tokens, const char *s, size_t *i, size_t k)
+static int	handle_word(char **tokens, const char *s, int *i, int k)
 {
-	size_t	start;
+	int	start;
 
 	start = *i;
 	while (s[*i] && !(s[*i] == ' ' || (s[*i] >= 9 && s[*i] <= 13)
 			|| s[*i] == '<' || s[*i] == '>' || s[*i] == '|'))
 	{
-		if (!quotes_control(s, i))
+		if (quotes_control(s, i))
 			return (0);
 	}
 	tokens[k] = ft_substr(s, start, *i - start);
@@ -77,16 +77,16 @@ static size_t	handle_word(char **tokens, const char *s, size_t *i, size_t k)
 
 char	**tokenizer(const char *s)
 {
-	size_t	i;
-	size_t	k;
-	size_t	total;
+	int		i;
+	int		k;
+	int		total;
 	char	**tokens;
 
 	i = 0;
 	k = 0;
 	total = token_count(s, 0, 0, 0);
 	tokens = ft_calloc(total + 1, sizeof(char *));
-	if (!tokens)
+	if (!tokens || total == -1)
 		return (NULL);
 	while (s[i] && total != 0)
 	{

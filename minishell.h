@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 18:20:59 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/28 15:03:15 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # define ERR_HOME "HOME not set"
 # define ERR_EXP "': not a valid identifier"
 # define ERR_SNTX "syntax error near unexpected token "
+# define ERR_QUOTE "syntax error near open quote "
 # define ERR_PRM ": Permission denied"
 # define ERR_DIC ": Is a directory\n"
 

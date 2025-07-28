@@ -12,14 +12,14 @@
 
 #include "../minishell.h"
 
-size_t	skip_space(const char *s, size_t i)
+int	skip_space(const char *s, int i)
 {
 	while (s[i] && (s[i] == ' ' || (s[i] >= 9 && s[i] <= 13)))
 		i++;
 	return (i);
 }
 
-size_t	redirect(char **tokens, const char *s, size_t *i, size_t k)
+int	redirect(char **tokens, const char *s, int *i, int k)
 {
 	if ((s[*i] == '<' && s[*i + 1] == '<')
 		|| (s[*i] == '>' && s[*i + 1] == '>'))
