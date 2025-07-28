@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 18:17:47 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/28 23:19:53 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define ERR_CMD ": command not found\n"
 # define ERR_CD ": No such file or directory\n"
 # define ERR_HOME "HOME not set"
+# define ERR_OLDPWD "OLDPWD not set"
 # define ERR_EXP "': not a valid identifier"
 # define ERR_SNTX "syntax error near unexpected token "
 # define ERR_QUOTE "syntax error near open quote "

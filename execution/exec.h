@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:02:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 22:54:45 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/28 23:45:04 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ int		built_in(t_command *cmd, t_env **env_list);
 int		is_parent_builtin(t_command *cmd);
 int		exec(t_command *cmd, t_env **env_list);
 int		echo_cmd(char **str);
-int		cd_cmd(t_command *cmd, t_env *env_list);
+int		cd_cmd(t_command *cmd, t_env **env_list, char *path);
 int		pwd_cmd(void);
 int		env_cmd(t_env *env);
 int		export_cmd(char **av, t_env **env, t_command *cmd);
+int     reset_pwd(t_env **env_list);
 int		unset_cmd(t_command *cmd, t_env **env_list);
 int		is_valid_identifier(char *str);
 void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd);
@@ -33,6 +34,7 @@ char	*get_env_value(t_env *env, const char *key);
 char	*find_path(char *cmd, t_env *env_list);
 char	**convert_env_to_array(t_env *env, int count, int i, char *joined);
 char	*handle_path(t_command *cmd, t_env **env_list);
+void	insert_sorted_exp(t_env **env, char *key, char *value);
 void	setup_pipe_or_die(t_command *cmd, int pipe_fd[2]);
 void	dup_redir_fd(t_redirect *redir, int fd);
 void	child_redirect(t_command *cmd, int prev_fd, int pipe_fd[2]);
