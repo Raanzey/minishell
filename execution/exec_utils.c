@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:19:36 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/28 18:04:03 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ void	dup_redir_fd(t_redirect *redir, int fd)
 	if (redir->type == 3)
 		dup2(fd, STDIN_FILENO);
 	else if (redir->type == 1 || redir->type == 2)
+	{
+		ft_free();
 		dup2(fd, STDOUT_FILENO);
+	}
 	if (fd != -1 && fd != STDIN_FILENO && fd != STDOUT_FILENO)
 		close(fd);
 }
