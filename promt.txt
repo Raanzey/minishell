@@ -1,23 +1,20 @@
-void	update_oldpwd(t_env **env_list)
+şu an şöyle bir sıkıntı var ben değer cd a yazıp a içine geidersem sonra cd b yazdıp b içine gidersem ve cd - yazarsam a içine geri dönüyor evet ama b içinde cd blabla gibi olmayan bir dizin adı yazrsam hata döndürüyor ve update_oldpwd içinde o anki dizini güncellediği için b dizinini alıyor ve biçinde kaldığım için cd - basınca a'ya değil sürekli b'ye gidiyor ve loopa giriyor benim dosya yolunu bulamazsam oldpwd'yi güncellememem lazım ki eskisine geri dönebileyim şu an kodlar şöyle: static int	update_oldpwd(t_env **env_list)
 {
 	char	cwd[1024];
 
-	if (getcwd(cwd, sizeof(cwd)))
-		insert_sorted_exp(env_list, "OLDPWD", cwd);
-		
+	if (!getcwd(cwd, sizeof(cwd)))
+		return (err_exp("OLDPWD: ", 0, 1, 1));
+	insert_sorted_exp(env_list, "OLDPWD", cwd);
+	return (0);
 }
 
-int	cd_cmd(t_command *cmd, t_env **env_list)
+int	cd_cmd(t_command *cmd, t_env **env_list, char *path)
 {
-	char	*path;
-
-	if (cmd->av[2])
+	if (cmd->av[1] && cmd->av[2])
 		return (err_exp("cd: ", ERR_2_ARG, 0, 1));
-
-	update_oldpwd(env_list); // ✅ her zaman önceki konumu kaydet
-
 	if (!cmd->av[1] || !ft_strcmp(cmd->av[1], "~"))
 	{
+		update_oldpwd(env_list);
 		path = get_env_value(*env_list, "HOME");
 		if (!path)
 			return (err_exp("cd: ", ERR_HOME, 0, 1));
@@ -26,30 +23,29 @@ int	cd_cmd(t_command *cmd, t_env **env_list)
 	{
 		path = get_env_value(*env_list, "OLDPWD");
 		if (!path)
-			return (err_exp("cd: ", "OLDPWD not set", 0, 1));
-		printf("%s\n", path); // bash gibi çıktı verir
+			return (err_exp("cd: ", ERR_OLDPWD, 0, 1));
+		printf("%s\n", path);
+		update_oldpwd(env_list);
 	}
-	else
+	else if (!update_oldpwd(env_list))
 		path = cmd->av[1];
-
-	if (chdir(path) != 0)
+	if ((chdir(path) && cmd->av[1][0]))
 		return (err_exp("cd: ", path, 1, 1));
-
-	// Yeni PWD'yi güncelle
-	char new_cwd[1024];
-	if (getcwd(new_cwd, sizeof(new_cwd)))
-		insert_sorted_exp(env_list, "PWD", new_cwd);
-
-	return (0);
+	return (reset_pwd(env_list));
 }
-kodum böyleyken 
-
-./minishell
-minishell~ env | grep OLDPWD
-minishell~ cd
-minishell~ env | grep OLDPWD
-OLDPWD=/home/yozlu/mini/minishell_norm
+, ve örnek çıktım şöyle: yozlu@k1m26s05:~/Desktop/mini/minishell_deneme$ ./minishell
+minishell~ ls
+collector  execution  Libft  main.c  Makefile  minishell  minishell.h  minishell_tester  parser  promt.txt  readline.supp  README.md  signal.c  utils.c  yazdıma.txt
+minishell~ cd execution/
+minishell~ cd de
+minishell: cd: de: No such file or directory
 minishell~ cd -
-/home/yozlu
-
-OLDPWD yi env de tutabiliyorum fakat path i değişemiyorum getcwd ile sanırım 
+/home/yozlu/Desktop/mini/minishell_deneme/execution
+minishell~ cd -
+/home/yozlu/Desktop/mini/minishell_deneme/execution
+minishell~ cd -
+/home/yozlu/Desktop/mini/minishell_deneme/execution
+minishell~ cd -
+/home/yozlu/Desktop/mini/minishell_deneme/execution
+minishell~ 
+, gördüğün gibi execution içine girdikten somnra rastgele bir şey yazdın ve sonra cd - atınca sürekli execution içinde kaldı bunu nasıl düzeltebilirim

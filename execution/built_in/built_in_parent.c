@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:07:31 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 23:42:45 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/29 14:49:48 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,40 +24,46 @@ int	is_parent_builtin(t_command *cmd)
 	return (0);
 }
 
-static int	update_oldpwd(t_env **env_list)
+static char	*get_cd_target(t_command *cmd, t_env **env_list)
 {
-	char	cwd[1024];
+	char	*path;
 
-	if (!getcwd(cwd, sizeof(cwd)))
-		return (err_exp("OLDPWD: ", 0, 1, 1));
-	insert_sorted_exp(env_list, "OLDPWD", cwd);
-	return (0);
-}
-
-int	cd_cmd(t_command *cmd, t_env **env_list, char *path)
-{
-	if (cmd->av[2])
-		return (err_exp("cd: ", ERR_2_ARG, 0, 1));
 	if (!cmd->av[1] || !ft_strcmp(cmd->av[1], "~"))
 	{
-		update_oldpwd(env_list);
 		path = get_env_value(*env_list, "HOME");
 		if (!path)
-			return (err_exp("cd: ", ERR_HOME, 0, 1));
+			return (err_exp("cd: ", ERR_HOME, 0, 1), NULL);
 	}
 	else if (!ft_strcmp(cmd->av[1], "-"))
 	{
 		path = get_env_value(*env_list, "OLDPWD");
 		if (!path)
-			return (err_exp("cd: ", ERR_OLDPWD, 0, 1));
+			return (err_exp("cd: ", "OLDPWD not set", 0, 1), NULL);
 		printf("%s\n", path);
-		update_oldpwd(env_list);
 	}
-	else if (!update_oldpwd(env_list))
+	else
 		path = cmd->av[1];
-	if (chdir(path) && cmd->av[1][0])
+	return (path);
+}
+
+int	cd_cmd(t_command *cmd, t_env **env_list, char *path)
+{
+	char	old_cwd[1024];
+	char	new_cwd[1024];
+
+	if (cmd->av[1] && cmd->av[2])
+		return (err_exp("cd: ", ERR_2_ARG, 0, 1));
+	if (!getcwd(old_cwd, sizeof(old_cwd)))
+		return (err_exp("cd: ", "getcwd failed", 0, 1));
+	path = get_cd_target(cmd, env_list);
+	if (!path)
+		return (1);
+	if (chdir(path) != 0)
 		return (err_exp("cd: ", path, 1, 1));
-	return (reset_pwd(env_list));
+	insert_sorted_exp(env_list, "OLDPWD", old_cwd);
+	if (getcwd(new_cwd, sizeof(new_cwd)))
+		insert_sorted_exp(env_list, "PWD", new_cwd);
+	return (0);
 }
 
 int	export_cmd(char **av, t_env **env, t_command *cmd)

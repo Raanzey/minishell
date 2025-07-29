@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:09:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 23:51:12 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/29 14:50:00 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,4 @@ char	**convert_env_to_array(t_env *env, int count, int i, char *joined)
 	}
 	env_array[i] = NULL;
 	return (env_array);
-}
-
-int	reset_pwd(t_env **env_list)
-{
-	char	new_cwd[1024];
-
-	if (!getcwd(new_cwd, sizeof(new_cwd)))
-		return (err_exp("pwd: ", 0, 1, 1));
-	insert_sorted_exp(env_list, "PWD", new_cwd);
-	return (0);
 }
