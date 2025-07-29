@@ -40,6 +40,7 @@ typedef struct s_expand
 {
 	t_env	*env_list;
 	int		exit_code;
+	int		first;
 }	t_expand;
 
 #endif

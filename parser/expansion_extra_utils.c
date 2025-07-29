@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_extra_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 23:57:49 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/26 20:12:39 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/29 17:10:44 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ char	*append_substring(char *res, const char *src, int one, int end)
 	return (new_res);
 }
 
-void	expand_and_replace(char **str, t_env *env_list, int exit_code)
+void	expand_and_replace(char **str, t_env *env, int exit_code, int first)
 {
 	char	*tmp;
 
-	tmp = expand_token(*str, env_list, exit_code);
+	tmp = expand_token(*str, env, exit_code, first);
 	*str = tmp;
 }
 

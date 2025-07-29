@@ -29,10 +29,10 @@ char		**tokenizer(char const *s);
 char		*ft_strjoin_char(char *s, char c);
 char		*append_substring(char *res, const char *src, int one, int end);
 char		*expand_dollar(char *s, t_expand *info);
-char		*expand_token(const char *token, t_env *env_list, int exit_code);
-void		expand_and_replace(char **str, t_env *env_list, int last_exit);
+char		*expand_token(const char *token, t_env *env, int exit_code, int i);
+void		expand_and_replace(char **str, t_env *env, int last_exit, int i);
 void		here_doc_no_expand(char **target, size_t i, size_t j);
-int			expand_args(t_command *cmd, t_env *env_list, int exit_code);
+int			expand_args(t_command *cmd, t_env *env, int exit_code);
 void		clean_empty_args_inplace(t_command *cmd);
 
 #endif

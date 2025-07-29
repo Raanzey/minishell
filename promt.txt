@@ -1,51 +1,613 @@
-şu an şöyle bir sıkıntı var ben değer cd a yazıp a içine geidersem sonra cd b yazdıp b içine gidersem ve cd - yazarsam a içine geri dönüyor evet ama b içinde cd blabla gibi olmayan bir dizin adı yazrsam hata döndürüyor ve update_oldpwd içinde o anki dizini güncellediği için b dizinini alıyor ve biçinde kaldığım için cd - basınca a'ya değil sürekli b'ye gidiyor ve loopa giriyor benim dosya yolunu bulamazsam oldpwd'yi güncellememem lazım ki eskisine geri dönebileyim şu an kodlar şöyle: static int	update_oldpwd(t_env **env_list)
-{
-	char	cwd[1024];
+şu an bir sıkıntı var ben sadece "" yazarsam expansion içinde tırnakları sildiğim için cmd null dönüyor ve command not found hatası veremiyor execve içine gitmediği için ama şu an bayağı bir değişti kod arkadaş ile parser ve execution birleştirdik ve son haline yakın proje sadece bazı böyle ince nüansları düzeltmek lazım şu an: main.c: #include "minishell.h"
 
-	if (!getcwd(cwd, sizeof(cwd)))
-		return (err_exp("OLDPWD: ", 0, 1, 1));
-	insert_sorted_exp(env_list, "OLDPWD", cwd);
+int			g_signal = 0;
+
+static void	signals_and_input(char **in, int *exit_code)
+{
+	*in = readline("minishell~ ");
+	signal(SIGINT, sigint_handler);
+	if (g_signal == 3)
+	{
+		*exit_code = 130;
+		g_signal = 0;
+	}
+}
+
+static int	check_input(char *in)
+{
+	if (!in)
+	{
+		printf("exit\n");
+		return (0);
+	}
+	if (*in)
+		add_history(in);
+	return (1);
+}
+
+t_command	*do_parser(char *in, int *exit_code, t_env *env_list)
+{
+	t_command	*cmd;
+	char		**tokens;
+
+	tokens = tokenizer(in);
+	if (!tokens || pre_parser_error(tokens, -1))
+	{
+		*exit_code = 2;
+		return (0);
+	}
+	cmd = parser(tokens);
+	if (!cmd)
+		return (0);
+	expand_args(cmd, env_list, *exit_code);
+	if (ambiguous_redirect_error(cmd))
+	{
+		*exit_code = 1;
+		return (0);
+	}
+	clean_empty_args_inplace(cmd);
+	if (!cmd->redir)
+	{
+		if (!cmd->av || !cmd->av[0])
+			return (0);
+	}
+	return (cmd);
+}
+
+int	main(int ac, char **av, char **env)
+{
+	char		*in;
+	t_env		*env_list;
+	t_command	*cmd;
+	int			exit_code;
+
+	exit_code = 0;
+	(void)av;
+	if (ac >= 2)
+		return (err_exp(ERR_ARG, 0, 0, 1));
+	env_list = init_env(env, 0);
+	while (1)
+	{
+		g_signal = 0;
+		setup_signals();
+		signals_and_input(&in, &exit_code);
+		if (!check_input(in))
+			break ;
+		cmd = do_parser(in, &exit_code, env_list);
+		if (cmd)
+			exit_code = exec(cmd, &env_list);
+	}
+	ft_free();
+	return (exit_code);
+}
+, ve parser dosyaları: static int	quotes_control(const char *s, int *i)
+{
+	char	quote;
+
+	if (s[*i] == '"' || s[*i] == '\'')
+	{
+		quote = s[(*i)++];
+		while (s[*i] && s[*i] != quote)
+			(*i)++;
+		if (s[*i] == quote)
+		{
+			(*i)++;
+			return (0);
+		}
+		else
+			return (err_exp(ERR_QUOTE, &quote, 0, 2));
+	}
+	(*i)++;
 	return (0);
 }
 
-int	cd_cmd(t_command *cmd, t_env **env_list, char *path)
+static int	token_count(const char *s, int tc, int i, char redir)
 {
-	if (cmd->av[1] && cmd->av[2])
-		return (err_exp("cd: ", ERR_2_ARG, 0, 1));
-	if (!cmd->av[1] || !ft_strcmp(cmd->av[1], "~"))
+	while (s[i])
 	{
-		update_oldpwd(env_list);
-		path = get_env_value(*env_list, "HOME");
-		if (!path)
-			return (err_exp("cd: ", ERR_HOME, 0, 1));
+		i = skip_space(s, i);
+		if (!s[i])
+			break ;
+		if (s[i] == '<' || s[i] == '>' || s[i] == '|')
+		{
+			redir = s[i++];
+			if (s[i] == redir && s[i] != '|')
+				i++;
+		}
+		else
+		{
+			while (s[i] && !(s[i] == ' ' || (s[i] >= 9 && s[i] <= 13)
+					|| s[i] == '<' || s[i] == '>' || s[i] == '|'))
+			{
+				if (quotes_control(s, &i))
+					return (-1);
+			}
+		}
+		tc++;
 	}
-	else if (!ft_strcmp(cmd->av[1], "-"))
-	{
-		path = get_env_value(*env_list, "OLDPWD");
-		if (!path)
-			return (err_exp("cd: ", ERR_OLDPWD, 0, 1));
-		printf("%s\n", path);
-		update_oldpwd(env_list);
-	}
-	else if (!update_oldpwd(env_list))
-		path = cmd->av[1];
-	if ((chdir(path) && cmd->av[1][0]))
-		return (err_exp("cd: ", path, 1, 1));
-	return (reset_pwd(env_list));
+	return (tc);
 }
-, ve örnek çıktım şöyle: yozlu@k1m26s05:~/Desktop/mini/minishell_deneme$ ./minishell
-minishell~ ls
-collector  execution  Libft  main.c  Makefile  minishell  minishell.h  minishell_tester  parser  promt.txt  readline.supp  README.md  signal.c  utils.c  yazdıma.txt
-minishell~ cd execution/
-minishell~ cd de
-minishell: cd: de: No such file or directory
-minishell~ cd -
-/home/yozlu/Desktop/mini/minishell_deneme/execution
-minishell~ cd -
-/home/yozlu/Desktop/mini/minishell_deneme/execution
-minishell~ cd -
-/home/yozlu/Desktop/mini/minishell_deneme/execution
-minishell~ cd -
-/home/yozlu/Desktop/mini/minishell_deneme/execution
-minishell~ 
-, gördüğün gibi execution içine girdikten somnra rastgele bir şey yazdın ve sonra cd - atınca sürekli execution içinde kaldı bunu nasıl düzeltebilirim
+
+static int	handle_word(char **tokens, const char *s, int *i, int k)
+{
+	int	start;
+
+	start = *i;
+	while (s[*i] && !(s[*i] == ' ' || (s[*i] >= 9 && s[*i] <= 13)
+			|| s[*i] == '<' || s[*i] == '>' || s[*i] == '|'))
+		quotes_control(s, i);
+	tokens[k] = ft_substr(s, start, *i - start);
+	return (k + 1);
+}
+
+char	**tokenizer(const char *s)
+{
+	int		i;
+	int		k;
+	int		total;
+	char	**tokens;
+
+	i = 0;
+	k = 0;
+	total = token_count(s, 0, 0, 0);
+	tokens = ft_calloc(total + 1, sizeof(char *));
+	if (!tokens || total == -1)
+		return (NULL);
+	while (s[i] && total != 0)
+	{
+		i = skip_space(s, i);
+		if (!s[i])
+			break ;
+		if (s[i] == '<' || s[i] == '>' || s[i] == '|')
+			k = redirect(tokens, s, &i, k);
+		else
+			k = handle_word(tokens, s, &i, k);
+	}
+	tokens[k] = NULL;
+	return (tokens);
+}
+, int	skip_space(const char *s, int i)
+{
+	while (s[i] && (s[i] == ' ' || (s[i] >= 9 && s[i] <= 13)))
+		i++;
+	return (i);
+}
+
+int	redirect(char **tokens, const char *s, int *i, int k)
+{
+	if ((s[*i] == '<' && s[*i + 1] == '<')
+		|| (s[*i] == '>' && s[*i + 1] == '>'))
+	{
+		tokens[k] = ft_substr(s, *i, 2);
+		*i += 2;
+	}
+	else
+	{
+		tokens[k] = ft_substr(s, *i, 1);
+		(*i)++;
+	}
+	return (k + 1);
+}, t_command	*add_command(char **tokens, size_t *i)
+{
+	t_command	*cmd;
+	t_redirect	*r;
+
+	cmd = new_command();
+	while (tokens[*i] && ft_strncmp(tokens[*i], "|", 2))
+	{
+		if (is_redir(tokens[*i]))
+		{
+			if (!tokens[*i + 1])
+				return (NULL);
+			r = create_redirect(tokens[*i], tokens[*i + 1]);
+			add_redirect(cmd, r);
+			*i += 2;
+		}
+		else
+			add_arg(cmd, tokens[(*i)++]);
+	}
+	return (cmd);
+}
+
+t_command	*parser(char **tokens)
+{
+	t_command	*first;
+	t_command	*cur;
+	t_command	*cmd;
+	size_t		i;
+
+	first = NULL;
+	cur = NULL;
+	i = 0;
+	while (tokens[i])
+	{
+		cmd = add_command(tokens, &i);
+		if (!cmd)
+			return (NULL);
+		if (!first)
+			first = cmd;
+		else
+			cur->next = cmd;
+		cur = cmd;
+		if (tokens[i] && !ft_strncmp(tokens[i], "|", 2))
+			i++;
+	}
+	return (first);
+}, t_command	*new_command(void)
+{
+	t_command	*cmd;
+
+	cmd = ft_malloc(sizeof(t_command));
+	if (!cmd)
+		return (NULL);
+	cmd->av = NULL;
+	cmd->redir = NULL;
+	cmd->next = NULL;
+	return (cmd);
+}
+
+int	is_redir(char *s)
+{
+	return (!ft_strncmp(s, "<", 2) || !ft_strncmp(s, ">", 2)
+		|| !ft_strncmp(s, "<<", 3) || !ft_strncmp(s, ">>", 3));
+}
+
+t_redirect	*create_redirect(char *op, char *file)
+{
+	t_redirect	*r;
+
+	r = ft_malloc(sizeof(t_redirect));
+	if (!r || !file)
+		return (NULL);
+	r->filename = ft_strdup(file);
+	r->next = NULL;
+	if (!ft_strncmp(op, "<<", 3))
+		r->type = 4;
+	else if (!ft_strncmp(op, ">>", 3))
+		r->type = 2;
+	else if (!ft_strncmp(op, "<", 2))
+		r->type = 3;
+	else if (!ft_strncmp(op, ">", 2))
+		r->type = 1;
+	return (r);
+}
+
+void	add_redirect(t_command *cmd, t_redirect *r)
+{
+	t_redirect	*cur;
+
+	cur = cmd->redir;
+	if (!cur)
+		cmd->redir = r;
+	else
+	{
+		while (cur->next)
+			cur = cur->next;
+		cur->next = r;
+	}
+}
+
+void	add_arg(t_command *cmd, char *word)
+{
+	int		i;
+	int		j;
+	char	**new;
+
+	i = 0;
+	j = -1;
+	while (cmd->av && cmd->av[i])
+		i++;
+	new = ft_calloc(i + 2, sizeof(char *));
+	while (++j < i)
+		new[j] = cmd->av[j];
+	new[i] = ft_strdup(word);
+	new[i + 1] = NULL;
+	cmd->av = new;
+}, int	handle_single_quote(char *token, int i, char **res)
+{
+	int	start;
+
+	i++;
+	start = i;
+	while (token[i] && token[i] != '\'')
+		i++;
+	*res = append_substring(*res, token, start, i);
+	if (token[i] == '\'')
+		i++;
+	return (i);
+}
+
+int	handle_double_quote(char *token, int i, char **res, t_expand *info)
+{
+	char	*tmp;
+	char	*tmp2;
+	int		start;
+
+	i++;
+	start = i;
+	while (token[i] && token[i] != '"')
+		i++;
+	tmp = ft_substr(token, start, i - start);
+	tmp2 = expand_dollar(tmp, info);
+	*res = ft_strjoin(*res, tmp2);
+	if (token[i] == '"')
+		i++;
+	return (i);
+}
+
+int	handle_plain_text(char *token, int i, char **res, t_expand *info)
+{
+	char	*tmp;
+	char	*tmp2;
+	int		start;
+
+	start = i;
+	while (token[i] && token[i] != '\'' && token[i] != '"')
+		i++;
+	tmp = ft_substr(token, start, i - start);
+	tmp2 = expand_dollar(tmp, info);
+	*res = ft_strjoin(*res, tmp2);
+	return (i);
+}
+
+char	*expand_token(const char *token, t_env *env_list, int exit_code)
+{
+	t_expand	info;
+	char		*res;
+	int			i;
+
+	info.env_list = env_list;
+	info.exit_code = exit_code;
+	i = 0;
+	res = ft_calloc(1, 1);
+	while (token[i])
+	{
+		if (token[i] == '\'')
+			i = handle_single_quote((char *)token, i, &res);
+		else if (token[i] == '"')
+			i = handle_double_quote((char *)token, i, &res, &info);
+		else
+			i = handle_plain_text((char *)token, i, &res, &info);
+	}
+	return (res);
+}
+
+int	expand_args(t_command *cmd, t_env *env_list, int exit_code)
+{
+	t_redirect	*redir;
+	int			i;
+
+	while (cmd)
+	{
+		i = -1;
+		while (cmd->av && cmd->av[++i])
+			expand_and_replace(&cmd->av[i], env_list, exit_code);
+		redir = cmd->redir;
+		while (redir)
+		{
+			if (redir->type != 4 && redir->filename)
+				expand_and_replace(&redir->filename, env_list, exit_code);
+			else if (redir->filename)
+				here_doc_no_expand(&redir->filename, 0, 0);
+			redir = redir->next;
+		}
+		cmd = cmd->next;
+	}
+	return (1);
+}, char	*ft_strjoin_char(char *s, char c)
+{
+	char	*res;
+	size_t	len;
+
+	if (!s)
+		return (NULL);
+	len = ft_strlen(s);
+	res = ft_malloc(len + 2);
+	if (!res)
+		return (NULL);
+	ft_memcpy(res, s, len);
+	res[len] = c;
+	res[len + 1] = '\0';
+	return (res);
+}
+
+char	*append_substring(char *res, const char *src, int one, int end)
+{
+	char	*part;
+	char	*new_res;
+
+	part = ft_substr(src, one, end - one);
+	new_res = ft_strjoin(res, part);
+	return (new_res);
+}
+
+void	expand_and_replace(char **str, t_env *env_list, int exit_code)
+{
+	char	*tmp;
+
+	tmp = expand_token(*str, env_list, exit_code);
+	*str = tmp;
+}
+
+void	here_doc_no_expand(char **target, size_t i, size_t j)
+{
+	char	*res;
+	char	quote;
+
+	if (!*target)
+		return ;
+	res = ft_calloc(ft_strlen(*target) + 1, 1);
+	if (!res)
+		return ;
+	while ((*target)[i])
+	{
+		if ((*target)[i] == '\'' || (*target)[i] == '"')
+		{
+			quote = (*target)[i++];
+			while ((*target)[i] && (*target)[i] != quote)
+				res[j++] = (*target)[i++];
+			if ((*target)[i] == quote)
+				i++;
+		}
+		else
+			res[j++] = (*target)[i++];
+	}
+	*target = res;
+}
+, char	*extract_var_name(const char *str, size_t *i)
+{
+	size_t	start;
+	char	*var;
+
+	start = *i;
+	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+		(*i)++;
+	var = ft_substr(str, start, *i - start);
+	return (var);
+}
+
+void	handle_exit_code(char **res, int *i, int exit_code)
+{
+	char	*tmp;
+
+	tmp = ft_itoa(exit_code);
+	*res = ft_strjoin(*res, tmp);
+	*i += 1;
+}
+
+void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
+{
+	char	*tmp;
+	char	*env_value;
+
+	tmp = extract_var_name(s, i);
+	env_value = get_env_value(env_list, tmp);
+	if (env_value)
+		*res = ft_strjoin(*res, env_value);
+	else
+		*res = ft_strjoin(*res, "");
+}
+
+void	handle_env_or_pos(char **res, const char *s, size_t *i, t_expand *info)
+{
+	if (ft_isalpha(s[*i]) || s[*i] == '_')
+		handle_env_var(res, s, i, info->env_list);
+	else if (ft_isdigit(s[*i]))
+		(*i)++;
+	else
+	{
+		*res = ft_strjoin_char(*res, '$');
+		if (s[*i])
+			*res = ft_strjoin_char(*res, s[(*i)++]);
+	}
+}
+
+char	*expand_dollar(char *s, t_expand *info)
+{
+	size_t	i;
+	char	*res;
+
+	i = 0;
+	res = ft_calloc(1, 1);
+	while (s[i])
+	{
+		if (s[i] == '$')
+		{
+			i++;
+			if (s[i] == '?')
+				handle_exit_code(&res, (int *)&i, info->exit_code);
+			else
+				handle_env_or_pos(&res, s, &i, info);
+		}
+		else
+			res = ft_strjoin_char(res, s[i++]);
+	}
+	return (res);
+}
+, int	ambiguous_redirect_error(t_command *cmd)
+{
+	t_redirect	*redir;
+
+	while (cmd)
+	{
+		redir = cmd->redir;
+		while (redir)
+		{
+			if (redir->filename && redir->filename[0] == '\0')
+				return (err_exp(redir->filename, "ambiguous redirect", 0, 1));
+			redir = redir->next;
+		}
+		cmd = cmd->next;
+	}
+	return (0);
+}
+
+int	pre_parser_error(char **tokens, int i)
+{
+	while (tokens[++i])
+	{
+		if (!ft_strncmp(tokens[i], "|", 2))
+		{
+			if (i == 0 || !tokens[i + 1] || !ft_strncmp(tokens[i + 1], "|", 2))
+				return (err_exp(ERR_SNTX, "`|'", 0, 2));
+		}
+		else if (!ft_strncmp(tokens[i], "<", 2)
+			|| !ft_strncmp(tokens[i], ">", 2)
+			|| !ft_strncmp(tokens[i], "<<", 3)
+			|| !ft_strncmp(tokens[i], ">>", 3))
+		{
+			if (!tokens[i + 1])
+				return (err_exp(ERR_SNTX, "`newline'", 0, 2));
+			if (!ft_strncmp(tokens[i + 1], "<", 2)
+				|| !ft_strncmp(tokens[i + 1], ">", 2)
+				|| !ft_strncmp(tokens[i + 1], "<<", 3)
+				|| !ft_strncmp(tokens[i + 1], ">>", 3)
+				|| !ft_strncmp(tokens[i + 1], "|", 2))
+				return (err_exp(ft_strjoin(ERR_SNTX, "`"),
+						ft_strjoin(tokens[i + 1], "'"), 0, 2));
+		}
+	}
+	return (0);
+}, char	**clean_empty_args(char **av)
+{
+	int		i;
+	int		j;
+	int		start;
+	char	**new;
+
+	i = 0;
+	j = 0;
+	start = 0;
+	if (!av)
+		return (NULL);
+	while (av[start] && (!av[start][0]))
+		start++;
+	while (av[start + j])
+		j++;
+	new = ft_calloc(j + 1, sizeof(char *));
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (i < j)
+	{
+		new[i] = ft_strdup(av[start + i]);
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
+
+void	clean_empty_args_inplace(t_command *cmd)
+{
+	t_command	*cur;
+	char		**tmp;
+
+	cur = cmd;
+	while (cur)
+	{
+		tmp = clean_empty_args(cur->av);
+		cur->av = tmp;
+		cur = cur->next;
+	}
+}
+, gibi expansionda siliyorum tırnağı main içinde bir şey yoksa siliyorum nasıl düzeltebilirim bu hatayı benim "" gönderirsem null değil bir değer varmış gibi göndermeme lazım ama tırnakları sildiğim içinde yerinde null kalıyor nasıl düzeltebilirim
