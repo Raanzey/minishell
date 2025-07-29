@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:34 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:16:37 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/29 19:39:44 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,21 @@ static void	handle_heredoc_loop(t_redirect *redir, int *fd, int has_cmd)
 	while (1)
 	{
 		line = readline("> ");
-		if (is_delimiter(line, redir->filename, has_cmd))
+		if (!line) // SIGINT durumunda readline NULL döner
 		{
-			ft_free();
+			//write(1, "\n", 1);  // prompt hizasını düzelt
 			break ;
 		}
-		if (!line || (!ft_strncmp(line, redir->filename,
-					ft_strlen(redir->filename))
-				&& line[ft_strlen(redir->filename)] == '\0'))
+		if (is_delimiter(line, redir->filename, has_cmd))
 			break ;
 		write(fd[1], line, ft_strlen(line));
 		write(fd[1], "\n", 1);
+		//free(line);
 	}
 }
 
-void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
+
+void	handle_heredocs(t_redirect *redir, int has_cmd)
 {
 	int	fd[2];
 
@@ -48,25 +48,17 @@ void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd)
 		if (redir->type == 4)
 		{
 			if (pipe(fd) == -1)
-			{
-				ft_free();
-				exit(err_exp("pipe: ", 0, 1, 1));
-			}
-			g_signal = 2;
+				exit(err_exp("pipe", 0, 1, 1));
+			// g_signal = 2;
 			setup_signals();
 			handle_heredoc_loop(redir, fd, has_cmd);
 			close(fd[1]);
-			if (heredoc_fd != -1)
-				close(heredoc_fd);
-			heredoc_fd = fd[0];
+			redir->fd = fd[0]; // 🔴 heredoc’un read-end’ini sakla
 		}
 		redir = redir->next;
 	}
-	if (heredoc_fd != -1)
-		dup2(heredoc_fd, STDIN_FILENO);
-	if (heredoc_fd != -1)
-		close(heredoc_fd);
 }
+
 
 int	has_output_redir(t_redirect *redir)
 {

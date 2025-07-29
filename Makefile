@@ -1,6 +1,6 @@
 NAME 		= minishell
 CC		= cc
-CFLAGS 		= -Wall -Wextra -Werror
+CFLAGS 		= -Wall -Wextra -Werror -g
 LIBFLAGS	= -lreadline
 SRCS		= main.c utils.c signal.c execution/exec.c execution/exec_utils.c execution/heredoc.c \
 			execution/built_in/built_in.c execution/built_in/built_in_parent.c \

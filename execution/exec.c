@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 23:52:33 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/29 22:05:13 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,20 @@ void	handle_redirections(t_command *cmd)
 	int			fd;
 	int			has_cmd;
 
+	has_cmd = (cmd && cmd->av && cmd->av[0]);
 	redir = cmd->redir;
-	has_cmd = (cmd->av && cmd->av[0]);
-	handle_heredocs(redir, has_cmd, -1);
 	while (redir)
 	{
 		fd = open_redir_fd(redir);
-		if ((redir->type == 1 || redir->type == 2 || redir->type == 3)
-			&& fd == -1)
+		if ((redir->type == 1 || redir->type == 2 || redir->type == 3) && fd ==
+			-1)
 		{
 			err_exp(redir->filename, 0, 1, 1);
 			ft_free();
 			exit(1);
 		}
-		dup_redir_fd(redir, fd);
+		if (has_cmd && !redir->next)
+			dup_redir_fd(redir, fd);
 		redir = redir->next;
 	}
 }
@@ -44,7 +44,7 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 
 	child_redirect(cmd, prev_fd, pipe_fd);
 	setup_signals();
-	if (cmd->av || cmd->av[0])
+	if (cmd->av && cmd->av[0])
 	{
 		built_code = built_in(cmd, env_list);
 		if (built_code == 0 || built_code != -1)
@@ -52,6 +52,11 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 			ft_free();
 			exit(built_code);
 		}
+	}
+	else
+	{
+		ft_free();
+		exit(0);
 	}
 	path = handle_path(cmd, env_list);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0, NULL));
@@ -99,15 +104,65 @@ static int	wait_all_child(void)
 	setup_signals();
 	return (last_exit);
 }
+int	contains_heredoc(t_redirect *redir)
+{
+	while (redir)
+	{
+		if (redir->type == 4)
+			return (1);
+		redir = redir->next;
+	}
+	return (0);
+}
+
+int	preprocess_heredocs(t_command *cmd)
+{
+	pid_t		pid;
+	int			status;
+	t_command	*cur;
+
+	cur = cmd;
+	while (cur)
+	{
+		if (contains_heredoc(cur->redir))
+		{
+			discard_signals();
+			g_signal = 2;
+			pid = fork();
+			if (pid == -1)
+				return (err_exp("fork: ", 0, 1, 1)); // hata durumunda 1
+			if (pid == 0)
+			{
+				handle_heredocs(cur->redir, cur->av && cur->av[0]);
+				ft_free();
+				exit(0); // heredoc başarıyla bitti
+			}
+			waitpid(pid, &status, 0);
+			if (WIFSIGNALED(status))
+			{
+				printf("buraaa\n");
+				return (128 + WTERMSIG(status)); // örn. SIGINT → 130
+			}
+			else if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+				return (WEXITSTATUS(status));
+		}
+		cur = cur->next;
+	}
+	return (0); // hiçbir heredoc yoksa veya hepsi başarıyla bittiyse
+}
 
 int	exec(t_command *cmd, t_env **env_list)
 {
 	int	prev_fd;
 	int	pipe_fd[2];
+	int	heredoc_status;
 
 	prev_fd = -1;
 	if (!cmd)
 		return (0);
+	heredoc_status = preprocess_heredocs(cmd);
+	if (heredoc_status != 0)
+		return (heredoc_status);
 	if (!cmd->next && is_parent_builtin(cmd))
 		return (built_in(cmd, env_list));
 	while (cmd)

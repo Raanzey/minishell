@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:02:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/29 14:50:08 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/29 18:52:48 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		env_cmd(t_env *env);
 int		export_cmd(char **av, t_env **env, t_command *cmd);
 int		unset_cmd(t_command *cmd, t_env **env_list);
 int		is_valid_identifier(char *str);
-void	handle_heredocs(t_redirect *redir, int has_cmd, int heredoc_fd);
+void	handle_heredocs(t_redirect *redir, int has_cmd);
 int		has_output_redir(t_redirect *redir);
 int		open_redir_fd(t_redirect *redir);
 char	*ft_path(t_env *env);

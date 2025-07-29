@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 18:20:00 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/29 22:23:12 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,34 @@ void	setup_pipe_or_die(t_command *cmd, int pipe_fd[2])
 
 int	open_redir_fd(t_redirect *redir)
 {
+	int	fd;
+
 	if (redir->type == 1)
-		return (open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644));
+		fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (redir->type == 2)
-		return (open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644));
+		fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (redir->type == 3)
-		return (open(redir->filename, O_RDONLY));
-	return (-1);
+		fd = open(redir->filename, O_RDONLY);
+	else if (redir->type == 4)
+		fd = redir->fd; // 🔴 heredoc'ta pipe'in read-end'i
+	else
+		fd = -1;
+	return (fd);
 }
+
 
 void	dup_redir_fd(t_redirect *redir, int fd)
 {
+	if (fd == -1)
+		return ;
 	if (redir->type == 3)
 		dup2(fd, STDIN_FILENO);
 	else if (redir->type == 1 || redir->type == 2)
 		dup2(fd, STDOUT_FILENO);
-	if (fd != -1 && fd != STDIN_FILENO && fd != STDOUT_FILENO)
+	if (fd != STDIN_FILENO && fd != STDOUT_FILENO)
 		close(fd);
 }
+
 
 void	child_redirect(t_command *cmd, int prev_fd, int pipe_fd[2])
 {
@@ -51,7 +61,7 @@ void	child_redirect(t_command *cmd, int prev_fd, int pipe_fd[2])
 		dup2(prev_fd, STDIN_FILENO);
 		close(prev_fd);
 	}
-	if (!has_output_redir(cmd->redir) && cmd->next)
+	else if (!has_output_redir(cmd->redir) && cmd->next)
 	{
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[0]);
