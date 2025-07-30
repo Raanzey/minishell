@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:22:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 16:35:07 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:45:18 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ t_redirect	*create_redirect(char *op, char *file)
 		return (NULL);
 	r->filename = ft_strdup(file);
 	r->next = NULL;
+	r->fd = -1;
 	if (!ft_strncmp(op, "<<", 3))
 		r->type = 4;
 	else if (!ft_strncmp(op, ">>", 3))

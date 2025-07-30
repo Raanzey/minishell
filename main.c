@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 19:07:07 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/30 16:10:47 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	main(int ac, char **av, char **env)
 			break ;
 		cmd = do_parser(in, &exit_code, env_list);
 		if (cmd)
-			exit_code = exec(cmd, &env_list);
+			exit_code = exec(cmd, &env_list, -1, 0);
 	}
 	ft_free();
 	return (exit_code);

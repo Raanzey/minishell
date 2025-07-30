@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/29 22:23:12 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/30 16:15:09 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,40 +32,41 @@ int	open_redir_fd(t_redirect *redir)
 	else if (redir->type == 3)
 		fd = open(redir->filename, O_RDONLY);
 	else if (redir->type == 4)
-		fd = redir->fd; // 🔴 heredoc'ta pipe'in read-end'i
+		fd = redir->fd;
 	else
 		fd = -1;
 	return (fd);
 }
 
-
 void	dup_redir_fd(t_redirect *redir, int fd)
 {
 	if (fd == -1)
 		return ;
-	if (redir->type == 3)
+	if (redir->type == 3 || redir->type == 4)
 		dup2(fd, STDIN_FILENO);
 	else if (redir->type == 1 || redir->type == 2)
 		dup2(fd, STDOUT_FILENO);
-	if (fd != STDIN_FILENO && fd != STDOUT_FILENO)
-		close(fd);
+	// close(fd); emin degilim
 }
 
-
-void	child_redirect(t_command *cmd, int prev_fd, int pipe_fd[2])
+void	handle_redirections(t_command *cmd)
 {
-	if (cmd->redir)
-		handle_redirections(cmd);
-	else if (prev_fd != -1)
+	t_redirect	*redir;
+	int			fd;
+
+	redir = cmd->redir;
+	while (redir)
 	{
-		dup2(prev_fd, STDIN_FILENO);
-		close(prev_fd);
-	}
-	else if (!has_output_redir(cmd->redir) && cmd->next)
-	{
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
+		fd = open_redir_fd(redir);
+		if ((redir->type == 1 || redir->type == 2 || redir->type == 3)
+			&& fd == -1)
+		{
+			err_exp(redir->filename, 0, 1, 1);
+			ft_free();
+			exit(1);
+		}
+		dup_redir_fd(redir, fd);
+		redir = redir->next;
 	}
 }
 

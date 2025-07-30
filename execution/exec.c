@@ -6,33 +6,27 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/29 22:05:13 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/30 16:11:00 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	handle_redirections(t_command *cmd)
+static void	child_redirect(t_command *cmd, int prev_fd, int pipe_fd[2])
 {
-	t_redirect	*redir;
-	int			fd;
-	int			has_cmd;
-
-	has_cmd = (cmd && cmd->av && cmd->av[0]);
-	redir = cmd->redir;
-	while (redir)
+	if (prev_fd != -1)
 	{
-		fd = open_redir_fd(redir);
-		if ((redir->type == 1 || redir->type == 2 || redir->type == 3) && fd ==
-			-1)
-		{
-			err_exp(redir->filename, 0, 1, 1);
-			ft_free();
-			exit(1);
-		}
-		if (has_cmd && !redir->next)
-			dup_redir_fd(redir, fd);
-		redir = redir->next;
+		dup2(prev_fd, STDIN_FILENO);
+		close(prev_fd);
+	}
+	if (!has_output_redir(cmd->redir) && cmd->next)
+		dup2(pipe_fd[1], STDOUT_FILENO);
+	if (cmd->redir)
+		handle_redirections(cmd);
+	if (cmd->next || prev_fd != -1)
+	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 	}
 }
 
@@ -81,83 +75,29 @@ static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
 		exec_child(cmd, prev_fd, pipe_fd, env_list);
 }
 
-static int	wait_all_child(void)
-{
-	int	status;
-	int	last_exit;
-	int	sig;
-
-	last_exit = 0;
-	while (wait(&status) > 0)
-	{
-		if (WIFEXITED(status))
-			last_exit = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-		{
-			sig = WTERMSIG(status);
-			if (sig != SIGPIPE)
-				last_exit = 128 + sig;
-			if (sig == SIGINT)
-				write(1, "\n", 1);
-		}
-	}
-	setup_signals();
-	return (last_exit);
-}
-int	contains_heredoc(t_redirect *redir)
-{
-	while (redir)
-	{
-		if (redir->type == 4)
-			return (1);
-		redir = redir->next;
-	}
-	return (0);
-}
-
 int	preprocess_heredocs(t_command *cmd)
 {
-	pid_t		pid;
-	int			status;
 	t_command	*cur;
+	int			res;
 
 	cur = cmd;
 	while (cur)
 	{
 		if (contains_heredoc(cur->redir))
 		{
-			discard_signals();
-			g_signal = 2;
-			pid = fork();
-			if (pid == -1)
-				return (err_exp("fork: ", 0, 1, 1)); // hata durumunda 1
-			if (pid == 0)
-			{
-				handle_heredocs(cur->redir, cur->av && cur->av[0]);
-				ft_free();
-				exit(0); // heredoc başarıyla bitti
-			}
-			waitpid(pid, &status, 0);
-			if (WIFSIGNALED(status))
-			{
-				printf("buraaa\n");
-				return (128 + WTERMSIG(status)); // örn. SIGINT → 130
-			}
-			else if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-				return (WEXITSTATUS(status));
+			res = handle_heredocs(cur->redir);
+			if (res != 0)
+				return (res);
 		}
 		cur = cur->next;
 	}
-	return (0); // hiçbir heredoc yoksa veya hepsi başarıyla bittiyse
+	return (0);
 }
 
-int	exec(t_command *cmd, t_env **env_list)
+int	exec(t_command *cmd, t_env **env_list, int prev_fd, int heredoc_status)
 {
-	int	prev_fd;
 	int	pipe_fd[2];
-	int	heredoc_status;
 
-	prev_fd = -1;
 	if (!cmd)
 		return (0);
 	heredoc_status = preprocess_heredocs(cmd);
