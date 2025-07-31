@@ -19,7 +19,7 @@ typedef struct s_redirect
 {
 	int					type;
 	char				*filename;
-	int					fd; 
+	int					fd;
 	struct s_redirect	*next;
 }	t_redirect;
 

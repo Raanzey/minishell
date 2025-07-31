@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 15:08:19 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:36:01 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	quotes_control(const char *s, int *i)
 			return (0);
 		}
 		else
-			return (err_exp(ERR_QUOTE, &quote, 0, 2));
+			return (err_exp(ft_strjoin_char(ERR_QUOTE, quote), 0, 0, 2));
 	}
 	(*i)++;
 	return (0);

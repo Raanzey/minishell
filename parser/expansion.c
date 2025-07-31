@@ -23,7 +23,7 @@ int	handle_single_quote(char *token, int i, char **res, int one)
 	*res = append_substring(*res, token, start, i);
 	if (token[i] == '\'')
 		i++;
-	if (one == 0 && !ft_strcmp(token, "''"))
+	if (one == 0 && *res)
 		*res = ft_strjoin(*res, " ");
 	return (i);
 }
@@ -43,7 +43,7 @@ int	handle_double_quote(char *token, int i, char **res, t_expand *info)
 	*res = ft_strjoin(*res, tmp2);
 	if (token[i] == '"')
 		i++;
-	if (info->first == 0 && !ft_strcmp(token, "\"\""))
+	if (info->first == 0 && *res)
 		*res = ft_strjoin(*res, " ");
 	return (i);
 }
