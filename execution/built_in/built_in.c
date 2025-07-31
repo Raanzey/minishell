@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   built_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:45 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/31 16:18:32 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/31 20:47:07 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	built_in(t_command *cmd, t_env **env_list)
+int	built_in(t_command *cmd, t_env **env_list, int exit_code)
 {
 	if (!ft_strncmp(cmd->av[0], "echo", 4) && cmd->av[0][4] == '\0')
 		return (echo_cmd(cmd->av));
@@ -27,7 +27,7 @@ int	built_in(t_command *cmd, t_env **env_list)
 	else if (!ft_strncmp(cmd->av[0], "env", 3) && cmd->av[0][3] == '\0')
 		return (env_cmd(*env_list));
 	else if (!ft_strncmp(cmd->av[0], "exit", 4) && cmd->av[0][4] == '\0')
-		return (exit_cmd(cmd->av));
+		return (exit_cmd(cmd->av, exit_code));
 	else
 		return (-1);
 }
@@ -82,13 +82,16 @@ int	pwd_cmd(void)
 	return (0);
 }
 
-int	exit_cmd(char **av)
+int	exit_cmd(char **av, int exit_code)
 {
 	int	code;
 
-	printf("exit\n");
+	if (exit_code != -1)	
+		printf("exit\n");
+	else
+		exit_code = 0;
 	if (!av[1])
-		free_and_exit(0);
+		free_and_exit(exit_code);
 	if (!is_numeric(av[1]))
 		free_and_exit(err_exp("exit: ", ERR_EXIT, 0, 2));
 	if (av[2])

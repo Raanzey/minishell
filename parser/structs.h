@@ -44,4 +44,12 @@ typedef struct s_expand
 	int		first;
 }	t_expand;
 
+typedef struct s_status
+{
+	int prev_fd;
+	int heredoc_status;
+	int exit_code;
+} t_status;
+
+
 #endif

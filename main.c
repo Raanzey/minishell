@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/31 16:05:55 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/31 20:32:25 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,23 @@ t_command	*do_parser(char *in, int *exit_code, t_env *env_list)
 	return (cmd);
 }
 
+t_status *init_stat(int prev_fd, int heredoc_status, int code)
+{
+	t_status *status;
+
+	status = ft_malloc(sizeof(t_status));
+	status->prev_fd = prev_fd;
+	status->heredoc_status = heredoc_status;
+	status->exit_code = code;
+	return (status);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	char		*in;
 	t_env		*env_list;
 	t_command	*cmd;
+	t_status 	*status;
 	int			exit_code;
 
 	exit_code = 0;
@@ -84,10 +96,11 @@ int	main(int ac, char **av, char **env)
 		setup_signals();
 		signals_and_input(&in, &exit_code);
 		if (!check_input(in))
-			break ;
+		break ;
 		cmd = do_parser(in, &exit_code, env_list);
+		status = init_stat(-1, 0, exit_code);
 		if (cmd)
-			exit_code = exec(cmd, &env_list, -1, 0);
+			exit_code = exec(cmd, &env_list, status);
 	}
 	ft_free();
 	return (exit_code);

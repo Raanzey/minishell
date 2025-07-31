@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:02:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/30 16:10:39 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/31 20:24:28 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 # include "../parser/structs.h"
 
-int		built_in(t_command *cmd, t_env **env_list);
+int		built_in(t_command *cmd, t_env **env_list, int exit_code);
 int		is_parent_builtin(t_command *cmd);
-int		exec(t_command *cmd, t_env **env_list, int prev_fd, int heredoc_status);
+int		exec(t_command *cmd, t_env **env_list, t_status *status);
 int		echo_cmd(char **str);
 int		cd_cmd(t_command *cmd, t_env **env_list, char *path);
 int		pwd_cmd(void);
@@ -52,6 +52,6 @@ t_env	*find_env(t_env *env, const char *key);
 void	setup_signals(void);
 void	discard_signals(void);
 int		is_numeric(const char *str);
-int		exit_cmd(char **av);
+int		exit_cmd(char **av, int exit_code);
 
 #endif

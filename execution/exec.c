@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/31 16:42:13 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/31 20:44:35 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	setup_signals();
 	if (cmd->av && cmd->av[0])
 	{
-		built_code = built_in(cmd, env_list);
+		built_code = built_in(cmd, env_list, -1);
 		if (built_code == 0 || built_code != -1)
 			free_and_exit(built_code);
 	}
@@ -84,30 +84,30 @@ int	preprocess_heredocs(t_command *cmd)
 	return (0);
 }
 
-int	exec(t_command *cmd, t_env **env_list, int prev_fd, int heredoc_status)
+int	exec(t_command *cmd, t_env **env_list, t_status *status)
 {
 	int	pipe_fd[2];
 
 	if (!cmd)
 		return (0);
-	heredoc_status = preprocess_heredocs(cmd);
-	if (heredoc_status != 0)
-		return (heredoc_status);
+	status->heredoc_status = preprocess_heredocs(cmd);
+	if (status->heredoc_status != 0)
+		return (status->heredoc_status);
 	if (!cmd->next && is_parent_builtin(cmd))
-		return (built_in(cmd, env_list));
+		return (built_in(cmd, env_list, status->exit_code));
 	while (cmd)
 	{
 		setup_pipe_or_die(cmd, pipe_fd);
-		create_child_or_die(cmd, prev_fd, pipe_fd, env_list);
-		if (prev_fd != -1)
-			close(prev_fd);
+		create_child_or_die(cmd, status->prev_fd, pipe_fd, env_list);
+		if (status->prev_fd != -1)
+			close(status->prev_fd);
 		if (cmd->next)
 		{
 			close(pipe_fd[1]);
-			prev_fd = pipe_fd[0];
+			status->prev_fd = pipe_fd[0];
 		}
 		else
-			prev_fd = -1;
+			status->prev_fd = -1;
 		cmd = cmd->next;
 	}
 	return (wait_all_child());
