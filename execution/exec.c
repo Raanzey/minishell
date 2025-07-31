@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/30 16:11:00 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/31 16:42:13 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,13 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 	{
 		built_code = built_in(cmd, env_list);
 		if (built_code == 0 || built_code != -1)
-		{
-			ft_free();
-			exit(built_code);
-		}
+			free_and_exit(built_code);
 	}
 	else
-	{
-		ft_free();
-		exit(0);
-	}
+		free_and_exit(0);
 	path = handle_path(cmd, env_list);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0, NULL));
-	ft_free();
-	exit(err_exp("execve: ", 0, 1, 126));
+	free_and_exit(err_exp("execve: ", 0, 1, 126));
 }
 
 static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
@@ -67,10 +60,7 @@ static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
 	g_signal = 1;
 	pid = fork();
 	if (pid == -1)
-	{
-		ft_free();
-		exit(err_exp("fork: ", 0, 1, 1));
-	}
+		free_and_exit(err_exp("fork: ", 0, 1, 1));
 	if (pid == 0)
 		exec_child(cmd, prev_fd, pipe_fd, env_list);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/30 16:15:09 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/31 16:48:56 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 void	setup_pipe_or_die(t_command *cmd, int pipe_fd[2])
 {
 	if (cmd->next && pipe(pipe_fd) == -1)
-	{
-		ft_free();
-		exit(err_exp("pipe: ", 0, 1, 1));
-	}
+		free_and_exit(err_exp("pipe: ", 0, 1, 1));
 }
 
 int	open_redir_fd(t_redirect *redir)
@@ -62,8 +59,7 @@ void	handle_redirections(t_command *cmd)
 			&& fd == -1)
 		{
 			err_exp(redir->filename, 0, 1, 1);
-			ft_free();
-			exit(1);
+			free_and_exit(1);
 		}
 		dup_redir_fd(redir, fd);
 		redir = redir->next;
@@ -75,7 +71,9 @@ char	*handle_path(t_command *cmd, t_env **env_list)
 	struct stat	st;
 	char		*path;
 
-	if (ft_strchr(cmd->av[0], '/'))
+	if (!ft_strcmp(cmd->av[0], ".") || !ft_strcmp(cmd->av[0], ".."))
+			error(0, cmd->av[0], ERR_CMD, 127);
+	else if (ft_strchr(cmd->av[0], '/'))
 	{
 		if (access(cmd->av[0], F_OK) != 0)
 			error(0, cmd->av[0], ERR_CD, 127);

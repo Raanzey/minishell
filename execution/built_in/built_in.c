@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:45 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 23:45:30 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/31 16:18:32 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,20 +88,13 @@ int	exit_cmd(char **av)
 
 	printf("exit\n");
 	if (!av[1])
-	{
-		ft_free();
-		exit(0);
-	}
+		free_and_exit(0);
 	if (!is_numeric(av[1]))
-	{
-		ft_free();
-		exit(err_exp("exit: ", ERR_EXIT, 0, 2));
-	}
+		free_and_exit(err_exp("exit: ", ERR_EXIT, 0, 2));
 	if (av[2])
 		return (err_exp("exit: ", ERR_2_ARG, 0, 1));
 	code = ft_atoi(av[1]) % 256;
 	if (code < 0)
 		code += 256;
-	ft_free();
-	exit(code);
+	return (free_and_exit(code));
 }

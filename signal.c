@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 17:23:06 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/29 19:39:33 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/31 16:12:23 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,12 @@ void	sigint_handler(int sig)
 	else if (g_signal == 1)
 	{
 		write(1, "\n", 1);
-		ft_free();
-		exit(130);
+		free_and_exit(130);
 	}
 	else if (g_signal == 2)
 	{
 		write(1, "\n", 1);
-		ft_free();
-		exit(130);
+		free_and_exit(130);
 	}
 }
 

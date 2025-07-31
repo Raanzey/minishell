@@ -6,11 +6,17 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/27 17:23:24 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/31 16:38:56 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	free_and_exit(int exit_code)
+{
+	ft_free();
+	exit(exit_code);
+}
 
 int	error(char *word, char *cmd, char *err, int exit_code)
 {
@@ -23,10 +29,9 @@ int	error(char *word, char *cmd, char *err, int exit_code)
 		msg = ft_strjoin(msg, cmd);
 	if (err)
 		msg = ft_strjoin(msg, err);
-	ft_strjoin(msg, "\n");
 	write(2, msg, ft_strlen(msg));
-	ft_free();
-	exit(exit_code);
+	printf("\n");
+	return (free_and_exit(exit_code));
 }
 
 int	err_exp(char *cmd, char *file, int bool_err, int exit_code)
@@ -42,8 +47,8 @@ int	err_exp(char *cmd, char *file, int bool_err, int exit_code)
 		perror(msg);
 	else
 	{
-		msg = ft_strjoin(msg, "\n");
 		write(2, msg, ft_strlen(msg));
+		printf("\n");
 	}
 	return (exit_code);
 }

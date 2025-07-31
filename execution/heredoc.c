@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:34 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/30 15:55:45 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/31 16:18:17 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ int	handle_heredoc_child(t_redirect *redir, int *fd)
 	setup_signals();
 	handle_heredoc_loop(redir, fd);
 	close(fd[1]);
-	ft_free();
-	exit(0);
+	return (free_and_exit(0));
 }
 
 static int	handle_single_heredoc(t_redirect *redir)

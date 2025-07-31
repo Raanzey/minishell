@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/28 23:19:53 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/07/31 16:39:21 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,19 @@
 # define ERR_ARG "Please no argument"
 # define ERR_EXIT "numeric argument required"
 # define ERR_2_ARG "too many arguments"
-# define ERR_CMD ": command not found\n"
-# define ERR_CD ": No such file or directory\n"
+# define ERR_CMD ": command not found"
+# define ERR_CD ": No such file or directory"
 # define ERR_HOME "HOME not set"
 # define ERR_OLDPWD "OLDPWD not set"
 # define ERR_EXP "': not a valid identifier"
 # define ERR_SNTX "syntax error near unexpected token "
 # define ERR_QUOTE "syntax error near open quote "
 # define ERR_PRM ": Permission denied"
-# define ERR_DIC ": Is a directory\n"
+# define ERR_DIC ": Is a directory"
 
 extern int	g_signal;
 
+int		free_and_exit(int exit_code);
 int		error(char *word, char *cmd, char *err, int exit_code);
 int		err_exp(char *cmd, char *file, int bool_err, int exit_code);
 void	sigint_handler(int sig);
