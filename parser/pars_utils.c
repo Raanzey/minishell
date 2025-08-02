@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:22:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:12:42 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 18:39:38 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ t_redirect	*create_redirect(char *op, char *file)
 	r->filename = ft_strdup(file);
 	r->next = NULL;
 	r->fd = -1;
-	if (!ft_strncmp(op, "<<", 3))
-		r->type = 4;
+	if (!ft_strncmp(op, ">", 2))
+		r->type = 1;
 	else if (!ft_strncmp(op, ">>", 3))
 		r->type = 2;
 	else if (!ft_strncmp(op, "<", 2))
 		r->type = 3;
-	else if (!ft_strncmp(op, ">", 2))
-		r->type = 1;
+	else if (!ft_strncmp(op, "<<", 3))
+		r->type = 4;
 	return (r);
 }
 
@@ -58,7 +58,7 @@ void	add_redirect(t_command *cmd, t_redirect *r)
 
 	cur = cmd->redir;
 	if (!cur)
-		cmd->redir = r;
+		cur = r;
 	else
 	{
 		while (cur->next)
