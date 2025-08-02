@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:57:25 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 16:27:09 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	err_ext(char *word, char *cmd, char *err, int exit_code)
 {
 	char	*msg;
 
-	msg = "\0";
+	msg = ft_strdup("");
 	if (word)
 		msg = ft_strjoin(msg, word);
 	if (cmd)

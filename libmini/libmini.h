@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 17:11:53 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:39:05 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 16:37:55 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@
 # include "../collector/collector.h"
 
 int					ft_atoi(const char *str);
+void				ft_bzero(void *s, size_t n);
 int					ft_isalnum(int c);
 int					ft_isalpha(int c);
 int					ft_isdigit(int c);
 char				*ft_itoa(int n);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
+void				*ft_memset(void *b, int c, size_t len);
 char				**ft_split(char const *s, char c);
 char				*ft_strchr(const char *s, int c);
 int					ft_strcmp(const char *s1, const char *s2);

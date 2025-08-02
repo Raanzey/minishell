@@ -20,7 +20,7 @@ all: $(NAME)
 $(NAME): $(SRCS)
 	make -s  -C $(DIR_LIBMINI)
 	make -s  -C $(DIR_COLLECTOR)
-	$(CC) $(CFLAGS) $(SRCS) $(LIBMINI) $(COLLECTOR) $(LIBFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(SRCS) $(COLLECTOR) $(LIBMINI) $(LIBFLAGS) -o $(NAME)
 
 clean:
 	make -s -C $(DIR_LIBMINI) clean
