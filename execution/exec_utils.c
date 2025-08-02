@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/31 16:48:56 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:05:14 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	dup_redir_fd(t_redirect *redir, int fd)
 		dup2(fd, STDIN_FILENO);
 	else if (redir->type == 1 || redir->type == 2)
 		dup2(fd, STDOUT_FILENO);
-	// close(fd); emin degilim
 }
 
 void	handle_redirections(t_command *cmd)
@@ -72,7 +71,7 @@ char	*handle_path(t_command *cmd, t_env **env_list)
 	char		*path;
 
 	if (!ft_strcmp(cmd->av[0], ".") || !ft_strcmp(cmd->av[0], ".."))
-			error(0, cmd->av[0], ERR_CMD, 127);
+		error(0, cmd->av[0], ERR_CMD, 127);
 	else if (ft_strchr(cmd->av[0], '/'))
 	{
 		if (access(cmd->av[0], F_OK) != 0)

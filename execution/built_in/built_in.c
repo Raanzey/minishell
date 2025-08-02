@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:45 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/31 20:47:07 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/08/02 15:02:42 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	exit_cmd(char **av, int exit_code)
 {
 	int	code;
 
-	if (exit_code != -1)	
+	if (exit_code != -1)
 		printf("exit\n");
 	else
 		exit_code = 0;
