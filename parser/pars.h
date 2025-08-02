@@ -13,7 +13,7 @@
 #ifndef PARS_H
 # define PARS_H
 
-# include "structs.h"
+# include "../structs.h"
 
 t_command	*new_command(void);
 int			is_redir(char *s);

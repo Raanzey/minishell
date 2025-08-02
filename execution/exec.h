@@ -6,14 +6,14 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:02:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:34 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 17:23:49 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXEC_H
 # define EXEC_H
 
-# include "../parser/structs.h"
+# include "../structs.h"
 
 int		built_in(t_command *cmd, t_env **env_list, int exit_code);
 int		is_parent_builtin(t_command *cmd);
