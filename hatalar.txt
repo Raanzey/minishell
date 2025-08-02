@@ -1,2 +1,0 @@
-hatalı komut ile exit atınca 0 döndüyor hata kodu dönmesi laızm
-

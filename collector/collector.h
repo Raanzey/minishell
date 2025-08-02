@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 01:58:21 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/20 21:45:10 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:10:38 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ size_t		ft_find_size(void *data);
 void		*ft_exit(void);
 void		*ft_malloc(size_t size);
 void		*ft_calloc(size_t count, size_t size);
-void		*ft_realloc(void *old_data, size_t new_size);
 void		ft_free(void);
-void		*ft_absorb(void *addr);
 
 #endif

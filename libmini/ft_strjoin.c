@@ -1,38 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/18 21:52:23 by musisman          #+#    #+#             */
-/*   Updated: 2024/11/01 16:41:35 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/23 12:53:24 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:33:06 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
-int	ft_atoi(const char *str)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
+	char	*a;
+	size_t	len;
 	size_t	i;
-	size_t	nb;
-	int		sing;
+	size_t	j;
 
+	len = ft_strlen(s1) + ft_strlen(s2);
+	a = ft_calloc(len + 1, sizeof(char));
+	if (!a)
+		return (NULL);
 	i = 0;
-	sing = 1;
-	nb = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
+	j = 0;
+	while (i < len)
 	{
-		if (str[i] == '-')
-			sing = -1;
+		if (i < ft_strlen(s1))
+			a[i] = s1[i];
+		else
+			a[i] = s2[j++];
 		i++;
 	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		nb = (str[i] - '0') + (nb * 10);
-		i++;
-	}
-	return (nb * sing);
+	return (a);
 }

@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/31 16:39:21 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:36:12 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <signal.h>
 # include <sys/stat.h>
 
-# include "Libft/libft.h"
+# include "libmini/libmini.h"
 # include "collector/collector.h"
 # include "parser/pars.h"
 # include "execution/exec.h"

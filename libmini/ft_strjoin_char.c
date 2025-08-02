@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strtrim.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin_char.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/23 13:07:07 by musisman          #+#    #+#             */
-/*   Updated: 2024/10/29 00:02:17 by musisman         ###   ########.fr       */
+/*   Created: 2025/08/02 15:38:32 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:40:17 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strjoin_char(char *s, char c)
 {
-	size_t	i;
-	size_t	len_s1;
-	char	*a;
+	char	*res;
+	size_t	len;
 
-	i = 0;
-	while (s1[i] && ft_strchr(set, s1[i]))
-		i++;
-	len_s1 = ft_strlen(s1);
-	while (len_s1 > i && ft_strchr(set, s1[len_s1 - 1]))
-		len_s1--;
-	a = ft_calloc(len_s1 - i + 1, sizeof(char));
-	if (!a)
+	if (!s)
 		return (NULL);
-	ft_memcpy(a, s1 + i, len_s1 - i);
-	return (a);
+	len = ft_strlen(s);
+	res = ft_malloc(len + 2);
+	if (!res)
+		return (NULL);
+	ft_memcpy(res, s, len);
+	res[len] = c;
+	res[len + 1] = '\0';
+	return (res);
 }

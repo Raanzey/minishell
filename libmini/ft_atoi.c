@@ -1,31 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/19 21:22:57 by musisman          #+#    #+#             */
-/*   Updated: 2024/10/30 19:04:41 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/18 21:52:23 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:32:29 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
-char	*ft_strdup(const char *s1)
+int	ft_atoi(const char *str)
 {
-	char	*dst;
 	size_t	i;
+	size_t	nb;
+	int		sing;
 
 	i = 0;
-	dst = ft_calloc(ft_strlen(s1) + 1, sizeof(char));
-	if (!dst)
-		return (0);
-	while (s1[i])
+	sing = 1;
+	nb = 0;
+	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
 	{
-		dst[i] = s1[i];
+		if (str[i] == '-')
+			sing = -1;
 		i++;
 	}
-	dst[i] = '\0';
-	return (dst);
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		nb = (str[i] - '0') + (nb * 10);
+		i++;
+	}
+	return (nb * sing);
 }

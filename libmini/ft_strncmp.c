@@ -1,18 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/29 04:31:01 by musisman          #+#    #+#             */
-/*   Updated: 2024/10/29 11:40:48 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/14 19:26:23 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:33:11 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
-void	ft_putchar_fd(char c, int fd)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	write(fd, &c, 1);
+	size_t	i;
+
+	i = 0;
+	while (i < n && (s1[i] || s2[i]))
+	{
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
 }

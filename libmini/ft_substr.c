@@ -1,29 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchr.c                                       :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 18:20:27 by musisman          #+#    #+#             */
-/*   Updated: 2024/11/01 17:30:26 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/23 10:30:44 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:33:14 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
-char	*ft_strrchr(const char *s, int c)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
-	size_t	len;
+	char	*a;
 
+	if (!s)
+		return (NULL);
+	if (start >= ft_strlen(s))
+		return (ft_strdup(""));
+	if ((ft_strlen(s) - start) < len)
+		len = ft_strlen(s) - start;
+	a = ft_calloc(len + 1, sizeof(char));
+	if (!a)
+		return (NULL);
 	i = 0;
-	len = ft_strlen(s);
-	while (i <= len)
+	while (i < len)
 	{
-		if (s[len - i] == (unsigned char)c)
-			return ((char *)s + (len - i));
+		a[i] = s[start + i];
 		i++;
 	}
-	return (0);
+	return (a);
 }

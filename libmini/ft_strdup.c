@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/16 16:19:30 by musisman          #+#    #+#             */
-/*   Updated: 2024/10/30 18:13:51 by musisman         ###   ########.fr       */
+/*   Created: 2024/10/19 21:22:57 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:33:02 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+char	*ft_strdup(const char *s1)
 {
-	size_t			i;
-	unsigned char	*a;
-	unsigned char	*b;
+	char	*dst;
+	size_t	i;
 
-	a = (unsigned char *)dst;
-	b = (unsigned char *)src;
 	i = 0;
-	if (!dst && !src)
+	dst = ft_calloc(ft_strlen(s1) + 1, sizeof(char));
+	if (!dst)
 		return (0);
-	while (i < n)
+	while (s1[i])
 	{
-		a[i] = b[i];
+		dst[i] = s1[i];
 		i++;
 	}
+	dst[i] = '\0';
 	return (dst);
 }

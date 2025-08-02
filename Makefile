@@ -10,31 +10,28 @@ SRCS		= main.c utils.c signal.c execution/exec.c execution/exec_utils.c executio
 			parser/expansion.c parser/expansion_utils.c parser/expansion_extra_utils.c \
 			
 
-LIBFT		= Libft/libft.a
+LIBMINI		= libmini/libmini.a
 COLLECTOR	= collector/collector.a
-DIR_LIBFT	= Libft
+DIR_LIBMINI	= libmini
 DIR_COLLECTOR	= collector
 
 all: $(NAME)
 
 $(NAME): $(SRCS)
-	make -s  -C $(DIR_LIBFT)
+	make -s  -C $(DIR_LIBMINI)
 	make -s  -C $(DIR_COLLECTOR)
-	$(CC) $(CFLAGS) $(SRCS) $(LIBFT) $(COLLECTOR) $(LIBFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(SRCS) $(LIBMINI) $(COLLECTOR) $(LIBFLAGS) -o $(NAME)
 
 clean:
-	make -s -C $(DIR_LIBFT) clean
+	make -s -C $(DIR_LIBMINI) clean
 	make -s -C $(DIR_COLLECTOR) clean
 
 fclean: clean
 	rm -f $(NAME)
-	make -s -C $(DIR_LIBFT) fclean
+	make -s -C $(DIR_LIBMINI) fclean
 	make -s -C $(DIR_COLLECTOR) fclean
 
 re: fclean all
-
-run:
-	@./${NAME}
 	
 leak:
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./minishell

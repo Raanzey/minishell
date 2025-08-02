@@ -6,11 +6,11 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 15:31:09 by musisman          #+#    #+#             */
-/*   Updated: 2024/11/03 01:26:42 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:32:37 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
 static size_t	number_digit(int n)
 {

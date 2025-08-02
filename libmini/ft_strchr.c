@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: msisman <<msisman@student.42.fr>>          +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 16:36:06 by musisman          #+#    #+#             */
-/*   Updated: 2024/10/31 16:20:40 by msisman          ###   ########.fr       */
+/*   Created: 2024/10/14 18:19:17 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:32:58 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "libmini.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+char	*ft_strchr(const char *s, int c)
 {
-	size_t			i;
-	unsigned char	*a;
+	size_t	i;
+	size_t	len;
 
-	a = (unsigned char *)b;
 	i = 0;
-	while (i < len)
+	len = ft_strlen(s);
+	while (i <= len)
 	{
-		a[i] = (unsigned char)c;
+		if (s[i] == (unsigned char)c)
+			return ((char *)s + i);
 		i++;
 	}
-	return (b);
+	return (0);
 }
