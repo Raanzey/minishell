@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:09:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:03 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:52:06 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*find_path(char *cmd, t_env *env_list)
 	i = 0;
 	tmp = ft_path(env_list);
 	if (!tmp)
-		error("minishell: ", cmd, ERR_CD, 127);
+		err_ext("minishell: ", cmd, ERR_CD, 127);
 	paths = ft_split(tmp, ':');
 	while (paths[i])
 	{

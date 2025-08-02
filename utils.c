@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:47 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:13:46 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:57:25 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ int	free_and_exit(int exit_code)
 	exit(exit_code);
 }
 
-int	error(char *word, char *cmd, char *err, int exit_code)
+int	err_ext(char *word, char *cmd, char *err, int exit_code)
 {
 	char	*msg;
 
 	msg = "\0";
 	if (word)
-		msg = ft_strjoin(msg, "minishell: ");
+		msg = ft_strjoin(msg, word);
 	if (cmd)
 		msg = ft_strjoin(msg, cmd);
 	if (err)
@@ -34,7 +34,7 @@ int	error(char *word, char *cmd, char *err, int exit_code)
 	return (free_and_exit(exit_code));
 }
 
-int	err_exp(char *cmd, char *file, int bool_err, int exit_code)
+int	err_noext(char *cmd, char *file, int bool_err, int exit_code)
 {
 	char	*msg;
 

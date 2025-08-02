@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:34 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:41 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:58:00 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ static int	handle_single_heredoc(t_redirect *redir)
 	int		status;
 
 	if (pipe(fd) == -1)
-		return (err_exp("pipe", 0, 1, 1));
+		return (err_noext("pipe", 0, 1, 1));
 	discard_signals();
 	g_signal = 2;
 	pid = fork();
 	if (pid == -1)
-		return (err_exp("fork", 0, 1, 1));
+		return (err_noext("fork", 0, 1, 1));
 	if (pid == 0)
 		handle_heredoc_child(redir, fd);
 	close(fd[1]);

@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:45 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:21 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:58:09 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	pwd_cmd(void)
 	char	cwd[1024];
 
 	if (!getcwd(cwd, sizeof(cwd)))
-		return (err_exp("pwd: ", 0, 1, 1));
+		return (err_noext("pwd: ", 0, 1, 1));
 	printf("%s\n", cwd);
 	return (0);
 }
@@ -93,9 +93,9 @@ int	exit_cmd(char **av, int exit_code)
 	if (!av[1])
 		free_and_exit(exit_code);
 	if (!is_numeric(av[1]))
-		free_and_exit(err_exp("exit: ", ERR_EXIT, 0, 2));
+		free_and_exit(err_noext("exit: ", ERR_EXIT, 0, 2));
 	if (av[2])
-		return (err_exp("exit: ", ERR_2_ARG, 0, 1));
+		return (err_noext("exit: ", ERR_2_ARG, 0, 1));
 	code = ft_atoi(av[1]) % 256;
 	if (code < 0)
 		code += 256;

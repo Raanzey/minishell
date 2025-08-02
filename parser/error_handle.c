@@ -22,7 +22,7 @@ int	ambiguous_redirect_error(t_command *cmd)
 		while (redir)
 		{
 			if (redir->filename && redir->filename[0] == '\0')
-				return (err_exp(redir->filename, "ambiguous redirect", 0, 1));
+				return (err_noext(redir->filename, ERR_RDR, 0, 1));
 			redir = redir->next;
 		}
 		cmd = cmd->next;
@@ -37,7 +37,7 @@ int	pre_parser_error(char **tokens, int i)
 		if (!ft_strncmp(tokens[i], "|", 2))
 		{
 			if (i == 0 || !tokens[i + 1] || !ft_strncmp(tokens[i + 1], "|", 2))
-				return (err_exp(ERR_SNTX, "`|'", 0, 2));
+				return (err_noext(ERR_SNTX, "`|'", 0, 2));
 		}
 		else if (!ft_strncmp(tokens[i], "<", 2)
 			|| !ft_strncmp(tokens[i], ">", 2)
@@ -45,13 +45,13 @@ int	pre_parser_error(char **tokens, int i)
 			|| !ft_strncmp(tokens[i], ">>", 3))
 		{
 			if (!tokens[i + 1])
-				return (err_exp(ERR_SNTX, "`newline'", 0, 2));
+				return (err_noext(ERR_SNTX, "`newline'", 0, 2));
 			if (!ft_strncmp(tokens[i + 1], "<", 2)
 				|| !ft_strncmp(tokens[i + 1], ">", 2)
 				|| !ft_strncmp(tokens[i + 1], "<<", 3)
 				|| !ft_strncmp(tokens[i + 1], ">>", 3)
 				|| !ft_strncmp(tokens[i + 1], "|", 2))
-				return (err_exp(ft_strjoin(ERR_SNTX, "`"),
+				return (err_noext(ft_strjoin(ERR_SNTX, "`"),
 						ft_strjoin(tokens[i + 1], "'"), 0, 2));
 		}
 	}

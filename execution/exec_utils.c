@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:03:32 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:27 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:57:48 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	setup_pipe_or_die(t_command *cmd, int pipe_fd[2])
 {
 	if (cmd->next && pipe(pipe_fd) == -1)
-		free_and_exit(err_exp("pipe: ", 0, 1, 1));
+		free_and_exit(err_noext("pipe: ", 0, 1, 1));
 }
 
 int	open_redir_fd(t_redirect *redir)
@@ -57,7 +57,7 @@ void	handle_redirections(t_command *cmd)
 		if ((redir->type == 1 || redir->type == 2 || redir->type == 3)
 			&& fd == -1)
 		{
-			err_exp(redir->filename, 0, 1, 1);
+			err_noext(redir->filename, 0, 1, 1);
 			free_and_exit(1);
 		}
 		dup_redir_fd(redir, fd);
@@ -71,15 +71,15 @@ char	*handle_path(t_command *cmd, t_env **env_list)
 	char		*path;
 
 	if (!ft_strcmp(cmd->av[0], ".") || !ft_strcmp(cmd->av[0], ".."))
-		error(0, cmd->av[0], ERR_CMD, 127);
+		err_ext(0, cmd->av[0], ERR_CMD, 127);
 	else if (ft_strchr(cmd->av[0], '/'))
 	{
 		if (access(cmd->av[0], F_OK) != 0)
-			error(0, cmd->av[0], ERR_CD, 127);
+			err_ext(0, cmd->av[0], ERR_CD, 127);
 		else if (access(cmd->av[0], X_OK) != 0)
-			error(0, cmd->av[0], ERR_PRM, 126);
+			err_ext(0, cmd->av[0], ERR_PRM, 126);
 		else if (stat(cmd->av[0], &st) == 0 && S_ISDIR(st.st_mode))
-			error(0, cmd->av[0], ERR_DIC, 126);
+			err_ext(0, cmd->av[0], ERR_DIC, 126);
 		else
 			return (ft_strdup(cmd->av[0]));
 	}
@@ -87,7 +87,7 @@ char	*handle_path(t_command *cmd, t_env **env_list)
 	{
 		path = find_path(cmd->av[0], *env_list);
 		if (!path)
-			error(0, cmd->av[0], ERR_CMD, 127);
+			err_ext(0, cmd->av[0], ERR_CMD, 127);
 		return (path);
 	}
 	return (NULL);

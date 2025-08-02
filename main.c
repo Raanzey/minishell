@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:13:34 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:57:37 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	main(int ac, char **av, char **env)
 	exit_code = 0;
 	(void)av;
 	if (ac >= 2)
-		return (err_exp(ERR_ARG, 0, 0, 1));
+		return (err_noext(ERR_ARG, 0, 0, 1));
 	env_list = init_env(env, 0);
 	while (1)
 	{

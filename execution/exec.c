@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:31 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:57:55 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	exec_child(t_command *cmd, int prev_fd, int pipe_fd[2],
 		free_and_exit(0);
 	path = handle_path(cmd, env_list);
 	execve(path, cmd->av, convert_env_to_array(*env_list, 0, 0, NULL));
-	free_and_exit(err_exp("execve: ", 0, 1, 126));
+	free_and_exit(err_noext("execve: ", 0, 1, 126));
 }
 
 static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
@@ -60,7 +60,7 @@ static void	create_child_or_die(t_command *cmd, int prev_fd, int pipe_fd[2],
 	g_signal = 1;
 	pid = fork();
 	if (pid == -1)
-		free_and_exit(err_exp("fork: ", 0, 1, 1));
+		free_and_exit(err_noext("fork: ", 0, 1, 1));
 	if (pid == 0)
 		exec_child(cmd, prev_fd, pipe_fd, env_list);
 }
