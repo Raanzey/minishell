@@ -39,18 +39,11 @@ int	pre_parser_error(char **tokens, int i)
 			if (i == 0 || !tokens[i + 1] || !ft_strncmp(tokens[i + 1], "|", 2))
 				return (err_noext(ERR_SNTX, "`|'", 0, 2));
 		}
-		else if (!ft_strncmp(tokens[i], "<", 2)
-			|| !ft_strncmp(tokens[i], ">", 2)
-			|| !ft_strncmp(tokens[i], "<<", 3)
-			|| !ft_strncmp(tokens[i], ">>", 3))
+		else if (is_redir(tokens[i]))
 		{
 			if (!tokens[i + 1])
 				return (err_noext(ERR_SNTX, "`newline'", 0, 2));
-			if (!ft_strncmp(tokens[i + 1], "<", 2)
-				|| !ft_strncmp(tokens[i + 1], ">", 2)
-				|| !ft_strncmp(tokens[i + 1], "<<", 3)
-				|| !ft_strncmp(tokens[i + 1], ">>", 3)
-				|| !ft_strncmp(tokens[i + 1], "|", 2))
+			if (is_redir(tokens[i + 1]) || !ft_strncmp(tokens[i + 1], "|", 2))
 				return (err_noext(ft_strjoin(ERR_SNTX, "`"),
 						ft_strjoin(tokens[i + 1], "'"), 0, 2));
 		}
