@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:06:34 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/03 14:36:17 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/08/03 16:35:39 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ static void	handle_heredoc_loop(t_redirect *redir, int *fd)
 
 int	handle_heredoc_child(t_redirect *redir, int *fd)
 {
-	signal(SIGINT, SIG_DFL);
 	close(fd[0]);
 	setup_signals();
 	handle_heredoc_loop(redir, fd);

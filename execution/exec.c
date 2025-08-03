@@ -6,7 +6,7 @@
 /*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/03 14:36:02 by yozlu            ###   ########.fr       */
+/*   Updated: 2025/08/03 17:57:29 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,6 @@ int	exec(t_command *cmd, t_env **env_list, t_status *status)
 {
 	int	pipe_fd[2];
 
-	if (!cmd)
-		return (0);
 	status->heredoc_status = preprocess_heredocs(cmd);
 	if (status->heredoc_status != 0)
 		return (status->heredoc_status);

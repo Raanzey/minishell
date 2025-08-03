@@ -101,7 +101,7 @@ int	expand_args(t_command *cmd, t_env *env, int exit_code)
 		{
 			if (redir->type != 4 && redir->filename)
 			{
-				redir->filename = exp_redir(redir->filename, env, exit_code, 1);
+				redir->filename = exp_redir(redir->filename, env, exit_code);
 				if (!redir->filename)
 					return (0);
 			}

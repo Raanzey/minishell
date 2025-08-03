@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/03 12:57:33 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 15:17:56 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int			g_signal = 0;
 static void	signals_and_input(char **in, int *exit_code)
 {
 	*in = readline("minishell~ ");
-	signal(SIGINT, sigint_handler);
 	if (g_signal == 3)
 	{
 		*exit_code = 130;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_extra_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 12:49:56 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/03 13:13:56 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 15:43:43 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	handle_plain_text_redir(char *token, int i, char **res, t_expand *info)
 	return (i);
 }
 
-char	*exp_redir(char *token, t_env *env, int exit_code, int first)
+char	*exp_redir(char *token, t_env *env, int exit_code)
 {
 	t_expand	info;
 	char		*res;
@@ -70,7 +70,7 @@ char	*exp_redir(char *token, t_env *env, int exit_code, int first)
 
 	info.env_list = env;
 	info.exit_code = exit_code;
-	info.first = first;
+	info.first = 0;
 	i = 0;
 	res = ft_calloc(1, 1);
 	while (token[i])

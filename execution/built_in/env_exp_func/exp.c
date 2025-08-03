@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exp.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:09:56 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:12 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 15:04:02 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,20 @@
 
 void	insert_sorted_exp(t_env **env, char *key, char *value)
 {
-	t_env	*curr;
+	t_env	*cur;
 	t_env	*prev;
 	t_env	*new;
 
-	curr = *env;
+	cur = *env;
 	prev = NULL;
-	while (curr && ft_strcmp(curr->key, key) < 0)
+	while (cur && ft_strcmp(cur->key, key) < 0)
 	{
-		prev = curr;
-		curr = curr->next;
+		prev = cur;
+		cur = cur->next;
 	}
-	if (curr && ft_strcmp(curr->key, key) == 0)
-		return (update_env(curr, value));
-	new = create_env_node(key, value, curr);
+	if (cur && ft_strcmp(cur->key, key) == 0)
+		return (update_env(cur, value));
+	new = create_env_node(key, value, cur);
 	if (!new)
 		return ;
 	if (prev)
@@ -44,7 +44,6 @@ t_env	*init_env(char **env, int i)
 	char	*key;
 	char	*val;
 
-	i = 0;
 	env_list = NULL;
 	while (env[i])
 	{
