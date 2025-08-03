@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:22:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/03 09:43:51 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 12:19:41 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	is_redir(char *s)
 		|| !ft_strncmp(s, "<<", 3) || !ft_strncmp(s, ">>", 3));
 }
 
-t_redirect	*create_redirect(char *op, char *file)
+t_redirect	*new_redirect(char *op, char *file)
 {
 	t_redirect	*r;
 

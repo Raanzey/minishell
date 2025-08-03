@@ -17,7 +17,7 @@
 
 t_command	*new_command(void);
 int			is_redir(char *s);
-t_redirect	*create_redirect(char *op, char *file);
+t_redirect	*new_redirect(char *op, char *file);
 void		add_redirect(t_command *cmd, t_redirect *r);
 void		add_arg(t_command *cmd, char *word);
 t_command	*parser(char **tokens);
