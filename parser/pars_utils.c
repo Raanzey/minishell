@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:22:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 18:39:38 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 09:43:51 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	add_redirect(t_command *cmd, t_redirect *r)
 
 	cur = cmd->redir;
 	if (!cur)
-		cur = r;
+		cmd->redir = r;
 	else
 	{
 		while (cur->next)
