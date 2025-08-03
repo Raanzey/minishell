@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 16:17:05 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 11:52:22 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 # define ERR_QUOTE "syntax error near open quote "
 # define ERR_PRM ": Permission denied"
 # define ERR_DIC ": Is a directory"
-# define ERR_CLC "collector: Out of memory"
+# define ERR_CLC " Out of memory"
 
 extern int	g_signal;
 
