@@ -1,0 +1,16 @@
+ 
+collector
+execution
+Libft
+libmini
+main.c
+Makefile
+minishell
+minishell.h
+minishell_tester
+parser
+readline.supp
+README.md
+signal.c
+structs.h
+utils.c

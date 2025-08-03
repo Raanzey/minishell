@@ -24,15 +24,6 @@ char	*extract_var_name(const char *str, size_t *i)
 	return (var);
 }
 
-void	handle_exit_code(char **res, int *i, int exit_code)
-{
-	char	*tmp;
-
-	tmp = ft_itoa(exit_code);
-	*res = ft_strjoin(*res, tmp);
-	*i += 1;
-}
-
 void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
 {
 	char	*tmp;
@@ -46,7 +37,7 @@ void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
 		*res = ft_strjoin(*res, "");
 }
 
-void	handle_env_or_pos(char **res, const char *s, size_t *i, t_expand *info)
+void	handle_env(char **res, const char *s, size_t *i, t_expand *info)
 {
 	if (ft_isalpha(s[*i]) || s[*i] == '_')
 		handle_env_var(res, s, i, info->env_list);
@@ -71,14 +62,42 @@ char	*expand_dollar(char *s, t_expand *info)
 	{
 		if (s[i] == '$')
 		{
-			i++;
-			if (s[i] == '?')
-				handle_exit_code(&res, (int *)&i, info->exit_code);
+			if (s[++i] == '?')
+			{
+				res = ft_strjoin(res, ft_itoa(info->exit_code));
+				i++;
+			}
 			else
-				handle_env_or_pos(&res, s, &i, info);
+				handle_env(&res, s, &i, info);
 		}
 		else
 			res = ft_strjoin_char(res, s[i++]);
 	}
 	return (res);
+}
+
+void	here_doc_no_expand(char **delimiter, size_t i, size_t j)
+{
+	char	*res;
+	char	quote;
+
+	if (!*delimiter)
+		return ;
+	res = ft_calloc(ft_strlen(*delimiter) + 1, 1);
+	if (!res)
+		return ;
+	while ((*delimiter)[i])
+	{
+		if ((*delimiter)[i] == '\'' || (*delimiter)[i] == '"')
+		{
+			quote = (*delimiter)[i++];
+			while ((*delimiter)[i] && (*delimiter)[i] != quote)
+				res[j++] = (*delimiter)[i++];
+			if ((*delimiter)[i] == quote)
+				i++;
+		}
+		else
+			res[j++] = (*delimiter)[i++];
+	}
+	*delimiter = res;
 }
