@@ -21,7 +21,7 @@ int	ambiguous_redirect_error(t_command *cmd)
 		redir = cmd->redir;
 		while (redir)
 		{
-			if (redir->filename && redir->filename[0] == '\0')
+			if (redir->type != 4 && redir->filename && redir->filename[0] == '\0')
 				return (err_noext(redir->filename, ERR_RDR, 0, 1));
 			redir = redir->next;
 		}
