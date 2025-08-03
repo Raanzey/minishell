@@ -26,13 +26,13 @@ char	*extract_var_name(const char *str, size_t *i)
 
 void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
 {
-	char	*tmp;
-	char	*env_value;
+	char	*var;
+	char	*value;
 
-	tmp = extract_var_name(s, i);
-	env_value = get_env_value(env_list, tmp);
-	if (env_value)
-		*res = ft_strjoin(*res, env_value);
+	var = extract_var_name(s, i);
+	value = get_env_value(env_list, var);
+	if (value)
+		*res = ft_strjoin(*res, value);
 	else
 		*res = ft_strjoin(*res, "");
 }
