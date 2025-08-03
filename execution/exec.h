@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:02:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 17:23:49 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 14:49:49 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int		handle_heredocs(t_redirect *redir);
 int		has_output_redir(t_redirect *redir);
 int		handle_heredoc_child(t_redirect *redir, int *fd);
 int		open_redir_fd(t_redirect *redir);
-int		contains_heredoc(t_redirect *redir);
 int		wait_all_child(void);
 char	*ft_path(t_env *env);
 char	*get_env_value(t_env *env, const char *key);

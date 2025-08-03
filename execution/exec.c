@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 20:01:38 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:57:55 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 14:36:02 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,9 @@ int	preprocess_heredocs(t_command *cmd)
 	cur = cmd;
 	while (cur)
 	{
-		if (contains_heredoc(cur->redir))
-		{
-			res = handle_heredocs(cur->redir);
-			if (res != 0)
-				return (res);
-		}
+		res = handle_heredocs(cur->redir);
+		if (res != 0)
+			return (res);
 		cur = cur->next;
 	}
 	return (0);

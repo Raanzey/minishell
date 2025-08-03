@@ -3,25 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yozlu <yozlu@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 15:51:08 by yozlu             #+#    #+#             */
-/*   Updated: 2025/08/02 15:11:38 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 14:52:32 by yozlu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	contains_heredoc(t_redirect *redir)
-{
-	while (redir)
-	{
-		if (redir->type == 4)
-			return (1);
-		redir = redir->next;
-	}
-	return (0);
-}
 
 int	wait_all_child(void)
 {
