@@ -12,24 +12,6 @@
 
 #include "../minishell.h"
 
-int	ambiguous_redirect_error(t_command *cmd)
-{
-	t_redirect	*redir;
-
-	while (cmd)
-	{
-		redir = cmd->redir;
-		while (redir)
-		{
-			if (redir->type != 4 && redir->filename && redir->filename[0] == '\0')
-				return (err_noext(redir->filename, ERR_RDR, 0, 1));
-			redir = redir->next;
-		}
-		cmd = cmd->next;
-	}
-	return (0);
-}
-
 int	pre_parser_error(char **tokens, int i)
 {
 	while (tokens[++i])

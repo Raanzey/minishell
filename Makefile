@@ -9,7 +9,7 @@ SRCS		= main.c utils.c signal.c execution/exec.c execution/exec_utils.c \
 			execution/built_in/env_exp_func/exp_utils.c \
 			parser/token.c parser/token_utils.c parser/error_handle.c \
 			parser/pars.c parser/pars_utils.c parser/clean.c \
-			parser/expansion.c parser/expansion_utils.c \
+			parser/expansion.c parser/expansion_utils.c parser/expansion_extra_utils.c\
 			
 
 LIBMINI		= libmini/libmini.a

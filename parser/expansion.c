@@ -100,7 +100,11 @@ int	expand_args(t_command *cmd, t_env *env, int exit_code)
 		while (redir)
 		{
 			if (redir->type != 4 && redir->filename)
-				redir->filename = expand(redir->filename, env, exit_code, 1);
+			{
+				redir->filename = exp_redir(redir->filename, env, exit_code, 1);
+				if (!redir->filename)
+					return (0);
+			}
 			else if (redir->filename)
 				here_doc_no_expand(&redir->filename, 0, 0);
 			redir = redir->next;

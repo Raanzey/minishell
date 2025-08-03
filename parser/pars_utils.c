@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:22:46 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/03 12:19:41 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 12:38:02 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_redirect	*new_redirect(char *op, char *file)
 	t_redirect	*r;
 
 	r = ft_malloc(sizeof(t_redirect));
-	if (!r || !file)
+	if (!r)
 		return (NULL);
 	r->filename = ft_strdup(file);
 	r->next = NULL;

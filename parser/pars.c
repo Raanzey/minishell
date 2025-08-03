@@ -22,8 +22,6 @@ t_command	*add_command(char **tokens, size_t *i)
 	{
 		if (is_redir(tokens[*i]))
 		{
-			if (!tokens[*i + 1])
-				return (NULL);
 			r = new_redirect(tokens[*i], tokens[*i + 1]);
 			add_redirect(cmd, r);
 			*i += 2;

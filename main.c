@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:26:55 by musisman          #+#    #+#             */
-/*   Updated: 2025/08/02 15:57:37 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 12:57:33 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ t_command	*do_parser(char *in, int *exit_code, t_env *env_list)
 	cmd = parser(tokens);
 	if (!cmd)
 		return (0);
-	expand_args(cmd, env_list, *exit_code);
-	if (ambiguous_redirect_error(cmd))
+	if (!expand_args(cmd, env_list, *exit_code))
 	{
 		*exit_code = 1;
 		return (0);
