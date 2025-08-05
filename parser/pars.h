@@ -22,7 +22,6 @@ typedef struct s_redirect {
 typedef struct s_command {
 	char				**av;
 	t_redirect			*redir;
-	int					exit_code;
 	struct s_command	*next;
 }	t_command;
 
@@ -37,7 +36,6 @@ size_t		redirect(char **tokens, const char *s, size_t *i, size_t k);
 int			pre_parser_error(char **tokens, int i);
 int			handle_error(t_command *cmd);
 char		**tokenizer(char const *s);
-char		*ft_strjoin_free(char *s1, char *s2);
 char		*ft_strjoin_char(char *s, char c);
 char		*append_substring(char *res, const char *src, int one, int end);
 char		*expand_dollar(const char *s, int last_exit);
@@ -45,6 +43,7 @@ char		*expand_token(const char *token, int last_exit);
 void		expand_and_replace(char **str, int last_exit);
 void		here_doc_no_expand(char **target, size_t i, size_t j);
 int			expand_args(t_command *cmd, int last_exit);
+void		clean_empty_args_inplace(t_command *cmd);
 
 void		print_cmd(t_command *cmd); //!sil
 

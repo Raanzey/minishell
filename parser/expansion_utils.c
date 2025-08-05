@@ -24,14 +24,15 @@ char	*extract_var_name(const char *str, size_t *i)
 	return (var);
 }
 
-static void	handle_exit_code(char **res, int *i, int last_exit)
+static void	handle_exit_code(char **res, int *i, int exit_code)
 {
 	char	*tmp;
 
-	tmp = ft_itoa(last_exit);
-	*res = ft_strjoin_free(*res, tmp);
-	free(tmp);
-	*i += 2;
+	tmp = ft_itoa(exit_code);
+	// *res = ft_strdup(tmp);
+	*res = ft_strjoin(*res, tmp);
+	// free(tmp);
+	*i += 1;
 }
 
 static void	handle_env_var(char **res, const char *s, size_t *i)
@@ -42,10 +43,10 @@ static void	handle_env_var(char **res, const char *s, size_t *i)
 	tmp = extract_var_name(s, i);
 	env_value = getenv(tmp);
 	if (env_value)
-		*res = ft_strjoin_free(*res, env_value);
+		*res = ft_strjoin(*res, env_value);
 	else
-		*res = ft_strjoin_free(*res, "");
-	free(tmp);
+		*res = ft_strjoin(*res, "");
+	// free(tmp);
 }
 
 static void	handle_env_or_positional(char **res, const char *s, size_t *i)
@@ -62,7 +63,7 @@ static void	handle_env_or_positional(char **res, const char *s, size_t *i)
 	}
 }
 
-char	*expand_dollar(const char *s, int last_exit)
+char	*expand_dollar(const char *s, int exit_code)
 {
 	size_t	i;
 	char	*res;
@@ -75,7 +76,7 @@ char	*expand_dollar(const char *s, int last_exit)
 		{
 			i++;
 			if (s[i] == '?')
-				handle_exit_code(&res, (int *)&i, last_exit);
+				handle_exit_code(&res, (int *)&i, exit_code);
 			else
 				handle_env_or_positional(&res, s, &i);
 		}

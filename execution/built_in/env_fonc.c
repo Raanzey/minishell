@@ -21,8 +21,8 @@ t_env *init_env(char **env, int i)
 		key = ft_substr(env[i], 0, key_len);
 		val = ft_strdup(eq + 1);
 		insert_sorted_env(&env_list, key, val);
-		free(key);
-		free(val);
+		// free(key);
+		// free(val);
 		i++;
 	}
 	return env_list;
@@ -42,7 +42,7 @@ void update_env(t_env *node, const char *value)
 {
 	if (!node)
 		return;
-	free(node->value);               // Önce eski değeri temizle
+	// free(node->value);               // Önce eski değeri temizle
 	node->value = ft_strdup(value);  // Yeni değeri kopyala
 }
 void append_env(t_env *env, const char *key, const char *value)
@@ -50,7 +50,7 @@ void append_env(t_env *env, const char *key, const char *value)
 	t_env *new;
 	t_env *tail;
 	// Yeni node oluştur
-	new = malloc(sizeof(t_env));
+	new = ft_malloc(sizeof(t_env));
 	new->key = ft_strdup(key);
 	new->value = ft_strdup(value);
 	new->next = NULL;
@@ -75,7 +75,7 @@ void add_or_update_env(t_env **env, char *eq, char *av)
 
 	insert_sorted_env(env, key, val);
 
-	free(key);
-	free(val);
+	// free(key);
+	// free(val);
 }
 

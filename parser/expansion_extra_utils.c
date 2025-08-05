@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 23:57:49 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/15 18:53:41 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/20 17:01:22 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,35 +20,35 @@ char	*ft_strjoin_char(char *s, char c)
 	if (!s)
 		return (NULL);
 	len = ft_strlen(s);
-	res = malloc(len + 2);
+	res = ft_malloc(len + 2);
 	if (!res)
 		return (NULL);
 	ft_memcpy(res, s, len);
 	res[len] = c;
 	res[len + 1] = '\0';
-	free(s);
+	// free(s);
 	return (res);
 }
 
-char	*ft_strjoin_free(char *s1, char *s2)
-{
-	char	*res;
-	size_t	len1;
-	size_t	len2;
+// char	*ft_strjoin_free(char *s1, char *s2)
+// {
+// 	char	*res;
+// 	size_t	len1;
+// 	size_t	len2;
 
-	if (!s1 || !s2)
-		return (NULL);
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	res = malloc(len1 + len2 + 1);
-	if (!res)
-		return (NULL);
-	ft_memcpy(res, s1, len1);
-	ft_memcpy(res + len1, s2, len2);
-	res[len1 + len2] = '\0';
-	free(s1);
-	return (res);
-}
+// 	if (!s1 || !s2)
+// 		return (NULL);
+// 	len1 = ft_strlen(s1);
+// 	len2 = ft_strlen(s2);
+// 	res = ft_malloc(len1 + len2 + 1);
+// 	if (!res)
+// 		return (NULL);
+// 	ft_memcpy(res, s1, len1);
+// 	ft_memcpy(res + len1, s2, len2);
+// 	res[len1 + len2] = '\0';
+// 	// free(s1);
+// 	return (res);
+// }
 
 char	*append_substring(char *res, const char *src, int one, int end)
 {
@@ -56,17 +56,17 @@ char	*append_substring(char *res, const char *src, int one, int end)
 	char	*new_res;
 
 	part = ft_substr(src, one, end - one);
-	new_res = ft_strjoin_free(res, part);
+	new_res = ft_strjoin(res, part);
 	free(part);
 	return (new_res);
 }
 
-void	expand_and_replace(char **str, int last_exit)
+void	expand_and_replace(char **str, int exit_code)
 {
 	char	*tmp;
 
-	tmp = expand_token(*str, last_exit);
-	free(*str);
+	tmp = expand_token(*str, exit_code);
+	// free(*str);
 	*str = tmp;
 }
 
@@ -93,6 +93,6 @@ void	here_doc_no_expand(char **target, size_t i, size_t j)
 		else
 			res[j++] = (*target)[i++];
 	}
-	free(*target);
+	// free(*target);
 	*target = res;
 }

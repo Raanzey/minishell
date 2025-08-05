@@ -29,7 +29,7 @@ void insert_sorted_env(t_env **env, char *key, char *value)
 	}
 
 	// Yeni düğüm oluştur
-	t_env *new = malloc(sizeof(t_env));
+	t_env *new = ft_malloc(sizeof(t_env));
 	if (!new)
 		return;
 	new->key = ft_strdup(key);
@@ -62,9 +62,9 @@ void unset_var(t_env **env, const char *key)
 			else      // head ise
 				*env = curr->next;
 
-			free(curr->key);
-			free(curr->value);
-			free(curr);
+			// free(curr->key);
+			// free(curr->value);
+			// free(curr);
 			return;
 		}
 		prev = curr;

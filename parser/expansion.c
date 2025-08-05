@@ -26,7 +26,7 @@ int	handle_single_quote(char *token, int i, char **res)
 	return (i);
 }
 
-int	handle_double_quote(char *token, int i, char **res, int last_exit)
+int	handle_double_quote(char *token, int i, char **res, int exit_code)
 {
 	char	*tmp;
 	char	*tmp2;
@@ -37,15 +37,15 @@ int	handle_double_quote(char *token, int i, char **res, int last_exit)
 	while (token[i] && token[i] != '"')
 		i++;
 	tmp = ft_substr(token, start, i - start);
-	tmp2 = expand_dollar(tmp, last_exit);
-	*res = ft_strjoin_free(*res, tmp2);
-	free(tmp);
+	tmp2 = expand_dollar(tmp, exit_code);
+	*res = ft_strjoin(*res, tmp2);
+	// free(tmp);
 	if (token[i] == '"')
 		i++;
 	return (i);
 }
 
-int	handle_plain_text(char *token, int i, char **res, int last_exit)
+int	handle_plain_text(char *token, int i, char **res, int exit_code)
 {
 	char	*tmp;
 	char	*tmp2;
@@ -55,13 +55,13 @@ int	handle_plain_text(char *token, int i, char **res, int last_exit)
 	while (token[i] && token[i] != '\'' && token[i] != '"')
 		i++;
 	tmp = ft_substr(token, start, i - start);
-	tmp2 = expand_dollar(tmp, last_exit);
-	*res = ft_strjoin_free(*res, tmp2);
-	free(tmp);
+	tmp2 = expand_dollar(tmp, exit_code);
+	*res = ft_strjoin(*res, tmp2);
+	// free(tmp);
 	return (i);
 }
 
-char	*expand_token(const char *token, int last_exit)
+char	*expand_token(const char *token, int exit_code)
 {
 	char	*res;
 	int		i;
@@ -75,14 +75,14 @@ char	*expand_token(const char *token, int last_exit)
 		if (token[i] == '\'')
 			i = handle_single_quote((char *)token, i, &res);
 		else if (token[i] == '"')
-			i = handle_double_quote((char *)token, i, &res, last_exit);
+			i = handle_double_quote((char *)token, i, &res, exit_code);
 		else
-			i = handle_plain_text((char *)token, i, &res, last_exit);
+			i = handle_plain_text((char *)token, i, &res, exit_code);
 	}
 	return (res);
 }
 
-int	expand_args(t_command *cmd, int last_exit)
+int	expand_args(t_command *cmd, int exit_code)
 {
 	t_redirect	*redir;
 	int			i;
@@ -91,12 +91,12 @@ int	expand_args(t_command *cmd, int last_exit)
 	{
 		i = -1;
 		while (cmd->av && cmd->av[++i])
-			expand_and_replace(&cmd->av[i], last_exit);
+			expand_and_replace(&cmd->av[i], exit_code);
 		redir = cmd->redir;
 		while (redir)
 		{
 			if (redir->type != 4 && redir->filename)
-				expand_and_replace(&redir->filename, last_exit);
+				expand_and_replace(&redir->filename, exit_code);
 			else if (redir->filename)
 				here_doc_no_expand(&redir->filename, 0, 0);
 			redir = redir->next;

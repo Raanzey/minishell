@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 17:16:50 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/14 17:15:44 by musisman         ###   ########.fr       */
+/*   Updated: 2025/07/19 16:28:38 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,7 @@ static int	quotes_control(const char *s, size_t *i)
 			return (1);
 		}
 		else
-		{
-			printf("quotes error\n");
-			return (0);
-		}
+			return (err_prs(ERR_SNTX, "`quote'", 0));
 	}
 	(*i)++;
 	return (1);

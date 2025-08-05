@@ -1,68 +1,115 @@
-# include "../../minishell.h"
+#include "../../minishell.h"
 
-//BURAYA ANA PROCESSDE ÇALIŞACAK BUİLT_İN FONKSİYONLARI GELECEK
+// BURAYA ANA PROCESSDE ÇALIŞACAK BUİLT_İN FONKSİYONLARI GELECEK
 
-int is_parent_builtin(t_command *cmd)
+int	is_parent_builtin(t_command *cmd)
 {
 	if (!cmd || !cmd->av || !cmd->av[0])
-		return 0;
-if ((!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0')
+		return (0);
+	if ((!ft_strncmp(cmd->av[0], "cd", 2) && cmd->av[0][2] == '\0')
 		|| (!ft_strncmp(cmd->av[0], "exit", 4) && cmd->av[0][4] == '\0')
 		|| (!ft_strncmp(cmd->av[0], "export", 6) && cmd->av[0][6] == '\0')
 		|| (!ft_strncmp(cmd->av[0], "unset", 5) && cmd->av[0][5] == '\0'))
-		return 1;
-	return 0;
+		return (1);
+	return (0);
 }
-int cd_cmd(char *str)
+int	cd_cmd(t_command *cmd)
 {
-	char *path;
-	if (!str)
+	char	*path;
+
+	if (!cmd->av[1] || !cmd->av[1][0])
 	{
 		path = getenv("HOME");
 		if (!path)
-			return 1;//PATH YOKSA HATA DURUMU
+			error("minishell: cd: `", cmd->av[1], ERR_CD, 2);
 	}
+	else if (cmd->av[2])
+		error("minishell: cd: `", cmd->av[1], ERR_2_ARG, 1);
 	else
-		path = str;
-	if(chdir(path))
-		printf("HATA\n");//error kullanılacak
-	return 0;
+		path = cmd->av[1];
+	if (chdir(path))
+		error("minishell: cd: `", 0, ERR_CD, 1);
+	return (0);
 }
-
-int export_cmd(char **av, t_env **env)
+//* Yeni eklendi export hata durumu için
+int	is_valid_identifier(char *str)
 {
-	int i = 1;
-	char *value;
+	int	i;
 
+	i = 0;
+	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
+		return (0);
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+//*
+
+// int	export_cmd(char **av, t_env **env)
+// {
+// 	int		i;
+// 	char	*value;
+
+// 	i = 1;
+// 	if (!av[i])
+// 	{
+// 		print_export(*env);
+// 		return (0);
+// 	}
+// 	while (av[i])
+// 	{
+// 		value = ft_strchr(av[i], '=');
+// 		if (value)
+// 			add_or_update_env(env, value, av[i]); // **env → env**
+// 		else
+// 			export_key_only(env, av[i]);
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
+int	export_cmd(char **av, t_env **env)
+{
+	int		i;
+	char	*value;
+
+	i = 1;
 	if (!av[i])
 	{
 		print_export(*env);
-		return 0;
+		return (0);
 	}
 	while (av[i])
 	{
+		if (!is_valid_identifier(av[i]))
+			error("minishell: export: `", av[i], ERR_EXP, 1);
 		value = ft_strchr(av[i], '=');
 		if (value)
-			add_or_update_env(env, value, av[i]);  // **env → env**
+			add_or_update_env(env, value, av[i]);
 		else
 			export_key_only(env, av[i]);
 		i++;
 	}
-	return 0;
+	return (0);
 }
-int unset_cmd(t_command *cmd,t_env **env_list)
-{
-	
-	int i = 1;
 
+int	unset_cmd(t_command *cmd, t_env **env_list)
+{
+	int	i;
+
+	i = 1;
 	while (cmd->av[i])
 	{
-		unset_var(env_list ,cmd->av[i]); // global env list'ten sil
+		unset_var(env_list, cmd->av[i]); // global env list'ten sil
 		i++;
 	}
-	return 0;
+	return (0);
 }
-void print_export(t_env *env)
+void	print_export(t_env *env)
 {
 	while (env)
 	{
