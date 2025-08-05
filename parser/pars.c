@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/29 17:21:11 by musisman          #+#    #+#             */
-/*   Updated: 2025/05/29 17:21:11 by musisman         ###   ########.fr       */
+/*   Created: 2025/08/02 15:12:55 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:12:55 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ t_command	*add_command(char **tokens, size_t *i)
 	{
 		if (is_redir(tokens[*i]))
 		{
-			if (!tokens[*i + 1])
-				return (NULL);
-			r = create_redirect(tokens[*i], tokens[*i + 1]);
+			r = new_redirect(tokens[*i], tokens[*i + 1]);
 			add_redirect(cmd, r);
 			*i += 2;
 		}
@@ -58,29 +56,4 @@ t_command	*parser(char **tokens)
 			i++;
 	}
 	return (first);
-}
-
-void	print_cmd(t_command *cmd)
-{
-	int			i;
-	int			num;
-	t_redirect	*r;
-
-	num = 1;
-	while (cmd)
-	{
-		printf("=== COMMAND %d ===\n", num++);
-		printf("ARGS:\n");
-		i = -1;
-		while (cmd->av && cmd->av[++i])
-			printf("av[%d]: %s\n", i, cmd->av[i]);
-		printf("REDIRS:\n");
-		r = cmd->redir;
-		while (r)
-		{
-			printf("type: %d, file: %s\n", r->type, r->filename);
-			r = r->next;
-		}
-		cmd = cmd->next;
-	}
 }

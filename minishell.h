@@ -6,7 +6,7 @@
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:27:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/07/15 19:33:31 by musisman         ###   ########.fr       */
+/*   Updated: 2025/08/03 11:52:22 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,35 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <sys/stat.h>
 
-# include "Libft/libft.h"
+# include "libmini/libmini.h"
+# include "collector/collector.h"
 # include "parser/pars.h"
 # include "execution/exec.h"
 
-# define ERR_ARG "Please no argument\n" // .minishell dasda hata durumu
-# define ERR_EXIT "numeric argument required\n" // exit dsda hata durumu
+# define EXP  "export: `"
 
-extern int g_signal;
+# define ERR_ARG "Please no argument"
+# define ERR_EXIT "numeric argument required"
+# define ERR_2_ARG "too many arguments"
+# define ERR_CMD ": command not found"
+# define ERR_CD ": No such file or directory"
+# define ERR_HOME "HOME not set"
+# define ERR_OLDPWD "OLDPWD not set"
+# define ERR_EXP "': not a valid identifier"
+# define ERR_SNTX "syntax error near unexpected token "
+# define ERR_RDR "ambiguous redirect"
+# define ERR_QUOTE "syntax error near open quote "
+# define ERR_PRM ": Permission denied"
+# define ERR_DIC ": Is a directory"
+# define ERR_CLC " Out of memory"
 
-int	error(char *err);
+extern int	g_signal;
 
-#	endif
+int		free_and_exit(int exit_code);
+int		err_ext(char *word, char *cmd, char *err, int exit_code);
+int		err_noext(char *cmd, char *file, int bool_err, int exit_code);
+void	sigint_handler(int sig);
+
+#endif
