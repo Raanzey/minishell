@@ -1,1 +1,10 @@
-This is a minishell project. It is written with a similar structure based on the terminal. We did this project in Ecole 42 School's in 42 Istanbul Campus.
+# minishell
+
+This project implements a simple shell, inspired by Bash. It parses and executes user commands, supports environment variables, pipes, and redirections. The goal is to understand how shells work under the hood by managing processes and system calls.
+
+Key features:
+- Command parsing and execution
+- Pipes and redirections
+- Built-in commands
+- Environment variable management
+- Signal handling
