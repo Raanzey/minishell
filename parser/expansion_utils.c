@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 20:16:10 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/05 20:16:10 by musisman         ###   ########.fr       */
+/*   Created: 2025/08/02 15:12:27 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:12:27 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,34 +24,23 @@ char	*extract_var_name(const char *str, size_t *i)
 	return (var);
 }
 
-static void	handle_exit_code(char **res, int *i, int last_exit)
+void	handle_env_var(char **res, const char *s, size_t *i, t_env *env_list)
 {
-	char	*tmp;
+	char	*var;
+	char	*value;
 
-	tmp = ft_itoa(last_exit);
-	*res = ft_strjoin_free(*res, tmp);
-	free(tmp);
-	*i += 2;
-}
-
-static void	handle_env_var(char **res, const char *s, size_t *i)
-{
-	char	*tmp;
-	char	*env_value;
-
-	tmp = extract_var_name(s, i);
-	env_value = getenv(tmp);
-	if (env_value)
-		*res = ft_strjoin_free(*res, env_value);
+	var = extract_var_name(s, i);
+	value = get_env_value(env_list, var);
+	if (value)
+		*res = ft_strjoin(*res, value);
 	else
-		*res = ft_strjoin_free(*res, "");
-	free(tmp);
+		*res = ft_strjoin(*res, "");
 }
 
-static void	handle_env_or_positional(char **res, const char *s, size_t *i)
+void	handle_env(char **res, const char *s, size_t *i, t_expand *info)
 {
 	if (ft_isalpha(s[*i]) || s[*i] == '_')
-		handle_env_var(res, s, i);
+		handle_env_var(res, s, i, info->env_list);
 	else if (ft_isdigit(s[*i]))
 		(*i)++;
 	else
@@ -62,7 +51,7 @@ static void	handle_env_or_positional(char **res, const char *s, size_t *i)
 	}
 }
 
-char	*expand_dollar(const char *s, int last_exit)
+char	*expand_dollar(char *s, t_expand *info)
 {
 	size_t	i;
 	char	*res;
@@ -73,14 +62,42 @@ char	*expand_dollar(const char *s, int last_exit)
 	{
 		if (s[i] == '$')
 		{
-			i++;
-			if (s[i] == '?')
-				handle_exit_code(&res, (int *)&i, last_exit);
+			if (s[++i] == '?')
+			{
+				res = ft_strjoin(res, ft_itoa(info->exit_code));
+				i++;
+			}
 			else
-				handle_env_or_positional(&res, s, &i);
+				handle_env(&res, s, &i, info);
 		}
 		else
 			res = ft_strjoin_char(res, s[i++]);
 	}
 	return (res);
+}
+
+void	here_doc_no_expand(char **delimiter, size_t i, size_t j)
+{
+	char	*res;
+	char	quote;
+
+	if (!*delimiter)
+		return ;
+	res = ft_calloc(ft_strlen(*delimiter) + 1, 1);
+	if (!res)
+		return ;
+	while ((*delimiter)[i])
+	{
+		if ((*delimiter)[i] == '\'' || (*delimiter)[i] == '"')
+		{
+			quote = (*delimiter)[i++];
+			while ((*delimiter)[i] && (*delimiter)[i] != quote)
+				res[j++] = (*delimiter)[i++];
+			if ((*delimiter)[i] == quote)
+				i++;
+		}
+		else
+			res[j++] = (*delimiter)[i++];
+	}
+	*delimiter = res;
 }

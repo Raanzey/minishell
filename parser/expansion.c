@@ -3,86 +3,90 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: musisman <<musisman@student.42.fr>>        +#+  +:+       +#+        */
+/*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 09:16:15 by musisman          #+#    #+#             */
-/*   Updated: 2025/06/05 09:16:15 by musisman         ###   ########.fr       */
+/*   Created: 2025/08/02 15:12:38 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:12:38 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	handle_single_quote(char *token, int i, char **res)
+int	handle_single_quote(char *token, int i, char **res, int one)
 {
-	int	start;
-
-	i++;
-	start = i;
-	while (token[i] && token[i] != '\'')
-		i++;
-	*res = append_substring(*res, token, start, i);
-	if (token[i] == '\'')
-		i++;
-	return (i);
-}
-
-int	handle_double_quote(char *token, int i, char **res, int last_exit)
-{
-	char	*tmp;
-	char	*tmp2;
+	char	*part;
 	int		start;
 
-	i++;
-	start = i;
-	while (token[i] && token[i] != '"')
+	start = ++i;
+	while (token[i] && token[i] != '\'')
 		i++;
-	tmp = ft_substr(token, start, i - start);
-	tmp2 = expand_dollar(tmp, last_exit);
-	*res = ft_strjoin_free(*res, tmp2);
-	free(tmp);
-	if (token[i] == '"')
+	part = ft_substr(token, start, i - start);
+	*res = ft_strjoin(*res, part);
+	if (token[i] == '\'')
 		i++;
+	if (one == 0 && !*res[0])
+		*res = ft_strjoin(*res, " ");
 	return (i);
 }
 
-int	handle_plain_text(char *token, int i, char **res, int last_exit)
+int	handle_double_quote(const char *token, int i, char **res, t_expand *info)
 {
-	char	*tmp;
-	char	*tmp2;
+	char	*part;
+	char	*joined;
+	int		start;
+
+	start = ++i;
+	while (token[i] && token[i] != '"')
+		i++;
+	part = ft_substr(token, start, i - start);
+	joined = expand_dollar(part, info);
+	*res = ft_strjoin(*res, joined);
+	if (token[i] == '"')
+		i++;
+	if (info->first == 0 && !*res[0])
+		*res = ft_strjoin(*res, " ");
+	return (i);
+}
+
+int	handle_plain_text(char *token, int i, char **res, t_expand *info)
+{
+	char	*part;
+	char	*joined;
 	int		start;
 
 	start = i;
 	while (token[i] && token[i] != '\'' && token[i] != '"')
 		i++;
-	tmp = ft_substr(token, start, i - start);
-	tmp2 = expand_dollar(tmp, last_exit);
-	*res = ft_strjoin_free(*res, tmp2);
-	free(tmp);
+	part = ft_substr(token, start, i - start);
+	joined = expand_dollar(part, info);
+	*res = ft_strjoin(*res, joined);
 	return (i);
 }
 
-char	*expand_token(const char *token, int last_exit)
+char	*expand(char *token, t_env *env, int exit_code, int first)
 {
-	char	*res;
-	int		i;
+	t_expand	info;
+	char		*res;
+	int			i;
 
-	if (!token)
-		return (NULL);
+	info.env_list = env;
+	info.exit_code = exit_code;
+	info.first = first;
 	i = 0;
 	res = ft_calloc(1, 1);
 	while (token[i])
 	{
 		if (token[i] == '\'')
-			i = handle_single_quote((char *)token, i, &res);
+			i = handle_single_quote(token, i, &res, first);
 		else if (token[i] == '"')
-			i = handle_double_quote((char *)token, i, &res, last_exit);
+			i = handle_double_quote(token, i, &res, &info);
 		else
-			i = handle_plain_text((char *)token, i, &res, last_exit);
+			i = handle_plain_text(token, i, &res, &info);
 	}
 	return (res);
 }
 
-int	expand_args(t_command *cmd, int last_exit)
+int	expand_args(t_command *cmd, t_env *env, int exit_code)
 {
 	t_redirect	*redir;
 	int			i;
@@ -91,12 +95,16 @@ int	expand_args(t_command *cmd, int last_exit)
 	{
 		i = -1;
 		while (cmd->av && cmd->av[++i])
-			expand_and_replace(&cmd->av[i], last_exit);
+			cmd->av[i] = expand(cmd->av[i], env, exit_code, i);
 		redir = cmd->redir;
 		while (redir)
 		{
 			if (redir->type != 4 && redir->filename)
-				expand_and_replace(&redir->filename, last_exit);
+			{
+				redir->filename = exp_redir(redir->filename, env, exit_code);
+				if (!redir->filename)
+					return (0);
+			}
 			else if (redir->filename)
 				here_doc_no_expand(&redir->filename, 0, 0);
 			redir = redir->next;

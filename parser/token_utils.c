@@ -5,21 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: musisman <musisman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/29 17:20:53 by musisman          #+#    #+#             */
-/*   Updated: 2025/05/29 17:20:53 by musisman         ###   ########.fr       */
+/*   Created: 2025/08/02 15:13:22 by musisman          #+#    #+#             */
+/*   Updated: 2025/08/02 15:13:22 by musisman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-size_t	skip_space(const char *s, size_t i)
+int	skip_space(const char *s, int i)
 {
 	while (s[i] && (s[i] == ' ' || (s[i] >= 9 && s[i] <= 13)))
 		i++;
 	return (i);
 }
 
-size_t	redirect(char **tokens, const char *s, size_t *i, size_t k)
+int	redirect(char **tokens, const char *s, int *i, int k)
 {
 	if ((s[*i] == '<' && s[*i + 1] == '<')
 		|| (s[*i] == '>' && s[*i + 1] == '>'))
